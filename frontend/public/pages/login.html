@@ -1,0 +1,40 @@
+<script src="/js/authTemplates/templateSuperior.js"></script>
+<script src="/js/utils/addStylesheet.js"></script>
+
+<script>
+  // Cuando quieras agregar una hoja de estilos adicional:
+  addStylesheet("/css/extra.css");
+  // Puedes llamarla más veces si necesitas más hojas
+  addStylesheet("/css/otro.css");
+</script>
+
+  <header class="saloon">
+    <h1>TIMEOUT CLICK</h1>
+  </header>
+
+  <main class="poster">
+    <h2>LOGIN</h2>
+    <hr class="divider">
+
+    <form>
+      <div class="field">
+        <label for="email">Email:</label>
+        <input id="email" type="email" placeholder="EMAIL">
+      </div>
+
+      <div class="field">
+        <label for="password">Password:</label>
+        <input id="password" type="password" placeholder="PASSWORD">
+        <p class="hint"><a href="#">Forgot your password?</a></p>
+      </div>
+
+      <div class="actions">
+        <button type="submit" class="btn">LOGIN</button>
+        <button type="button" class="btn back" onclick="history.back()">BACK</button>
+      </div>
+    </form>
+
+    <p class="signup">Sign up?</p>
+  </main>
+</body>
+</html>
