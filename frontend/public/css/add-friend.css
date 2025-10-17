@@ -1,0 +1,205 @@
+/* Paleta y tipografía */
+:root{
+  --bg:#3b2414;
+  --panel:#f8ead6;
+  --text:#26170e;
+  --muted:#2a1a0f;
+  --line:#7a4e2b;
+  --line-strong:#e6cc99;
+  --accent:#ffffff;
+}
+
+*{ 
+    box-sizing:border-box; 
+}
+html,body{ 
+    height:100%; 
+}
+body{
+  margin:0;
+  background-image: url("/assets/images/desert-bg2.jpg");
+  background-repeat: repeat;
+  background-position: top left;
+  background-attachment: fixed;
+  color: var(--text);
+  font: 18px/1.4 ui-monospace, Courier, "Courier New", monospace;
+}
+
+/* Corrige superposición por topbar fija */
+.app{ 
+    padding-top: 72px; 
+}
+
+/* ───────── Topbar ───────── */
+.topbar{
+  position: fixed; 
+  top:0; 
+  left:0; 
+  right:0; 
+  z-index:1000;
+  display:flex; 
+  align-items:center; 
+  gap:12px;
+  padding: 10px 16px;
+  background:#754c29;
+  color: #f8ead6;
+  border-bottom: 4px solid #3b2414;
+}
+.brand{ 
+    display:flex; 
+    align-items:center; 
+    gap:8px; 
+    font-weight:1000; 
+}
+
+.brand .chip{
+  width:18px; 
+  height:18px; 
+  border:1px solid var(--text);
+}
+
+/* ───────── Tabs ───────── */
+.tabs{
+  position: sticky; 
+  top:56px; 
+  z-index:900;
+  display:flex; 
+  gap:16px; 
+  align-items:center;
+  background:var(--panel); 
+  color:var(--text);
+  border-top:none
+  border:3px solid var(--text); 
+  padding: 8px 16px;
+}
+.tab{
+  color: var(--text);
+  text-decoration: none;
+  border:1px solid var(--panel); 
+  padding: 6px 0;
+}
+.tab:hover{ 
+    text-decoration: underline; 
+}
+.tab.is-active{ 
+    text-decoration: underline; 
+    text-underline-offset: 2px; 
+}
+
+/* ───────── Ventana central ───────── */
+.window{
+  max-width: 780px;
+  margin: 24px auto;
+  background: var(--panel);
+  border:4px solid #3b2414; 
+  outline: 6px solid #e6cc99;
+}
+
+
+/* ───────── Contenido ───────── */
+.content{
+  background: var(--panel);
+  border-top: none;
+  padding: 18px 20px 22px;
+}
+.content h2{
+  font-size: 22px;
+  margin: 8px 0 14px;
+  color: var(--text);
+}
+
+/* Barra de herramientas (buscador) */
+.tools{
+  display:flex; 
+  gap:8px; 
+  justify-content:flex-end; 
+  align-items:center;
+  margin-bottom: 14px;
+}
+.search{
+  width: clamp(180px, 26vw, 260px);
+  height: 32px;
+  background: transparent;
+  color: var(--text);
+  border:1px solid var(--line);
+  padding: 0 10px;
+  font: 14px/1.2 ui-monospace, monospace;
+}
+.search::placeholder{ color:#8a8a8a; }
+.icon-search{
+  height: 32px;
+  padding: 0 10px;
+  background : transparent;
+  color: var(--text);
+  border:1px solid var(--line);
+  cursor: pointer;
+}
+.icon-search::before{ 
+    content:"🔍"; 
+}
+
+/* Lista de resultados */
+.friend-list{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.friend-row{
+  display: grid;
+  grid-template-columns: 42px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  background:#e6cc99;
+  border: 1px solid var(--text);
+  padding: 10px 12px;
+}
+.avatar{
+  width: 34px; height: 34px;
+  border: 1px solid #26170e;
+  display:flex; 
+  align-items:center; 
+  justify-content:center;
+  font-size: 10px; 
+  color: var(--muted);
+}
+
+
+/* Botones */
+.btn{
+  background:var(--line);
+  color: var(--text);
+  border:1px solid var(--line-strong);
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 800;
+  
+}
+.btn:hover{ 
+    background:var(--text); 
+    color: #f8ead6;
+}
+.btn.small{ 
+    padding: 6px 12px; 
+}
+.btn.back{ m
+    argin-top: 14px; 
+}
+
+/* ───────── Focus accesible ───────── */
+a:focus, button:focus, input:focus{
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+/* ───────── Responsive ───────── */
+@media (max-width: 520px){
+  .friend-row{
+    grid-template-columns: 34px 1fr;
+    row-gap: 8px;
+  }
+  .friend-row .btn.small{ 
+    grid-column: 1 / -1; 
+    justify-self: end; }
+}
