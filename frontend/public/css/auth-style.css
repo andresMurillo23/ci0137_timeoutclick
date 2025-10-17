@@ -5,13 +5,10 @@
 }
 
 body {
-  background-color: #f2e6d3;
-  background-image: url("/assets/images/desert-bg2.jpg");
-  background-repeat: repeat;
-  background-position: top left;
-  background-attachment: fixed;
-  color: #26170e;
-  font-family: "Courier New", Courier, monospace;
+    background: #f2e6d3 url("/assets/images/desert-bg2.jpg") center center / cover no-repeat;
+    color: #26170e;
+    font-family: "Courier New", Courier, monospace;
+    min-height: 100dvh; /* asegura cubrir alto en móviles */
 }
 
 .saloon {
