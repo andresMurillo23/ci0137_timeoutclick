@@ -131,3 +131,49 @@ input {
 .column {
   flex: 1 1 260px;
 }
+
+
+/* Verify Email */
+.code-grid {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin: 18px 0 12px;
+}
+
+.code-box {
+    width: 56px;
+    height: 56px;
+    text-align: center;
+    font-size: 24px;
+    border: 2px solid #3b2414;
+    background: #fff5e6;
+}
+
+    .code-box:focus {
+        outline: 2px solid #754c29;
+        outline-offset: 2px;
+    }
+
+.muted {
+    color: #b3a690;
+    text-align: center;
+    margin: 10px 0 14px;
+}
+
+.row-links {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    margin-top: 8px;
+    color: #6f6557;
+}
+
+    .row-links a {
+        color: #6f6557;
+        text-decoration: underline;
+    }
+
+.btn.back {
+    background: #5e3b20;
+}
