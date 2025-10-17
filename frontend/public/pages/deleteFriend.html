@@ -1,0 +1,55 @@
+<script src="/js/partials/head.js"></script>
+<script src="/js/partials/navbar.js"></script>
+
+<!-- Agrega estilos específicos para esta página, en este caso, Other Profile -->
+<script src="/js/utils/addStylesheet.js"></script>
+<script>
+    addStylesheet("/css/otherProfile-style.css");
+</script>
+
+<!-- Contenido panel -->
+<main class="content" id="main">
+    <section class="panel" aria-labelledby="panel-title">
+        <div class="avatar" aria-label="Avatar">avatar</div>
+        <div class="fields">
+            <h2 id="panel-title" style="margin:0 0 8px 0">Perfil</h2>
+            <div class="field">
+                <div class="label">username:</div>
+                <div class="value" id="username">andrescmf1</div>
+            </div>
+            <div class="field">
+                <div class="label">email:</div>
+                <div class="value" id="email">andrescmf1@example.com</div>
+            </div>
+            <div class="field" id="status-row" hidden>
+                <div class="label">status:</div>
+                <div class="value">friends</div>
+            </div>
+        </div>
+    </section>
+    <div class="footer">
+        <button class="btn" type="button" id="backBtn">Back</button>
+        <!--Para futuraas modificaciones-->
+        <!--<button class="btn" type="button" id="deleteBtn">Delete</button>-->
+        <a class="btn" href="#confirmOverlay">Delete</a>
+    </div>
+
+
+    <!-- Modal de confirmación -->
+    <div class="overlay" id="confirmOverlay">
+        <div class="dialog" role="dialog" aria-labelledby="confirmTitle">
+            <div class="dialog-body">
+                <h3 id="confirmTitle" class="dialog-title">
+                    Are you sure you want<br>
+                    to delete <span class="u-underline">andrescmf1</span>?
+                </h3>
+                <div class="dialog-actions">
+                    <a class="btn ghost" href="#main">NO</a>
+                    <a class="btn danger" href="#main">YES</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="/js/partials/footer.js"></script>
