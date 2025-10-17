@@ -1,15 +1,4 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-    background: #f2e6d3 url("/assets/images/desert-bg2.jpg") center center / cover no-repeat;
-    color: #26170e;
-    font-family: "Courier New", Courier, monospace;
-    min-height: 100dvh;
-}
+/* Auth - Estilos para login/register/recovery/verify */
 
 .saloon {
   background: #754c29;

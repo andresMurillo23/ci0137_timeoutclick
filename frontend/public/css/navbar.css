@@ -1,0 +1,80 @@
+/* Navbar - Estilos */
+
+/* Espacio para el navbar fijo */
+.app {
+  padding-top: 75px;
+}
+
+@media (max-width: 768px) {
+  .app {
+    padding-top: 65px;
+  }
+}
+
+@media (max-width: 520px) {
+  .app {
+    padding-top: 60px;
+  }
+}
+
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  background: #754c29;
+  border: 4px solid #7a4e2b;
+  color: #f8ead6;
+  border-bottom: 4px solid #3b2414;
+  font: 25px/1.4 ui-monospace, Courier, "Courier New", monospace;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 1000;
+}
+.brand .chip {
+  width: 18px;
+  height: 20px;
+  border: 1px solid #26170e;
+  display: inline-block;
+}
+.logout {
+  margin-left: auto;
+}
+/* Botón específico del navbar */
+.topbar .btn {
+  background: transparent;
+  color: #26170e;
+  border: 1px solid #26170e;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 16px;
+}
+.topbar .btn:hover {
+  background: #3b2414;
+  color: #f8ead6;
+}
+.tabs {
+  display: flex;
+  gap: 8px;
+  padding: 6px 10px;
+  background: #f8ead6;
+  border: 3px solid #26170e;
+  border-top: none;
+}
+.tab {
+  padding: 10px 8px;
+  border: 1px solid #f8ead6;
+  text-decoration: none;
+  color: #26170e;
+}
+.tab:hover {
+  background-color: #3b2414;
+  color: #f8ead6;
+}
