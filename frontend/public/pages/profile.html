@@ -1,66 +1,46 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Timeout Click - Profile</title>
-    <link rel="stylesheet" href="/css/profile-style.css">
-</head>
-<body>
-    <!-- Top bar -->
-    <div class="topbar">
-        <div class="brand"><span class="logo">TIMEOUT CLICK</span></div>
-        <a class="logout" href="#">Log out</a>
-        <div class="clear"></div>
-    </div>
+<script src="/js/partials/head.js"></script>
+<script src="/js/partials/navbar.js"></script>
 
-    <!-- Tabs -->
-    <div class="tabs">
-        <a class="tab" href="#">start game</a>
-        <a class="tab" href="#">rankings</a>
-        <a class="tab" href="#">history</a>
-        <a class="tab" href="#">friends</a>
-        <a class="tab active" href="#">profile</a>
-    </div>
+<script src="/js/utils/addStylesheet.js"></script>
+<script>
+    addStylesheet("/css/navbar.css");
+    addStylesheet("/css/profile-style.css");  // el CSS que pegaste
+</script>
 
-    <!-- Pantalla -->
-    <div class="wrap">
-        <div class="screen">
+<div class="profile-page">
+    <div class="pf-wrap">
+        <div class="pf-screen">
+            <div class="pf-card">
+                <div class="pf-h1">Perfil</div>
+                <div class="pf-rule"></div>
 
-            <div class="profile-card">
-                <div class="h1">Perfil</div>
-                <div class="rule"></div>
-
-                <div class="profile-row">
-                    <!-- Columna izquierda: avatar (cuadrado) -->
-                    <div class="col-left">
-                        <div class="avatar">
-                            <!-- asegúrate de tener esta imagen -->
+                <div class="pf-row">
+                    <div class="pf-col-left">
+                        <div class="pf-avatar">
                             <img src="/assets/images/profile.jpg" alt="avatar">
                         </div>
                     </div>
 
-                    <!-- Columna derecha: datos + acciones -->
-                    <div class="col-right">
-                        <dl class="profile-data">
+                    <div class="pf-col-right">
+                        <dl class="pf-data">
                             <dt>username:</dt>
-                            <dd>andrescmaal1</dd>
+                            <dd>andrescdfml1</dd>
                             <dt>email:</dt>
-                            <dd>andrescmsssl1@example.com</dd>
+                            <dd>andrescdssml1@example.com</dd>
                             <dt>status:</dt>
                             <dd>friends</dd>
                         </dl>
 
-                        <div class="actions">
-                            <a class="btn btn-primary" href="#">Edit</a>
-                            <a class="btn" href="#">Back</a>
+                        <div class="pf-actions">
+                            <a class="pf-btn pf-btn-primary" href="#">Edit</a>
+                            <a class="pf-btn" href="#">Back</a>
                         </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
     </div>
-    <!-- Solo frontend básico; sin scripts -->
-</body>
-</html>
+</div>
+
+<script src="/js/partials/footer.js"></script>

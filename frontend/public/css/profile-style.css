@@ -1,175 +1,108 @@
-/* ================== Reset mínimo ================== */
-* {
+html, body {
+    background-image: none !important;
+    background-color: #f3efe6 !important;
+    background-attachment: initial !important;
+}
+
+.profile-page * {
     box-sizing: border-box;
     margin: 0;
     padding: 0
 }
 
-html, body {
-    height: 100%
-}
-
-body {
-    background: #f3efe6;
-    color: #2b1a11;
-    font-family: "Courier New", Courier, monospace;
-}
-
-/* ================== Barra superior ================== */
-.topbar {
-    background: #6b4423;
-    color: #f8ead6;
-    border-bottom: 3px solid #3b2414;
-    padding: 10px;
-}
-
-.brand {
-    display: inline-block
-}
-
-.logo {
-    letter-spacing: 2px;
-    font-weight: bold
-}
-
-.logout {
-    float: right;
-    color: #3b2414;
-    background: #f0e3cf;
-    border: 2px solid #3b2414;
-    text-decoration: none;
-    padding: 4px 8px;
-    font-size: 12px;
-}
-
-.clear {
-    clear: both
-}
-
-/* ================== Tabs ================== */
-.tabs {
-    background: #f7f0df;
-    border-bottom: 3px solid #3b2414;
-    padding: 8px;
-}
-
-.tab {
-    display: inline-block;
-    color: #2b1a11;
-    text-decoration: none;
-    padding: 6px 10px;
-    border: 2px solid transparent;
-    margin-right: 8px;
-}
-
-    .tab:hover {
-        background: #efe3cc
-    }
-
-    .tab.active {
-        border-color: #3b2414;
-        background: #f0e3cf
-    }
-
-/* ================== Área de pantalla ================== */
-.wrap {
+.profile-page .pf-wrap {
     width: 100%;
     margin: 0;
-    padding: 16px
+    padding: 16px;
 }
 
-.screen {
+.profile-page .pf-screen {
     background: #fcf7ea;
     border-top: 3px solid #3b2414;
     border-bottom: 3px solid #3b2414;
-    padding: 24px 0; /* centramos tarjeta con padding vertical */
+    padding: 24px 0;
     min-height: calc(100vh - 100px);
 }
 
-/* ================== Tarjeta de perfil ================== */
-.profile-card {
-    width: 980px; /* máximo ancho cómodo */
+.profile-page .pf-card {
+    width: 980px;
     max-width: 95%;
-    margin: 0 auto; /* centrado */
+    margin: 0 auto;
     background: #fff9ea;
     border: 3px solid #3b2414;
     padding: 20px 22px;
 }
 
-/* Encabezado */
-.h1 {
+.profile-page .pf-h1 {
     font-size: 26px;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
-.rule {
+.profile-page .pf-rule {
     height: 3px;
     background: #3b2414;
-    margin: 10px 0 18px
+    margin: 10px 0 18px;
 }
 
-/* ================== Layout 2 columnas (solo floats) ================== */
-.profile-row {
-    overflow: hidden
+
+.profile-page .pf-row {
+    overflow: hidden;
 }
-/* clear floats */
-.col-left {
+
+.profile-page .pf-col-left {
     float: left;
     width: 230px;
 }
 
-.col-right {
+.profile-page .pf-col-right {
     float: left;
     width: calc(100% - 230px);
     padding-left: 24px;
 }
 
-/* Avatar cuadrado con marco simple */
-.avatar {
+.profile-page .pf-avatar {
     width: 190px;
     height: 190px;
     background: #fff5e6;
     border: 3px solid #3b2414;
     outline: 5px solid #e7d9bf;
-    border-radius: 0; /* cuadrado */
+    border-radius: 0;
     overflow: hidden;
 }
 
-    .avatar img {
+    .profile-page .pf-avatar img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        display: block
+        display: block;
     }
 
-/* Datos (dt/dd para alinear etiquetas/valores) */
-.profile-data {
-    margin-top: 4px
+.profile-page .pf-data {
+    margin-top: 4px;
 }
 
-    .profile-data dt,
-    .profile-data dd {
+    .profile-page .pf-data dt,
+    .profile-page .pf-data dd {
         display: inline-block;
         vertical-align: top;
         margin: 6px 0;
     }
 
-    .profile-data dt {
+    .profile-page .pf-data dt {
         width: 120px;
-        font-weight: bold
+        font-weight: bold;
     }
 
-    .profile-data dd {
-        width: calc(100% - 120px)
+    .profile-page .pf-data dd {
+        width: calc(100% - 120px);
     }
 
-/* ================== Botones ================== */
-.actions {
-    margin-top: 16px
+.profile-page .pf-actions {
+    margin-top: 16px;
 }
 
-.btn {
+.profile-page .pf-btn {
     border: 2px solid #3b2414;
     background: #f0e3cf;
     color: #3b2414;
@@ -179,34 +112,35 @@ body {
     margin-right: 8px;
 }
 
-    .btn:hover {
-        background: #efe3cc
+    .profile-page .pf-btn:hover {
+        background: #efe3cc;
     }
 
-.btn-primary {
-    background: #6b4423; /* café, consistente con la topbar */
+.profile-page .pf-btn-primary {
+    background: #6b4423;
     border-color: #3b2414;
     color: #fff;
 }
 
-    .btn-primary:hover {
-        filter: brightness(0.95)
+    .profile-page .pf-btn-primary:hover {
+        filter: brightness(0.95);
     }
 
-/* ================== Responsive simple ================== */
 @media (max-width:720px) {
-    .col-left, .col-right {
+    .profile-page .pf-col-left,
+    .profile-page .pf-col-right {
         float: none;
         width: 100%;
-        padding-left: 0
+        padding-left: 0;
     }
 
-    .avatar {
-        margin: 0 auto 12px
+    .profile-page .pf-avatar {
+        margin: 0 auto 12px;
     }
 
-    .profile-data dt, .profile-data dd {
+    .profile-page .pf-data dt,
+    .profile-page .pf-data dd {
         width: auto;
-        display: block
+        display: block;
     }
 }
