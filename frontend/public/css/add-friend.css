@@ -1,92 +1,6 @@
-/* Paleta y tipografía */
-:root{
-  --bg:#3b2414;
-  --panel:#f8ead6;
-  --text:#26170e;
-  --muted:#2a1a0f;
-  --line:#7a4e2b;
-  --line-strong:#e6cc99;
-  --accent:#ffffff;
-}
+/* Add Friend - Estilos */
 
-*{ 
-    box-sizing:border-box; 
-}
-html,body{ 
-    height:100%; 
-}
-body{
-  margin:0;
-  background-image: url("/assets/images/desert-bg2.jpg");
-  background-repeat: repeat;
-  background-position: top left;
-  background-attachment: fixed;
-  color: var(--text);
-  font: 18px/1.4 ui-monospace, Courier, "Courier New", monospace;
-}
-
-/* Corrige superposición por topbar fija */
-.app{ 
-    padding-top: 72px; 
-}
-
-/* ───────── Topbar ───────── */
-.topbar{
-  position: fixed; 
-  top:0; 
-  left:0; 
-  right:0; 
-  z-index:1000;
-  display:flex; 
-  align-items:center; 
-  gap:12px;
-  padding: 10px 16px;
-  background:#754c29;
-  color: #f8ead6;
-  border-bottom: 4px solid #3b2414;
-}
-.brand{ 
-    display:flex; 
-    align-items:center; 
-    gap:8px; 
-    font-weight:1000; 
-}
-
-.brand .chip{
-  width:18px; 
-  height:18px; 
-  border:1px solid var(--text);
-}
-
-/* ───────── Tabs ───────── */
-.tabs{
-  position: sticky; 
-  top:56px; 
-  z-index:900;
-  display:flex; 
-  gap:16px; 
-  align-items:center;
-  background:var(--panel); 
-  color:var(--text);
-  border-top:none
-  border:3px solid var(--text); 
-  padding: 8px 16px;
-}
-.tab{
-  color: var(--text);
-  text-decoration: none;
-  border:1px solid var(--panel); 
-  padding: 6px 0;
-}
-.tab:hover{ 
-    text-decoration: underline; 
-}
-.tab.is-active{ 
-    text-decoration: underline; 
-    text-underline-offset: 2px; 
-}
-
-/* ───────── Ventana central ───────── */
+/* Ventana central */
 .window{
   max-width: 780px;
   margin: 24px auto;
@@ -95,8 +9,6 @@ body{
   outline: 6px solid #e6cc99;
 }
 
-
-/* ───────── Contenido ───────── */
 .content{
   background: var(--panel);
   border-top: none;
@@ -108,7 +20,7 @@ body{
   color: var(--text);
 }
 
-/* Barra de herramientas (buscador) */
+/* Buscador */
 .tools{
   display:flex; 
   gap:8px; 
@@ -138,7 +50,7 @@ body{
     content:"🔍"; 
 }
 
-/* Lista de resultados */
+/* Lista de amigos */
 .friend-list{
   list-style: none;
   margin: 0;
@@ -165,9 +77,17 @@ body{
   color: var(--muted);
 }
 
+.footer {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
 
 /* Botones */
-.btn{
+.window .btn,
+.content .btn{
   background:var(--line);
   color: var(--text);
   border:1px solid var(--line-strong);
@@ -176,24 +96,21 @@ body{
   font-weight: 800;
   
 }
-.btn:hover{ 
+.window .btn:hover,
+.content .btn:hover{ 
     background:var(--text); 
     color: #f8ead6;
 }
-.btn.small{ 
+.window .btn.small,
+.content .btn.small{ 
     padding: 6px 12px; 
 }
-.btn.back{ m
-    argin-top: 14px; 
-}
 
-/* ───────── Focus accesible ───────── */
 a:focus, button:focus, input:focus{
   outline: 2px solid var(--text);
   outline-offset: 2px;
 }
 
-/* ───────── Responsive ───────── */
 @media (max-width: 520px){
   .friend-row{
     grid-template-columns: 34px 1fr;
@@ -203,3 +120,4 @@ a:focus, button:focus, input:focus{
     grid-column: 1 / -1; 
     justify-self: end; }
 }
+

@@ -1,0 +1,92 @@
+/* App - Estilos globales */
+
+/* Variables CSS */
+:root {
+  --bg: #3b2414;
+  --panel: #f8ead6;
+  --text: #26170e;
+  --muted: #2a1a0f;
+  --line: #7a4e2b;
+  --line-strong: #e6cc99;
+  --borders: #e6cc99;
+  --accent: #ffffff;
+  --navbar-bg: #754c29;
+  --navbar-border: #3b2414;
+}
+
+/* Reset */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  background-color: #f2e6d3;
+  background-image: url("/assets/images/desert-bg2.jpg");
+  background-repeat: repeat;
+  background-position: top left;
+  background-attachment: fixed;
+  color: var(--text);
+  font: 18px/1.4 ui-monospace, Menlo, Courier, "Courier New", monospace;
+  letter-spacing: 0.2px;
+}
+
+.app {
+  max-width: 2000px;
+  margin: 0 auto;
+}
+
+/* Botones base */
+
+/* Botones base (se pueden extender en archivos específicos) */
+.btn {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--text);
+  padding: 10px 12px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.btn:hover {
+  background: var(--bg);
+  color: var(--panel);
+}
+
+.btn:focus {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+/* Avatar genérico */
+.avatar {
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--muted);
+}
+
+a:focus,
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+}
