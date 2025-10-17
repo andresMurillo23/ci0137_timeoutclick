@@ -8,7 +8,7 @@ body {
     background: #f2e6d3 url("/assets/images/desert-bg2.jpg") center center / cover no-repeat;
     color: #26170e;
     font-family: "Courier New", Courier, monospace;
-    min-height: 100dvh; /* asegura cubrir alto en móviles */
+    min-height: 100dvh;
 }
 
 .saloon {

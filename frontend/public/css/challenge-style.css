@@ -1,0 +1,123 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #f2e6d3;
+    background-image: url("/assets/images/desert-bg2.jpg");
+    background-repeat: repeat;
+    background-position: top left;
+    color: #26170e;
+    font-family: "Courier New", Courier, monospace;
+}
+
+.saloon {
+    background: #754c29;
+    color: #f8ead6;
+    text-align: center;
+    padding: 16px;
+    border-bottom: 4px solid #3b2414;
+}
+
+    .saloon h1 {
+        letter-spacing: 3px;
+        font-size: 28px;
+    }
+
+.poster {
+    max-width: 900px;
+    margin: 12vh auto 24px;
+    background: #fffaf0;
+    border: 4px solid #3b2414;
+    outline: 6px solid #e6cc99;
+    padding: 22px 18px 26px;
+}
+
+    .poster h2 {
+        text-align: center;
+        font-size: 36px;
+        letter-spacing: 4px;
+        margin-bottom: 8px;
+    }
+
+.divider {
+    border: 0;
+    height: 4px;
+    background: #3b2414;
+    margin: 12px 0 16px;
+    opacity: .25;
+}
+
+.section-title {
+    font-weight: bold;
+    font-size: 20px;
+    margin: 8px 0 10px;
+    padding-left: 8px;
+}
+
+.players {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 4px;
+}
+
+    .players thead th {
+        text-align: left;
+        padding: 10px 12px;
+        border-bottom: 3px solid #3b2414;
+    }
+
+    .players tbody td {
+        padding: 14px 12px;
+        border-bottom: 2px solid #3b2414;
+    }
+
+.status {
+    padding: 2px 8px;
+    border: 2px solid #3b2414;
+    background: #fff5e6;
+    font-size: 14px;
+}
+
+    .status.online {
+        background: #e6f5e6;
+    }
+
+    .status.busy {
+        background: #f5e6e6;
+    }
+
+    .status.match {
+        background: #e6ecf5;
+    }
+
+.btn {
+    min-width: 140px;
+    padding: 8px 12px;
+    border: 2px solid #2a1a0f;
+    background: #7a4e2b;
+    color: #f8ead6;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+    .btn.secondary {
+        background: #5e3b20;
+    }
+
+    .btn.muted {
+        background: #b9a895;
+        color: #3b2d22;
+        cursor: not-allowed;
+    }
+
+    .btn:hover {
+        filter: brightness(1.05);
+    }
+
+    .btn:active {
+        position: relative;
+        top: 1px;
+    }
