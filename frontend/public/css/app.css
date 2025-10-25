@@ -12,6 +12,10 @@
   --accent: #ffffff;
   --navbar-bg: #754c29;
   --navbar-border: #3b2414;
+  --green-button: #096938;
+  --green-hover:  #051c0f;
+  --bar-background: #fff1e8;
+  --row-background: #f8ead6;
 }
 
 /* Reset */
@@ -29,7 +33,9 @@ body {
 body {
   margin: 0;
   background-color: #f2e6d3;
-  background-image: url("/assets/images/desert-bg2.jpg");
+  /* background-image: url("/assets/images/desert-bg2.jpg"); */
+  background-color: #3b2414;
+
   background-repeat: repeat;
   background-position: top left;
   background-attachment: fixed;

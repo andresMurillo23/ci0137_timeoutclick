@@ -24,6 +24,7 @@
   right: 0;
   z-index: 1000;
   display: flex;
+  width: 100%;
   justify-content: center;
   padding: 16px;
   background: #754c29;
@@ -50,23 +51,34 @@
 /* Botón específico del navbar */
 .topbar .btn {
   background: transparent;
-  color: #26170e;
-  border: 1px solid #26170e;
+  color: #f8ead6;
+  border: 1px solid #f8ead6;
+  border-radius: 20px;
   padding: 6px 10px;
   cursor: pointer;
   font-size: 16px;
+  
 }
 .topbar .btn:hover {
   background: #3b2414;
   color: #f8ead6;
 }
-.tabs {
+.tabs{
+  position: fixed;
+  top: var(--topbar-h);
+  left: 0;
+  width: 100%;
+  z-index: 999;
+
   display: flex;
   gap: 8px;
-  padding: 6px 10px;
+  align-items: center;
+  padding: 8px 12px;
+
   background: #f8ead6;
-  border: 3px solid #26170e;
   border-top: none;
+  border-bottom: 3px solid #26170e; 
+  box-sizing: border-box;
 }
 .tab {
   padding: 10px 8px;
@@ -77,4 +89,5 @@
 .tab:hover {
   background-color: #3b2414;
   color: #f8ead6;
+  border-radius: 10px;
 }
