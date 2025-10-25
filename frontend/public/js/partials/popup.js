@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Botones NO/YES
     noBtn?.addEventListener("click", closeModal);
     yesBtn?.addEventListener("click", () => {
-        // TODO: lógica real
+        // TODO: logica real
         closeModal();
     });
 
