@@ -1,0 +1,83 @@
+<script src="/js/partials/head.js"></script>
+
+<script src="/js/utils/addStylesheet.js"></script>
+
+<!-- Agrega estilos específicos para esta página, en este caso, Rankings -->
+<script>
+  addStylesheet("/css/ranking-style.css");
+</script>
+
+<!-- Contenido panel -->
+<main class="window" role="main" aria-labelledby="ranking-title">
+  <div class="header-strip" aria-hidden="true"></div>
+  <section class="content">
+    <h2 id="ranking-title">History</h2>
+
+    <section class="stats-section" aria-label="Statistics">
+      <div class="stat-item">
+        <span class="stat-label">Wins</span>
+        <div class="bar-container">
+          <div class="bar" style="width: 60%;" aria-label="Wins percentage: 60%"></div>
+        </div>
+      </div>
+
+      <div class="stat-item">
+        <span class="stat-label">Losses</span>
+        <div class="bar-container">
+          <div class="bar" style="width: 45%;" aria-label="Losses percentage: 45%"></div>
+        </div>
+      </div>
+
+      <div class="stat-item">
+        <span class="stat-label">Average</span>
+        <div class="bar-container">
+          <div class="bar" style="width: 75%;" aria-label="Average percentage: 75%"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Tabla de duelos -->
+    <div class="table-wrapper">
+      <table class="duels-table" aria-label="Duels history">
+        <thead>
+          <tr>
+            <th scope="col">Duel Id</th>
+            <th scope="col">Date</th>
+            <th scope="col">Opponent</th>
+            <th scope="col">Winner</th>
+            <th scope="col">Press Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>123</td>
+            <td>12/08/2025</td>
+            <td>andresmini</td>
+            <td>tatsparamo</td>
+            <td>3.98</td>
+          </tr>
+          <tr>
+            <td>365</td>
+            <td>15/08/2025</td>
+            <td>robypoli</td>
+            <td>tatsparamo</td>
+            <td>3.98</td>
+          </tr>
+          <tr>
+            <td>564</td>
+            <td>19/08/2025</td>
+            <td>isabel</td>
+            <td>isabel</td>
+            <td>3.70</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="footer">
+      <button class="btn" type="button">Back</button>
+    </div>
+  </section>
+  
+<script src="/js/partials/footer.js"></script>

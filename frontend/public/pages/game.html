@@ -1,0 +1,73 @@
+<script src="/js/partials/head.js"></script>
+<!-- NO incluimos navbar para enfocarnos en el juego -->
+
+<script src="/js/utils/addStylesheet.js"></script>
+
+<!-- Agrega estilos específicos para esta página -->
+<script>
+  addStylesheet("/css/duel-style.css");
+</script>
+
+<!-- Contenido del duelo -->
+<main class="duel-container" role="main" aria-labelledby="duel-title">
+  <div class="duel-layout">
+    <!-- Área principal del juego -->
+    <section class="game-area">
+      <!-- Marcador de rondas -->
+      <div class="score-board">
+        <span class="player-label">JUGADOR 1</span>
+        <span class="score">1 - 3</span>
+        <span class="player-label">JUGADOR 2</span>
+      </div>
+
+      <!-- Botón de acción principal -->
+      <button class="press-button" type="button" aria-label="Presiona para disparar">
+        PRESIONA
+      </button>
+
+      <!-- Indicador de turno -->
+      <div class="turn-indicator">
+        <p class="turn-text">¡Tu turno!</p>
+      </div>
+    </section>
+
+    <!-- Panel lateral -->
+    <aside class="side-panel">
+      <!-- Oponente -->
+      <div class="opponent-section">
+        <div class="opponent-avatar">Avatar</div>
+        <span class="opponent-label">OPONENTE</span>
+      </div>
+
+      <!-- Historial de rondas -->
+      <div class="history-section">
+        <h3 class="history-title">Historial</h3>
+        <ul class="history-list">
+          <li class="history-item win">R1: Ganaste (+12ms)</li>
+          <li class="history-item loss">R2: Perdiste (+8ms)</li>
+          <li class="history-item loss">R3: Perdiste (+15ms)</li>
+          <li class="history-item win">R4: Ganaste (+3ms)</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <div class="footer">
+    <button class="btn btn-surrender" type="button" id="surrenderBtn">Rendirse</button>
+  </div>
+</main>
+
+<!-- Modal de confirmación -->
+<div class="modal-overlay" id="surrenderModal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-labelledby="modal-title" aria-describedby="modal-description">
+    <h2 id="modal-title">¿Rendirse?</h2>
+    <p id="modal-description">¿Estás seguro de que deseas rendirte? Perderás este duelo.</p>
+    <div class="modal-actions">
+      <button class="btn btn-cancel" type="button" id="cancelBtn">Cancelar</button>
+      <button class="btn btn-confirm" type="button" id="confirmBtn">Sí, rendirme</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/partials/footer.js"></script>
+<script src="/js/partials/game.js"></script>

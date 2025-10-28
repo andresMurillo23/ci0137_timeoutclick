@@ -2,25 +2,27 @@
 
 /* Ventana central */
 .window {
-    border: 3px solid var(--text);
-    padding: 16px;
-    display: grid;
-    gap: 16px;
-    background: var(--panel);
+  margin-top: auto;
+  border: 3px solid var(--text);
+  padding: 16px;
+  display: grid;
+  gap: 16px;
+  background: transparent;
+  width: 100%;
+  font-family:"Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
 }
 
 .content {
-    border: 4px solid #3b2414;
-    outline: 6px solid #e6cc99;
-    background: var(--panel);
-    padding: 80px;
-    gap: 16px;
-    grid-template-columns: 120px 1fr;
+  background: transparent;
+  padding: 80px;
+  gap: 16px;
+  grid-template-columns: 120px 1fr;
 }
 .content h2{
   font-size: 22px;
   margin: 14px 0 14px;
-  color: var(--text);
+  color: var(--row-background);
 }
 
 /* Buscador */
@@ -32,28 +34,30 @@
   margin-bottom: 14px;
 }
 .search{
-  width: clamp(180px, 26vw, 260px);
-  height: 32px;
+  width: clamp(200px, 26vw, 260px);
+  height: 40px;
   background: transparent;
-  color: var(--text);
-  border:1px solid var(--line);
+  color: var(--bar-background);
+  border:1px solid var(--row-background);
   padding: 0 10px;
-  font: 14px/1.2 ui-monospace, monospace;
+  font: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-size: 16px;
 }
 .search::placeholder{ 
-    color:#8a8a8a; 
-
+  color:#8a8a8a; 
 }
+
 .icon-search{
-  height: 32px;
+  height: 40px;
   padding: 0 10px;
   background : transparent;
-  color: var(--text);
-  border:1px solid var(--line);
+  border:1px solid var(--row-background);
   cursor: pointer;
 }
 .icon-search::before{ 
-    content:"🔍"; 
+  content:"⌕"; 
+  color: var(--panel);
+  font-size: 30px;
 }
 
 /* Lista de amigos */
@@ -64,23 +68,34 @@
   display: grid;
   gap: 18px;
 }
+
 .friend-row{
   display: grid;
   grid-template-columns: 42px 1fr auto;
   align-items: center;
   gap: 12px;
-  background:#e6cc99;
-  border: 1px solid var(--text);
-  padding: 15px 12px;
+  background: #5e3b20;
+  color: var(--panel);
+  border: 1px solid var(--line-strong);
+  padding: 20px 12px;
+  border-radius: 20px;
 }
+
+.friend-row:hover {
+  background-color: var(--borders);
+  color: var(--text);
+  transform: scale(1.02);
+}
+
 .avatar{
-  width: 34px; height: 34px;
-  border: 1px solid #26170e;
+  width: 40px; height: 40px;
+  border: 1px solid var(--row-background);
   display:flex; 
   align-items:center; 
   justify-content:center;
   font-size: 10px; 
-  color: var(--muted);
+  color:  var(--row-background);
+  border-radius: 10px;
 }
 
 .footer {
@@ -88,27 +103,33 @@
   justify-content: flex-start;
   margin-top: 20px;
   padding-top: 16px;
-  border-top: 1px solid var(--line);
+  border-bottom: 1px solid #5e3b20;
+}
+
+.footer .btn {
+  margin-bottom: 20px;
 }
 
 /* Botones */
-.window .btn,
-.content .btn {
-    padding: 8px 14px;
-    border: 2px solid var(--text);
-    background: transparent;
-    color: var(--text);
-    font-weight: 700;
-    cursor: pointer;
+.window .btn, .content .btn {
+  padding: 8px 14px;
+  border: 2px solid var(--text);
+  border-radius: 20px;
+  background: var(--green-button);
+  color: var(--accent);
+  font-weight: 700;
+  cursor: pointer;
 }
-    .window .btn:hover,
-    .content .btn:hover {
-        background: var(--text);
-        color: #fff1e8;
-    }
+
+.window .btn:hover,.content .btn:hover {
+  background: var(--green-hover);
+  color: var(--accent);
+  transform: scale(1.05);
+}
+
 .window .btn.small,
 .content .btn.small{ 
-    padding: 6px 12px; 
+  padding: 6px 12px; 
 }
 
 a:focus, button:focus, input:focus{
