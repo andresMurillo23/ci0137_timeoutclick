@@ -8,14 +8,18 @@
 .panel{
     border:4px solid #3b2414; 
     outline: 6px solid #e6cc99;
-    padding:100px; display:grid; 
+    padding:100px; 
+    display:grid; 
     grid-template-columns:120px 1fr; 
     gap:16px
 }
 .avatar{
     border:1px solid var(--line); 
-    width:100px; height:100px; display:flex; 
-    align-items:center; justify-content:center
+    width:100px; 
+    height:100px; 
+    display:flex; 
+    align-items:center; 
+    justify-content:center
 }
 .fields{
     display:grid; 

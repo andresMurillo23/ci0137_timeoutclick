@@ -30,7 +30,7 @@ var navbar =
     <a class="tab" href="#">start game</a>
     <a class="tab" href="#">rankings</a>
     <a class="tab" href="#">history</a>
-    <a class="tab" href="#">friends</a>
+    <a href="/pages/addFriend.html" class="tab" href="#">friends</a>
     <a class="tab is-active" href="#" aria-current="page">profile</a>
 </nav>`;
 document.write(navbar);

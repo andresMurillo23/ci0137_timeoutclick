@@ -1,0 +1,88 @@
+
+.btn {
+    padding: 8px 14px;
+    border: 2px solid var(--line-strong);
+    background: transparent;
+    color: var(--text);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+    .btn:hover {
+        background: var(--text);
+        color: #fff1e8;
+    }
+
+    .btn.danger {
+        border-color: #4c1f18;
+    }
+
+    .btn.primary {
+        background: #8b3a2e;
+        color: #fff1e8;
+        border-color: #4c1f18;
+    }
+
+    .btn.ghost {
+        background: transparent;
+    }
+
+/* --- POPUP --- */
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: grid;
+    place-items: center;
+    background: rgba(0,0,0,.55);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease-out;
+}
+
+.overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.dialog {
+    width: min(520px, 92vw);
+    background: var(--panel);
+    border: 4px solid #3b2414;
+    outline: 6px solid #e6cc99;
+    box-shadow: 0 18px 48px rgba(0,0,0,.35);
+    transform: translateY(14px) scale(.98);
+    transition: transform .18s ease-out;
+}
+
+.overlay.open .dialog {
+    transform: translateY(0) scale(1);
+}
+
+.dialog-body {
+    padding: 20px 24px;
+}
+
+.dialog-title {
+    margin: 0 0 16px;
+    font-size: 20px;
+    color: var(--text);
+    text-align: center;
+    line-height: 1.35;
+}
+
+.dialog-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.u-underline {
+    text-decoration: underline;
+}
+
+/* Accesibilidad: foco visible en modal */
+.overlay.open .btn:focus {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+}
