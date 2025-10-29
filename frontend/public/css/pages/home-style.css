@@ -31,30 +31,6 @@ body {
   font-family: var(--montfont);
 }
 
-.saloon h1 {
-  margin: 0;
-  letter-spacing: 3px;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-@media (max-width: 768px) {
-  .saloon {
-    padding: 12px;
-  }
-
-  .saloon h1 {
-    font-size: 22px;
-    letter-spacing: 2px;
-  }
-}
-
-@media (max-width: 520px) {
-  .saloon h1 {
-    font-size: 18px;
-  }
-}
-
 /* Contenedor de pagina */
 .app {
   /* deja espacio de la barra y usa el alto libre */
