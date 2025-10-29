@@ -1,3 +1,5 @@
+@import url("/css/base/_components.css");
+
 /* Reset y variables*/
 * {
   box-sizing: border-box;
@@ -26,7 +28,7 @@ body {
   margin: 0;
   background: #f2e6d3 url("/assets/images/desert-bg2.jpg") center/cover no-repeat;
   color: #26170e;
-  font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-family: var(--montfont);
 }
 
 .saloon h1 {
@@ -69,17 +71,6 @@ body {
   padding-right: 16px;
 }
 
-/* Poster */
-.poster {
-  width: 100%;
-  max-width: 720px;
-  background: var(--panel);
-  border: 4px solid var(--black-bean);
-  border-radius: 20px;
-  box-shadow: 0 0 0 6px var(--line-strong);
-  padding: 24px 20px 28px;
-}
-
 .divider {
   border: 0;
   height: 4px;
@@ -101,11 +92,11 @@ body {
 }
 
 /* Estilo de los botones dentro de la fila */
-.btn-row .btn {
-  padding: 15px 40px;
+.btn-row .btn{
   border: 2px solid var(--muted);
   background: var(--black-bean);
   color: var(--panel);
+  padding: 15px 40px;
   font-weight: bold;
   text-align: center;
   cursor: pointer;
@@ -113,7 +104,6 @@ body {
   font-size: medium;
   transition: transform .2s ease, background-color .2s ease;
 }
-
 .btn-row .btn:hover {
   transform: scale(1.05);
   background-color: var(--licorice);
@@ -123,93 +113,9 @@ body {
   transform: scale(1.03);
 }
 
-/*botones principales*/
-
-.poster>.btn {
-  display: block;
-  width: 100%;
-  max-width: 300px;
-  margin: 18px auto;
-  padding: 15px 25px;
-
-  border: 2px solid var(--muted);
-  background: var(--black-bean);
-  color: var(--panel);
-
-  font-weight: bold;
-  text-align: center;
-  cursor: pointer;
-  border-radius: 20px;
-
-  font-size: medium;
-
-  transition: transform .2s ease, background-color .2s ease;
-  will-change: transform;
-  transform-origin: center;
-}
-
-.poster>.btn:hover {
-  transform: scale(1.05);
-  background-color: var(--licorice);
-}
-
-.poster>.btn:active {
-  transform: scale(1.03);
-}
-
-/*boton play*/
-
-.poster>.btn-play {
-  display: block;
-  width: 100%;
-  max-width: 300px;
-  margin: 18px auto;
-  padding: 15px 25px;
-
-  border: 2px solid var(--brown);
-  background: var(--brown);
-  color: var(--panel);
-
-  font-weight: bold;
-  letter-spacing: 1px;
-  font-size: medium;
-  line-height: 1.1;
-
-  border-radius: 20px;
-
-  transition: transform .2s ease, background-color .2s ease;
-  will-change: transform;
-  transform-origin: center;
-}
-
-.poster>.btn-play:hover {
-  transform: scale(1.05);
-  background-color: var(--sienna);
-}
-
-.poster>.btn-play:active {
-  transform: scale(1.03);
-}
-
-
-/* Enlace inferior */
-.signup {
-  text-align: center;
-  margin-top: 14px;
-  font-size: 14px;
-}
-
-.signup a {
-  color: var(--navbar-border);
-  text-decoration: underline;
-}
 
 /* Responsivo */
 @media (max-width: 768px) {
-  .poster {
-    padding: 20px 16px 24px;
-  }
-
   .poster h2 {
     font-size: 30px;
     letter-spacing: 3px;
