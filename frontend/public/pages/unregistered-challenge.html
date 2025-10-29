@@ -1,5 +1,7 @@
 <script src="/js/partials/head.js"></script>
+<script src="/js/partials/navbar.js"></script>
 <script src="/js/utils/addStylesheet.js"></script>
+
 <script>
   addStylesheet("/css/pages/challenge-style.css");
 </script>
@@ -7,7 +9,6 @@
 <header class="topbar">
     <h1>TIMEOUT CLICK</h1>
 </header>
-
   <main class="poster">
   
     <h2 class="titles">CHALLENGE PLAYER</h2>
@@ -32,7 +33,7 @@
           <span class="username">Player456</span>
         </div>
         <div class="action">
-          <button type="button" class="btn-unavailable" disabled>CHALLENGE</button>
+          <button type="button" class="btn-unavailable">CHALLENGE</button>
         </div>
       </div>
 
@@ -43,7 +44,7 @@
           <span class="username dim">Player789</span>
         </div>
         <div class="action">
-          <button type="button" class="btn-unavailable" disabled>CHALLENGE</button>
+          <button type="button" class="btn-unavailable" >CHALLENGE</button>
         </div>
       </div>
 
@@ -54,32 +55,49 @@
           <span class="username dim">Player593</span>
         </div>
         <div class="action">
-          <button type="button" class="btn-unavailable" disabled>CHALLENGE</button>
+          <button type="button" class="btn-unavailable">CHALLENGE</button>
         </div>
       </div>
     </section>
-    <hr class="divider">
+     <hr class="divider">
      <div class="actions">
         <button type="button" class="btn btn--back" onclick="history.back()">BACK</button>
       </div>
   </main>
-  <!-- === Confirm Challenge Modal === -->
-<div id="confirmOverlay" class="confirm-overlay" aria-hidden="true">
-  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" tabindex="-1">
 
-    <h3 class="confirm-title">CONFIRM CHALLENGE</h3>
-    
-    <p class="confirm-text">
-      Do you want to challenge <strong id="who">Player</strong>?
-    </p>
+    <!-- Confirm / Waiting Modal -->
+    <div id="confirmOverlay" class="confirm-overlay" aria-hidden="true">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" tabindex="-1">
 
-    <div class="confirm-actions">
-      <button type="button" id="yesBtn" class="btn btn--secondary">YES</button>
-      <button type="button" id="noBtn" class="btn btn--back">NO</button>
+    <!-- Estado: Confirmación -->
+    <div class="panel panel-confirm" id="panelConfirm">
+      <h3 id="confirmTitle" class="confirm-title">CONFIRM CHALLENGE</h3>
+      <p class="confirm-text">
+        Do you want to challenge <strong id="who">Player</strong>?
+      </p>
+      <div class="confirm-actions">
+        <button type="button" id="yesBtn" class="btn btn--secondary">YES</button>
+        <button type="button" id="noBtn" class="btn btn--back">NO</button>
+      </div>
+    </div>
+
+    <!-- Estado: Espera -->
+    <div class="panel panel-waiting" id="panelWaiting" aria-live="polite" hidden>
+      <h3 class="confirm-title">WAITING FOR PLAYER…</h3>
+      <div class="loading">
+        <div class="spinner" aria-hidden="true"></div>
+        <p class="confirm-text">
+          Waiting for <strong id="whoWaiting">Player</strong> to accept…
+        </p>
+      </div>
+      <div class="confirm-actions">
+        <button type="button" id="cancelWaitBtn" class="btn btn--back">CANCEL</button>
+      </div>
     </div>
 
   </div>
 </div>
+
 <script src="/js/partials/popup.js"></script>
 <script src="/js/partials/footer.js"></script>
 
