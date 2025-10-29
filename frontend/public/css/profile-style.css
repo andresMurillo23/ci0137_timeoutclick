@@ -22,7 +22,7 @@ body{
   font-family:var(--ui);
 }
 
-.page{ max-width:1180px; margin:0 auto; padding:26px 20px 96px }
+.page{ max-width:1180px; margin:0 auto; margin-top: 95px;padding:26px 20px 96px }
 
 .title{
   font-family:var(--heading);
@@ -125,4 +125,15 @@ body{
   .stats{ grid-template-columns:repeat(2,1fr) }
   .kv-grid{ grid-template-columns:1fr }
   .kv{ grid-template-columns:1fr }
+}
+@media (max-width: 768px) {
+  .page {
+    margin-top: 85px;
+  }
+}
+
+@media (max-width: 520px) {
+  .page {
+    margin-top: 80px;
+  }
 }
