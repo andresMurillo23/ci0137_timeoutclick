@@ -22,6 +22,137 @@
   outline-offset: 2px;
 }
 
+
+.btn--primary-brown{
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin: 18px auto;
+  padding: 15px 25px;
+
+  border: 2px solid var(--muted);
+  background: var(--black-bean);
+  color: var(--panel);
+
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 20px;
+
+  font-size: medium;
+
+  transition: transform .2s ease, background-color .2s ease;
+  will-change: transform;
+  transform-origin: center;
+}
+.btn--primary-brown:hover {
+  transform: scale(1.05);
+  background-color: var(--licorice);
+}
+
+.btn--primary-brown:active {
+  transform: scale(1.03);
+}
+
+
+.btn--secondary {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin: 18px auto;
+  padding: 15px 25px;
+
+  border: 2px solid var(--brown);
+  background: var(--brown);
+  color: var(--panel);
+
+  font-weight: bold;
+  letter-spacing: 1px;
+  font-size: medium;
+  line-height: 1.1;
+
+  border-radius: 20px;
+
+  transition: transform .2s ease, background-color .2s ease;
+  will-change: transform;
+  transform-origin: center;
+}
+
+.btn--secondary:hover {
+  transform: scale(1.05);
+  background-color: var(--licorice);
+}
+
+.btn--secondary:active {
+  transform: scale(1.03);
+}
+
+
+
+.btn--back{
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin: 18px auto;
+  padding: 15px 25px;
+
+  border: 2px solid var(--black-bean);
+  background: var(--panel);
+  color: var(--black-bean);
+
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 20px;
+
+  font-size: medium;
+
+  transition: transform .2s ease, background-color .2s ease;
+  will-change: transform;
+  transform-origin: center;
+}
+.btn--back:hover {
+  transform: scale(1.05);
+  background-color: var(--line-strong);
+  color: var(--black-bean);
+}
+
+.btn--back:active {
+  transform: scale(1.03);
+}
+
+/* POSTER GLOBAL */
+
+.poster {
+  width: 100%;
+  max-width: 720px;
+  background: var(--panel);
+  border: 4px solid var(--black-bean);
+  border-radius: 20px;
+  box-shadow: 0 0 0 6px var(--line-strong);
+  padding: 24px 20px 28px;
+}
+
+@media (max-width: 768px) {
+  .poster {
+    padding: 20px 16px 24px;
+  }
+}
+
+
+/*  INPUT GLOBAL */
+
+input {
+  width: 100%;
+  height: 40px;
+  border: 2px solid var(--black-bean);
+  background: var(--bar-background);
+  padding: 8px;
+  font-size: 15px;
+  border-radius: 10px;
+  font-family: var(--montfont);
+}
+
 /* Avatar genérico */
 .avatar {
   border: 1px solid var(--line);

@@ -3,18 +3,18 @@
 <script src="/js/utils/addStylesheet.js"></script>
 
 <script>
-  addStylesheet("/css/pages/auth-style.css");
+  addStylesheet("/css/pages/verifyEmail.css");
 </script>
 
-<header class="saloon">
+<header class="topbar">
         <h1>TIMEOUT CLICK</h1>
     </header>
 
     <main class="poster">
-        <h2>VERIFY YOUR EMAIL</h2>
+        <h2 class="titles">VERIFY YOUR EMAIL</h2>
         <hr class="divider">
 
-        <p style="text-align:center; font-weight:bold; margin-bottom:10px;">
+        <p class="indications">
             Enter the 6-digit code we sent to <strong>mario***@gmail.com</strong>
         </p>
 
@@ -31,16 +31,17 @@
             <p class="muted">Invalid or expired code</p>
 
             <div class="actions">
-                <button type="submit" class="btn">VERIFY</button>
-                <button type="button" class="btn back" onclick="history.back()">BACK</button>
+                <button type="button" class="btn btn--back" onclick="history.back()">BACK</button>
+                <!-- cambiar a submit en backend -->
+                <button type="button" class="btn btn--primary-brown" onclick="location.href='/pages/homeLogged.html'">VERIFY</button>
             </div>
 
             <div class="row-links">
-                <a href="#">Resend code?</a>
-                <a href="#">Change email</a>
+                <a href="/pages/verifyEmail.html">Resend code?</a>
+                <a href="/pages/register.html">Change email</a>
             </div>
 
-            <p class="signup">Already have an account?</p>
+            <p class="signup"><a href="/pages/login.html">Already have an account?</a></p>
         </form>
     </main>
 
