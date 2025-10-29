@@ -1,48 +1,69 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Timeout Click - Challenge Player</title>
-    <link rel="stylesheet" href="/css/challenge-style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Timeout Click - Challenge Player</title>
+  <link rel="stylesheet" href="/css/challenge-style.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header class="saloon">
-        <h1>TIMEOUT CLICK</h1>
-    </header>
+  <header class="saloon">
+    <h1>TIMEOUT CLICK</h1>
+  </header>
 
-    <main class="poster">
-        <h2>CHALLENGE PLAYER</h2>
-        <hr class="divider">
+  <main class="app">
+    <section class="poster" role="region" aria-labelledby="challenge-title">
+      <h2 id="challenge-title">CHALLENGE PLAYER</h2>
+      <hr class="divider">
 
-        <section class="section-title">Available Players</section>
+      <section class="list">
+        <!-- Disponible (verde) -->
+        <div class="row available">
+          <div class="label">
+            <span class="status-dot ok" aria-hidden="true"></span>
+            <span class="username">Player123</span>
+          </div>
+          <div class="action">
+            <button type="button" class="btn">CHALLENGE</button>
+          </div>
+        </div>
 
-        <table class="players">
-            <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Player123</td>
-                    <td><span class="status online">Online</span></td>
-                    <td><button class="btn">CHALLENGE</button></td>
-                </tr>
-                <tr>
-                    <td>Player456</td>
-                    <td><span class="status busy">Busy</span></td>
-                    <td><button class="btn secondary">CHALLENGE</button></td>
-                </tr>
-                <tr>
-                    <td>Player789</td>
-                    <td><span class="status match">In match</span></td>
-                    <td><button class="btn muted" disabled>WAIT</button></td>
-                </tr>
-            </tbody>
-        </table>
-    </main>
+        <!-- Ocupado (amarillo) -->
+        <div class="row busy">
+          <div class="label">
+            <span class="status-dot busy" aria-hidden="true"></span>
+            <span class="username">Player456</span>
+          </div>
+          <div class="action">
+            <button type="button" class="btn" disabled>CHALLENGE</button>
+          </div>
+        </div>
+
+        <!-- No disponible / en partida (rojo) -->
+        <div class="row unavailable">
+          <div class="label">
+            <span class="status-dot no" aria-hidden="true"></span>
+            <span class="username">Player789</span>
+          </div>
+          <div class="action">
+            <button type="button" class="btn" disabled>CHALLENGE</button>
+          </div>
+        </div>
+
+        <!-- Otro ejemplo no disponible (rojo) -->
+        <div class="row unavailable">
+          <div class="label">
+            <span class="status-dot no" aria-hidden="true"></span>
+            <span class="username dim">Player593</span>
+          </div>
+          <div class="action">
+            <button type="button" class="btn" disabled>CHALLENGE</button>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
 </body>
 </html>
