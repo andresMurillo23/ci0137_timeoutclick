@@ -1,6 +1,6 @@
 /* Navbar - Estilos */
 
-.topbar {
+/* .topbar {
   position: fixed;
   top: 0;
   left: 0;
@@ -17,7 +17,7 @@
   color: #f8ead6;
   border-bottom: 0.25rem solid #3b2414;
   font: 1.75rem/1.2 ui-monospace, Courier, "Courier New", monospace;
-}
+} */
 .brand {
   display: flex;
   align-items: center;

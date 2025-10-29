@@ -18,8 +18,9 @@
 *,*::before,*::after{ box-sizing:border-box }
 html,body{ height:100% }
 body{
-  margin:0; background:var(--beige-40); color:var(--ink);
+  margin:0; background:var(--sepia); color:var(--ink);
   font-family:var(--ui);
+  
 }
 
 .page{ 
@@ -28,6 +29,7 @@ body{
   padding:26px 20px 96px;
   /* Variable CSS para reservar el espacio del navbar */
   padding-top: calc(var(--navbar-height) + 26px);
+ 
 }
 
 .title{

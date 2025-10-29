@@ -29,21 +29,6 @@ body {
   font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
-/* Barra superior fija*/
-.saloon {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background: var(--navbar-bg);
-  color: var(--panel);
-  text-align: center;
-  padding: 16px;
-  border-bottom: 4px solid var(--navbar-border);
-  z-index: 1000;
-  box-sizing: border-box;
-}
-
 .saloon h1 {
   margin: 0;
   letter-spacing: 3px;
@@ -89,18 +74,10 @@ body {
   width: 100%;
   max-width: 720px;
   background: var(--panel);
-  border: 4px solid var(--bg);
+  border: 4px solid var(--black-bean);
   border-radius: 20px;
   box-shadow: 0 0 0 6px var(--line-strong);
   padding: 24px 20px 28px;
-}
-
-/* Titulo y raya */
-.poster h2 {
-  text-align: center;
-  font-size: 36px;
-  letter-spacing: 4px;
-  margin-bottom: 10px;
 }
 
 .divider {
@@ -127,7 +104,7 @@ body {
 .btn-row .btn {
   padding: 15px 40px;
   border: 2px solid var(--muted);
-  background: var(--line);
+  background: var(--black-bean);
   color: var(--panel);
   font-weight: bold;
   text-align: center;
@@ -139,7 +116,7 @@ body {
 
 .btn-row .btn:hover {
   transform: scale(1.05);
-  background-color: var(--navbar-border);
+  background-color: var(--licorice);
 }
 
 .btn-row .btn:active {
@@ -156,7 +133,7 @@ body {
   padding: 15px 25px;
 
   border: 2px solid var(--muted);
-  background: var(--line);
+  background: var(--black-bean);
   color: var(--panel);
 
   font-weight: bold;
@@ -173,7 +150,7 @@ body {
 
 .poster>.btn:hover {
   transform: scale(1.05);
-  background-color: var(--navbar-border);
+  background-color: var(--licorice);
 }
 
 .poster>.btn:active {
@@ -189,8 +166,8 @@ body {
   margin: 18px auto;
   padding: 15px 25px;
 
-  border: 2px solid #051c0f;
-  background: var(--green-button);
+  border: 2px solid var(--brown);
+  background: var(--brown);
   color: var(--panel);
 
   font-weight: bold;
@@ -207,7 +184,7 @@ body {
 
 .poster>.btn-play:hover {
   transform: scale(1.05);
-  background-color: var(--green-hover);
+  background-color: var(--sienna);
 }
 
 .poster>.btn-play:active {
