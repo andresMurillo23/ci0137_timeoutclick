@@ -45,4 +45,5 @@
   --sepia: #5a380bff;
   --black-bean: #411308ff;
   --licorice: #240B04;
+  --page-bg: var(--black-bean);
 }
