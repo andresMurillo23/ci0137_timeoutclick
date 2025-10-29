@@ -4,15 +4,15 @@
 
 <!-- Agrega estilos específicos para esta página, en este caso, Add Friend -->
 <script>
-  addStylesheet("/css/pages/auth-style.css");
+  addStylesheet("/css/pages/register-login.css");
 </script>
 
-  <header class="saloon">
+  <header class="topbar">
     <h1>TIMEOUT CLICK</h1>
   </header>
 
   <main class="poster">
-    <h2>REGISTER</h2>
+    <h2 class="titles"> REGISTER</h2>
     <hr class="divider">
 
     <form>
@@ -43,12 +43,13 @@
       </div>
 
       <div class="actions">
-        <button type="submit" class="btn">REGISTER</button>
-        <button type="button" class="btn back" onclick="history.back()">BACK</button>
+        <!-- cambiar a submit en backend -->
+        <button type="button" class="btn btn--primary-brown" onclick="location.href='/pages/verifyEmail.html'">REGISTER</button>
+        <button type="button" class="btn btn--back" onclick="history.back()">BACK</button>
       </div>
     </form>
 
-    <p class="signup">Already have an account?</p>
+    <p class="signup"> <a href="/pages/login.html">Already have an account?</a></p>
   </main>
 
 <script src="/js/partials/footer.js"></script>
