@@ -7,6 +7,14 @@
   addStylesheet("/css/ranking-style.css");
 </script>
 
+<!-- Encabezado común -->
+<header class="topbar" aria-label="Barra superior">
+  <div class="brand" role="banner">
+    <span>TIMEOUT CLICK</span>
+  </div>
+  <div class="context" id="page-context" aria-live="polite"></div>
+</header>
+
 <!-- Contenido panel -->
 <main class="window" role="main" aria-labelledby="ranking-title">
   <div class="header-strip" aria-hidden="true"></div>
@@ -34,7 +42,6 @@
           <div class="bar" style="width: 75%;" aria-label="Average percentage: 75%"></div>
         </div>
       </div>
-
     </section>
 
     <!-- Tabla de duelos -->
@@ -79,5 +86,6 @@
       <button class="btn" type="button">Back</button>
     </div>
   </section>
-  
+</main>
+
 <script src="/js/partials/footer.js"></script>
