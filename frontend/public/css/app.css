@@ -16,6 +16,13 @@
   --green-hover:  #051c0f;
   --bar-background: #fff1e8;
   --row-background: #f8ead6;
+  
+  /* Variables del navbar */
+  --topbar-height: 4rem; /* 64px - más altura para el topbar */
+  --tabs-height: 2.5rem; /* 40px - más altura para las tabs */  
+  --navbar-height: 6.5rem; /* 104px - altura total ajustada */
+  --navbar-height-tablet: 5.5rem; /* 88px */
+  --navbar-height-mobile: 5rem; /* 80px */
 }
 
 /* Reset */

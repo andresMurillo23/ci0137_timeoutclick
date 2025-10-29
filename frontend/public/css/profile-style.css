@@ -22,7 +22,13 @@ body{
   font-family:var(--ui);
 }
 
-.page{ max-width:1180px; margin:0 auto; margin-top: 95px;padding:26px 20px 96px }
+.page{ 
+  max-width:1180px; 
+  margin:0 auto; 
+  padding:26px 20px 96px;
+  /* Variable CSS para reservar el espacio del navbar */
+  padding-top: calc(var(--navbar-height) + 26px);
+}
 
 .title{
   font-family:var(--heading);
@@ -126,14 +132,16 @@ body{
   .kv-grid{ grid-template-columns:1fr }
   .kv{ grid-template-columns:1fr }
 }
+
+/* Responsive navbar height */
 @media (max-width: 768px) {
   .page {
-    margin-top: 85px;
+    padding-top: calc(var(--navbar-height-tablet) + 26px);
   }
 }
 
 @media (max-width: 520px) {
   .page {
-    margin-top: 80px;
+    padding-top: calc(var(--navbar-height-mobile) + 26px);
   }
 }
