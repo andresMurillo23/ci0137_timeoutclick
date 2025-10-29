@@ -1,9 +1,11 @@
 @import url("/css/base/_components.css");
 
 
+
+
 /* Fondo general */
 body {
-  background: #f2e6d3 url("/assets/images/desert-bg2.jpg") repeat fixed;
+  background: #f2e6d3 url("/assets/images/desert-bg2.jpg") center/cover no-repeat;
   color: var(--text);
   font-family: var(--montfont);
   margin: 0;
