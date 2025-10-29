@@ -1,0 +1,48 @@
+/* VARIABLES GLOBALES */
+
+/* Importa fuentes */
+@import url('https://fonts.googleapis.com/css2?family=Rye&display=swap');
+
+:root {
+  /* Colores base */
+  --bg: #3b2414;
+  --panel: #f8ead6;
+  --text: #26170e;
+  --muted: #2a1a0f;
+  --line: #7a4e2b;
+  --line-strong: #e6cc99;
+  --borders: #d9b77e;
+  --accent: #ffffff;
+
+  /* Navbar */
+  --navbar-bg: #754c29;
+  --navbar-border: #3b2414;
+
+  /* Botones */
+  --green-button: #096938;
+  --green-hover: #051c0f;
+
+  /* Fondos */
+  --bar-background: #fff1e8;
+  --row-background: #f8ead6;
+
+  /* Tamaños navbar */
+  --topbar-height: 4rem;
+  --tabs-height: 2.5rem;
+  --navbar-height: 6.5rem;
+  --navbar-height-tablet: 5.5rem;
+  --navbar-height-mobile: 5rem;
+
+  /* Paleta extendida */
+  --sienna: #862906ff;
+  --brown: #a04005ff;
+  --burnt-orange: #b84f00ff;
+  --alloy-orange: #c46219ff;
+  --syracuse-red-orange: #cb5925ff;
+  --flame: #dc5713ff;
+  --tangerine: #ed862bff;
+  --golden-brown: #875702ff;
+  --sepia: #5a380bff;
+  --black-bean: #411308ff;
+  --licorice: #240B04;
+}

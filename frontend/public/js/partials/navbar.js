@@ -1,6 +1,6 @@
 // Cargar automáticamente los estilos del navbar si no están presentes
 (function() {
-  var href = "/css/navbar.css";
+  var href = "/css/main.css";
   var links = document.querySelectorAll('link[rel="stylesheet"]');
   var found = false;
   links.forEach(function(link) {

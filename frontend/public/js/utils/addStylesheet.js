@@ -17,7 +17,7 @@ function addStylesheet(href) {
 
 // <script>
 //   // Cuando se desee agregar una hoja de estilo adicional:
-//   addStylesheet("/css/extra.css");
+//   addStylesheet("/css/pages/extra.css");
 //   // Puede llamarla más veces si necesita más hojas
-//   addStylesheet("/css/otro.css");
+//   addStylesheet("/css/pages/otro.css");
 // </script>

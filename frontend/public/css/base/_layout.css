@@ -1,23 +1,70 @@
-/* Navbar - Estilos */
+/* LAYOUT GLOBAL */
 
-/* .topbar {
+/* Reset */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Fondo general */
+body {
+  background-color: #3b2414;
+  color: var(--text);
+  font: 18px/1.4 ui-monospace, Menlo, Courier, "Courier New", monospace;
+  letter-spacing: 0.2px;
+  background-repeat: repeat;
+  background-position: top left;
+  background-attachment: fixed;
+  margin: 0;
+}
+
+.app {
+  max-width: 2000px;
+  margin: 0 auto;
+}
+
+/* Encabezado superior (Topbar) */
+.topbar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
   display: flex;
-  width: 100%;
   justify-content: center;
   align-items: center;
-  height: var(--topbar-height);
+
+  width: 100%;
+  height: var(--topbar-height, 64px);
   padding: 0 1rem;
-  background: #754c29;
-  border: 0.25rem solid #7a4e2b;
-  color: #f8ead6;
-  border-bottom: 0.25rem solid #3b2414;
-  font: 1.75rem/1.2 ui-monospace, Courier, "Courier New", monospace;
-} */
+
+  background: var(--brown);
+  color: var(--panel);
+  border-bottom: 4px solid var(--navbar-border);
+
+  font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+
+  box-sizing: border-box;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+}
+
+/* Navbar - Estilos */
+
 .brand {
   display: flex;
   align-items: center;
@@ -76,3 +123,4 @@
   color: #f8ead6;
   border-radius: 0.625rem;
 }
+
