@@ -1,4 +1,3 @@
-/* ========= Base spacing & layout (kept) ========= */
 :root{
   --preview-w: 430px;
   --radius-lg:18px;
@@ -31,9 +30,9 @@ body{
   margin:0 0 22px;
   font-size:13px;
   opacity:.9;
+  font-family: var(--montfont);
 }
 
-/* ========= Title (hero) ========= */
 .titles{
   font-family:"Rye", system-ui, sans-serif;
   color:#fae9c9;
@@ -41,7 +40,6 @@ body{
   letter-spacing:1.5px;
 }
 
-/* ========= Top metrics (chips) ========= */
 .stats{
   display:grid;
   grid-template-columns:repeat(4,1fr);
@@ -49,7 +47,7 @@ body{
   margin-bottom:18px;
 }
 .stat{
-  background:#3a2a1f;                 /* dark chip */
+  background:#3a2a1f;
   border:1.5px solid #4f3826;
   border-radius:14px;
   padding:12px 16px;
@@ -58,6 +56,7 @@ body{
 }
 .stat .k{
   display:block;
+  font-family: var(--montfont);
   font-weight:800;
   font-size:12px;
   letter-spacing:.5px;
@@ -66,27 +65,35 @@ body{
   text-transform:uppercase;
 }
 .stat .v{
-  display:flex;                 /* remove float */
+  display:flex;
   justify-content:flex-end;
+  font-family: var(--montfont);
   font-weight:900;
   font-size:20px;
   color:#fff3db;
 }
 
-/* Win-rate bar inside chip */
 .progress{
-  height:12px;
-  background:#2b1d14;
-  border:1px solid #4f3826;
-  border-radius:999px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
-}
-.progress>i{
-  background:linear-gradient(90deg, var(--tangerine), var(--alloy-orange));
-  transition:width .35s ease;
+  position: relative;
+  overflow: hidden;
+  height: 12px;
+  background: -si;
+  border: 1px solid #4b2a1b;
+  border-radius: 999px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
 }
 
-/* ========= Main grid ========= */
+
+.progress > i{
+  display: block;
+  height: 100%;
+  width: clamp(0px, var(--pct, 0%), 100%);
+  background: var(--sienna);
+  border-radius: inherit;
+  transition: width .35s ease;
+}
+
+
 .wrap{
   display:grid;
   grid-template-columns:minmax(0,1fr) var(--preview-w);
@@ -98,7 +105,6 @@ body{
 .preview { grid-column:2; grid-row:1; }
 .bottom  { grid-column:1 / -1; grid-row:2; }
 
-/* ========= Panels ========= */
 .panel{
   background: var(--panel);
   border:1.5px solid var(--borders);
@@ -108,26 +114,27 @@ body{
   box-shadow:0 10px 28px rgba(0,0,0,.25);
 }
 .panel .ph{
-  background:#fff3e0;                /* light header strip */
-  color: var(--sienna);               /* header text in sienna */
-  border-bottom:1.5px solid var(--borders);
-  padding:16px 18px;
-  font-weight:900;
-  letter-spacing:.6px;
-  text-transform:uppercase;
+  font-family: var(--montfont) !important;
+  font-weight: 900;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+  color: var(--sienna);
+  background: #fff3e0;
+  border-bottom: 1.5px solid var(--borders);
+  padding: 16px 18px;
 }
-.panel .body{ padding:18px 20px }
+.panel .body{
+  padding:18px 20px;
+  font-family: var(--montfont);
+}
 
-/* Key-value grid */
 .kv-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px 28px }
 .kv{ display:grid; grid-template-columns:160px 1fr; column-gap:12px; row-gap:12px }
-.label{ color:#6a4d35 }
-.value{ color:#1e120b; font-weight:800 }
+.label{ color:#6a4d35; font-family: var(--montfont) }
+.value{ color:#1e120b; font-weight:800; font-family: var(--montfont) }
 
-/* Divider */
 .dots{ border-bottom:1px dashed var(--line-strong); opacity:.85; height:1em; margin:10px 0 14px }
 
-/* ========= Preview card ========= */
 .preview{
   background:#fbefda;
   border:1.5px solid var(--borders);
@@ -138,49 +145,75 @@ body{
 }
 .preview img{ width:100%; height:100%; object-fit:cover; display:block }
 
-/* ========= Buttons ========= */
 .bottom{
   margin-top:16px;
   display:grid; grid-template-columns:1fr var(--preview-w);
   gap:16px; align-items:center;
 }
 
-/* Primary (EDIT) keeps dark-chip style */
-.btn{
+.bottom .btn,
+.bottom .btn-ghost{
+  padding:10px 18px;
+  min-width:120px;
+  font-size:13.5px;
+  border-radius:8px;
+  font-weight:800;
+  letter-spacing:.5px;
+  font-family: var(--montfont);
+}
+
+.bottom .btn-ghost.left{
   background:#3a2a1f;
   color:#fde9c9;
   border:2px solid #2b1d14;
-  border-radius:10px;
-  padding:12px 22px;
+  box-shadow:0 2px 0 rgba(0,0,0,.25);
+}
+.bottom .btn-ghost.left:hover{ filter:brightness(1.07); transform:translateY(-1px) }
+.bottom .btn-ghost.left:active{ transform:translateY(0) }
+.bottom .btn-ghost.left:focus-visible{ outline:3px solid var(--line-strong); outline-offset:2px }
+
+#editBtn,
+.bottom .btn.right{
+  background: var(--sienna);
+  color:#fff;
+  border:2px solid color-mix(in lch, var(--sienna) 85%, black 15%);
+  box-shadow:0 2px 0 rgba(0,0,0,.2);
+}
+#editBtn:hover,
+.bottom .btn.right:hover{ filter:brightness(1.06); transform:translateY(-1px) }
+#editBtn:active,
+.bottom .btn.right:active{ transform:translateY(0) }
+#editBtn:focus-visible,
+.bottom .btn.right:focus-visible{ outline:3px solid var(--line-strong); outline-offset:2px }
+
+.bottom a,
+.bottom .btn,
+.bottom .btn-ghost{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:auto;
+  max-width:none;
+  margin:0;
+  text-decoration:none;
+  -webkit-text-decoration: none;
+  text-underline-offset: 0;
+}
+
+.bottom .left{  justify-self:start; }
+.bottom .right{ justify-self:end;  }
+
+.bottom .btn,
+.bottom .btn-ghost{
+  padding:10px 18px;
+  min-width:120px;
+  font-size:13.5px;
+  border-radius:8px;
+  font-family: var(--montfont);
   font-weight:800;
   letter-spacing:.5px;
-  min-width:140px;
-  text-align:center; text-decoration:none; display:inline-block; cursor:pointer;
-  box-shadow:0 2px 0 rgba(0,0,0,.25);
-  transition:filter .15s ease, transform .05s ease;
-}
-.btn:hover{ filter:brightness(1.07); transform:translateY(-1px) }
-.btn:active{ transform:translateY(0) }
-.btn:focus-visible{ outline:3px solid var(--line-strong); outline-offset:2px }
-
-/* BACK as sienna variant (distinct from chips) */
-.bottom .btn-ghost.left{
-  background: var(--sienna);
-  color: #fff;
-  border: 2px solid color-mix(in lch, var(--sienna) 85%, black 15%);
-}
-.bottom .btn-ghost.left:hover{
-  filter:brightness(1.05);
 }
 
-/* Optional ghost (non-back) if used elsewhere */
-.btn-ghost:not(.left){
-  background:#f7ebd6;
-  color:#1e120b;
-  border:1.5px solid var(--borders);
-}
-
-/* ========= Responsive ========= */
 @media (max-width:1100px){
   .wrap{ grid-template-columns:1fr }
   .bottom{ grid-template-columns:1fr }
