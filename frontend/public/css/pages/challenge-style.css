@@ -121,6 +121,19 @@ margin: 0;
   transform-origin: center;
 }
 
+
+.actions {
+  display: flex;
+ justify-content: center;
+  margin-top: 24px;
+}
+
+.actions .btn--back {
+  width: 180px;
+  border-radius: 14px;
+  font-weight: 600;
+}
+
 /* Responsivo */
 @media (max-width:768px) {
   .poster {
