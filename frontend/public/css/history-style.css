@@ -11,6 +11,7 @@ body {
   margin: 70px auto 60px; /* 🔼 Subido */
   padding: 0 4vw;
   text-align: center;
+  padding-top: calc(var(--navbar-height) + 15px);
 }
 
 /* === Encabezado === */
