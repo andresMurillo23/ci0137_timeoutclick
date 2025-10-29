@@ -55,5 +55,11 @@
   --tabs-h: 0px;      
   --stack-gap: 24px;     
   --bar-h: calc(var(--topbar-h) + var(--tabs-h) + var(--stack-gap));
+
+
+  /* estados de usuarios */
+  --available: #2c9b4b;
+  --busy: #e3b341;
+  --unavailable: #c4493b;
 }
 

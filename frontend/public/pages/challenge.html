@@ -1,64 +1,62 @@
 <script src="/js/partials/head.js"></script>
-
 <script src="/js/utils/addStylesheet.js"></script>
 <script>
   addStylesheet("/css/pages/challenge-style.css");
 </script>
 
-<header class="saloon">
+<header class="topbar">
     <h1>TIMEOUT CLICK</h1>
 </header>
 
-  <main class="app">
-    <section class="poster" role="region" aria-labelledby="challenge-title">
-      <h2 id="challenge-title">CHALLENGE PLAYER</h2>
-      <hr class="divider">
+  <main class="poster">
+  
+    <h2 class="titles">CHALLENGE PLAYER</h2>
+    <hr class="divider">
 
-      <section class="list">
-        <!-- Disponible (verde) -->
-        <div class="row available">
-          <div class="label">
-            <span class="status-dot ok" aria-hidden="true"></span>
-            <span class="username">Player123</span>
-          </div>
-          <div class="action">
-            <button type="button" class="btn">CHALLENGE</button>
-          </div>
+    <section class="list">
+      <!-- Disponible  -->
+      <div class="row available">
+        <div class="label">
+          <span class="status-dot ok" aria-hidden="true"></span>
+          <span class="username">Player123</span>
         </div>
+        <div class="action">
+          <button type="button" class="btn btn--secondary">CHALLENGE</button>
+        </div>
+      </div>
 
-        <!-- Ocupado (amarillo) -->
-        <div class="row busy">
-          <div class="label">
-            <span class="status-dot busy" aria-hidden="true"></span>
-            <span class="username">Player456</span>
-          </div>
-          <div class="action">
-            <button type="button" class="btn" disabled>CHALLENGE</button>
-          </div>
+      <!-- Ocupado  -->
+      <div class="row busy">
+        <div class="label">
+          <span class="status-dot busy" aria-hidden="true"></span>
+          <span class="username">Player456</span>
         </div>
+        <div class="action">
+          <button type="button" class="btn-unavailable" disabled>CHALLENGE</button>
+        </div>
+      </div>
 
-        <!-- No disponible / en partida (rojo) -->
-        <div class="row unavailable">
-          <div class="label">
-            <span class="status-dot no" aria-hidden="true"></span>
-            <span class="username">Player789</span>
-          </div>
-          <div class="action">
-            <button type="button" class="btn" disabled>CHALLENGE</button>
-          </div>
+      <!-- No disponible offline -->
+      <div class="row unavailable">
+        <div class="label">
+          <span class="status-dot no" aria-hidden="true"></span>
+          <span class="username dim">Player789</span>
         </div>
+        <div class="action">
+          <button type="button" class="btn-unavailable" disabled>CHALLENGE</button>
+        </div>
+      </div>
 
-        <!-- Otro ejemplo no disponible (rojo) -->
-        <div class="row unavailable">
-          <div class="label">
-            <span class="status-dot no" aria-hidden="true"></span>
-            <span class="username dim">Player593</span>
-          </div>
-          <div class="action">
-            <button type="button" class="btn" disabled>CHALLENGE</button>
-          </div>
+      <!--offline -->
+      <div class="row unavailable">
+        <div class="label">
+          <span class="status-dot no" aria-hidden="true"></span>
+          <span class="username dim">Player593</span>
         </div>
-      </section>
+        <div class="action">
+          <button type="button" class="btn-unavailable" disabled>CHALLENGE</button>
+        </div>
+      </div>
     </section>
   </main>
 
