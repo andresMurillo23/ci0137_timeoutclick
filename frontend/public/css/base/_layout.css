@@ -71,15 +71,18 @@ body {
   gap: 0.625rem;
   font-weight: 1000;
 }
+
 .brand .chip {
   width: 1.125rem;
   height: 1.25rem;
   border: 0.0625rem solid #26170e;
   display: inline-block;
 }
+
 .logout {
   margin-left: auto;
 }
+
 /* Botón específico del navbar */
 .topbar .btn {
   background: transparent;
@@ -90,11 +93,13 @@ body {
   cursor: pointer;
   font-size: 1rem;
 }
+
 .topbar .btn:hover {
   background: #3b2414;
   color: #f8ead6;
 }
-.tabs{
+
+.tabs {
   position: fixed;
   top: var(--topbar-height);
   left: 0;
@@ -107,9 +112,10 @@ body {
   padding: 0 0.75rem;
   background: #f8ead6;
   border-top: none;
-  border-bottom: 0.1875rem solid #26170e; 
+  border-bottom: 0.1875rem solid #26170e;
   box-sizing: border-box;
 }
+
 .tab {
   padding: 0.5rem 1rem;
   border: 0.0625rem solid #f8ead6;
@@ -118,9 +124,60 @@ body {
   font-size: 0.9rem;
   font-weight: 500;
 }
+
 .tab:hover {
   background-color: #3b2414;
   color: #f8ead6;
   border-radius: 0.625rem;
 }
 
+/* Page container spacing once for all pages */
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 26px 20px 96px;
+  padding-top: calc(var(--navbar-height) + 26px);
+}
+
+/* Generic page subtitle */
+.subtitle {
+  text-align: center;
+  color: #e8d7b4;
+  margin: 0 0 22px;
+  font-size: 13px;
+  opacity: .9;
+  font-family: var(--montfont);
+}
+
+/* Hero titles (already similar in your base; keep just one) */
+.titles {
+  font-family: "Rye", system-ui, sans-serif;
+  color: #fae9c9;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, .35);
+  letter-spacing: 1.5px;
+}
+
+/* Shared page container */
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 26px 20px 96px;
+  /* empuje bajo la barra; usa alturas globales */
+  padding-top: calc(var(--navbar-height, 6.5rem) + 26px);
+}
+
+/* Shared subtitle (neutro) */
+.subtitle {
+  text-align: center;
+  margin: 0 0 22px;
+  font-family: var(--montfont);
+  font-size: 13px;
+  opacity: .9;
+}
+
+/* Shared hero title (solo familia y tracking) */
+.titles {
+  text-align: center;
+  font-family: "Rye", system-ui, sans-serif;
+  letter-spacing: 1.5px;
+}
