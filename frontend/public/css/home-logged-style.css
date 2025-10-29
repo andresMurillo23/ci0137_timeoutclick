@@ -1,78 +1,101 @@
-/* Fondo general */
+/* === Fondo general === */
 body {
-  background: #f2e6d3 url("/assets/images/desert-bg2.jpg") repeat fixed;
-  color: var(--text);
-  font-family: ui-monospace, Menlo, Courier, "Courier New", monospace;
+  background: radial-gradient(circle at center, #4d2f1a 0%, #2a1a0f 100%);
+  color: #f8ead6;
+  font-family: "Montserrat", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Reutiliza el estilo tipo ventana */
+/* === Contenedor principal === */
 .window {
-  border: 3px solid var(--text);
-  background: var(--panel);
-  margin: 110px auto;
-  max-width: 720px;
-  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  padding: 100px 20px;
 }
 
-/* Panel principal */
+/* === Sección central === */
 .content.home {
-  border: 4px solid #3b2414;
-  outline: 6px solid #e6cc99;
-  background: var(--panel);
-  padding: 60px 50px;
   text-align: center;
+  color: #f8ead6;
+  background: none;
+  border: none;
+  padding: 40px 20px;
+  animation: fadeIn 0.8s ease-in;
 }
 
-/* Título principal */
+/* === Animación sutil de entrada === */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === Título principal === */
 .content.home h2 {
-  font-size: 36px;
+  font-family: "Rye", "Courier New", monospace;
+  font-size: 52px;
+  color: #f8ead6;
+  text-shadow: 2px 2px 0 #3b2414, 4px 4px 8px rgba(0, 0, 0, 0.6);
+  margin-bottom: 10px;
   letter-spacing: 2px;
-  color: #3b2414;
-  margin-bottom: 30px;
 }
 
-/* Botonera central */
+.content.home h2::after {
+  content: "★";
+  display: block;
+  font-size: 22px;
+  margin: 8px auto 40px;
+  color: #e6cc99;
+  text-shadow: 0 0 6px rgba(230, 204, 153, 0.5);
+}
+
+/* === Botonera central === */
 .duel-buttons {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 22px;
 }
 
 .duel-buttons .btn {
   width: 100%;
   max-width: 280px;
-  padding: 16px;
-  font-weight: bold;
-  border: 2px solid var(--text);
+  padding: 14px 16px;
+  border: 2px solid #e6cc99;
   background: #7a4e2b;
-  color: var(--panel);
+  color: #fffaf0;
+  font-weight: 700;
+  font-size: 17px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: all 0.25s ease;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
 }
 
 .duel-buttons .btn:hover {
-  background: var(--bg);
-  color: var(--panel);
+  background: #e6cc99;
+  color: #3b2414;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
 }
 
 .duel-buttons .btn:active {
-  position: relative;
-  top: 1px;
+  transform: translateY(1px);
+  box-shadow: none;
 }
 
-/* Ajuste responsivo */
+/* === Responsive === */
 @media (max-width: 600px) {
-  .window {
-    margin: 90px 14px;
-  }
-
-  .content.home {
-    padding: 40px 20px;
-  }
-
   .content.home h2 {
-    font-size: 28px;
+    font-size: 38px;
+  }
+
+  .duel-buttons .btn {
+    max-width: 240px;
+    font-size: 15px;
   }
 }
