@@ -2,9 +2,8 @@
 
 <script src="/js/utils/addStylesheet.js"></script>
 
-<!-- Agrega estilos específicos para esta página, en este caso, Add Friend -->
 <script>
-  addStylesheet("/css/pages/auth-style.css");
+  addStylesheet("/css/pages/register-login.css");
 </script>
 
   <header class="topbar">
@@ -12,7 +11,7 @@
   </header>
 
   <main class="poster">
-    <h2>LOGIN</h2>
+    <h2 class="titles">LOGIN</h2>
     <hr class="divider">
 
     <form>
@@ -28,12 +27,14 @@
       </div>
 
       <div class="actions">
-        <button type="submit" class="btn">LOGIN</button>
-        <button type="button" class="btn back" onclick="history.back()">BACK</button>
+        <button type="submit" class="btn btn--primary-brown">LOGIN</button>
+        <button type="button" class="btn btn--back" onclick="history.back()">BACK</button>
       </div>
     </form>
 
-    <p class="signup">Sign up?</p>
+    <p class="signup"> 
+      <a href="/pages/register.html">Sign up?</a>
+    </p>
   </main>
 
 <script src="/js/partials/footer.js"></script>
