@@ -1,0 +1,50 @@
+/* Profile - Estilos */
+
+.content{
+    background:transparent; 
+    border:3px solid var(--text); 
+    border-top:3px solid var(--panel); padding:16px
+}
+.panel{
+    background:transparent;
+    padding:100px; 
+    display:grid; 
+    grid-template-columns:120px 1fr; 
+    gap:16px
+}
+.avatar{
+    border:1px solid #f8ead6; 
+    width:100px; 
+    height:100px; 
+    display:flex; 
+    align-items:center; 
+    justify-content:center;
+    border-radius: 10px;
+    color:  #f8ead6;
+}
+.fields{
+    display:grid; 
+    gap: 20px;
+    color:#f8ead6;
+}
+.field{
+    display:grid; 
+    grid-template-columns:200px 1fr; 
+    gap:8px
+}
+.field .label{
+    color: #f8ead6;
+    
+}
+.footer{
+    display:flex; 
+    justify-content:space-between; 
+    margin-top:12px
+}
+
+.footer .btn{
+    color:#f8ead6;
+    border-color: var(--line);
+    border-radius: 20px;
+}
+

@@ -1,0 +1,236 @@
+/* Reset y variables*/
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Altura visible de la barra fija  */
+:root {
+  --bar-h: 64px;
+}
+
+@media (max-width: 520px) {
+  :root {
+    --bar-h: 72px;
+  }
+}
+
+/* Fondo y tipografia */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #f2e6d3 url("/assets/images/desert-bg2.jpg") center/cover no-repeat;
+  color: #26170e;
+  font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.saloon h1 {
+  margin: 0;
+  letter-spacing: 3px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .saloon {
+    padding: 12px;
+  }
+
+  .saloon h1 {
+    font-size: 22px;
+    letter-spacing: 2px;
+  }
+}
+
+@media (max-width: 520px) {
+  .saloon h1 {
+    font-size: 18px;
+  }
+}
+
+/* Contenedor de pagina */
+.app {
+  /* deja espacio de la barra y usa el alto libre */
+  padding-top: var(--bar-h);
+  min-height: calc(100dvh - var(--bar-h));
+
+  /* centrado perfecto */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* respiro lateral en móviles */
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+/* Poster */
+.poster {
+  width: 100%;
+  max-width: 720px;
+  background: var(--panel);
+  border: 4px solid var(--black-bean);
+  border-radius: 20px;
+  box-shadow: 0 0 0 6px var(--line-strong);
+  padding: 24px 20px 28px;
+}
+
+.divider {
+  border: 0;
+  height: 4px;
+  background: var(--navbar-border);
+  margin: 12px 0 18px;
+  opacity: .25;
+}
+
+/* Botones*/
+
+/*login y signup*/
+
+.btn-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 12px auto 0;
+  max-width: 480px;
+}
+
+/* Estilo de los botones dentro de la fila */
+.btn-row .btn {
+  padding: 15px 40px;
+  border: 2px solid var(--muted);
+  background: var(--black-bean);
+  color: var(--panel);
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 20px;
+  font-size: medium;
+  transition: transform .2s ease, background-color .2s ease;
+}
+
+.btn-row .btn:hover {
+  transform: scale(1.05);
+  background-color: var(--licorice);
+}
+
+.btn-row .btn:active {
+  transform: scale(1.03);
+}
+
+/*botones principales*/
+
+.poster>.btn {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin: 18px auto;
+  padding: 15px 25px;
+
+  border: 2px solid var(--muted);
+  background: var(--black-bean);
+  color: var(--panel);
+
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 20px;
+
+  font-size: medium;
+
+  transition: transform .2s ease, background-color .2s ease;
+  will-change: transform;
+  transform-origin: center;
+}
+
+.poster>.btn:hover {
+  transform: scale(1.05);
+  background-color: var(--licorice);
+}
+
+.poster>.btn:active {
+  transform: scale(1.03);
+}
+
+/*boton play*/
+
+.poster>.btn-play {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin: 18px auto;
+  padding: 15px 25px;
+
+  border: 2px solid var(--brown);
+  background: var(--brown);
+  color: var(--panel);
+
+  font-weight: bold;
+  letter-spacing: 1px;
+  font-size: medium;
+  line-height: 1.1;
+
+  border-radius: 20px;
+
+  transition: transform .2s ease, background-color .2s ease;
+  will-change: transform;
+  transform-origin: center;
+}
+
+.poster>.btn-play:hover {
+  transform: scale(1.05);
+  background-color: var(--sienna);
+}
+
+.poster>.btn-play:active {
+  transform: scale(1.03);
+}
+
+
+/* Enlace inferior */
+.signup {
+  text-align: center;
+  margin-top: 14px;
+  font-size: 14px;
+}
+
+.signup a {
+  color: var(--navbar-border);
+  text-decoration: underline;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .poster {
+    padding: 20px 16px 24px;
+  }
+
+  .poster h2 {
+    font-size: 30px;
+    letter-spacing: 3px;
+  }
+
+  .poster>.btn {
+    max-width: 240px;
+    padding: 16px 20px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 520px) {
+  .poster h2 {
+    font-size: 26px;
+    letter-spacing: 2px;
+  }
+
+  .poster>.btn {
+    max-width: 200px;
+    padding: 14px 18px;
+    font-size: 14px;
+  }
+}

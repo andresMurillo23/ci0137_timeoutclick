@@ -1,0 +1,118 @@
+<script src="/js/partials/head.js"></script>
+<script src="/js/partials/navbar.js"></script>
+
+<script src="/js/utils/addStylesheet.js"></script>
+<script>
+  addStylesheet("/css/pages/history-style.css");
+</script>
+
+<!-- Fuentes específicas para esta página -->
+<link href="https://fonts.googleapis.com/css2?family=Rye&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <main class="content history" role="main">
+    <h2>Battle History</h2>
+    <button id="toggle-theme" class="btn small" style="margin-top: 10px;">🌙 Dark Mode</button>
+
+    <!-- Tarjeta de estadísticas -->
+    <div class="stats-card">
+      <div><span>🏆 Wins:</span> <strong>20</strong></div>
+      <div><span>💀 Losses:</span> <strong>20</strong></div>
+      <div><span>⚖️ Winrate:</span> <strong>0.5</strong></div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filters">
+      <div class="filter-group">
+        <label for="type">Type:</label>
+        <select id="type">
+          <option>Wins</option>
+          <option>Losses</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="time">Time:</label>
+        <select id="time">
+          <option>All</option>
+          <option>Last Week</option>
+          <option>Last Month</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-container">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Opponent</th>
+            <th>Winner</th>
+            <th>Press Time</th>
+            <th>Goal Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>12/08/2025</td>
+            <td>andresmimi</td>
+            <td>andresmimi</td>
+            <td>3.98</td>
+            <td>4</td>
+          </tr>
+          <tr>
+            <td>15/08/2025</td>
+            <td>rolypoli</td>
+            <td>youruser</td>
+            <td>3.98</td>
+            <td>5</td>
+          </tr>
+          <tr>
+            <td>19/08/2025</td>
+            <td>isabel</td>
+            <td>isabel</td>
+            <td>3.70</td>
+            <td>4</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginador -->
+    <div class="pager">
+      <button class="btn small" disabled>&lt;</button>
+      <span>Page <strong>1</strong> of 5</span>
+      <button class="btn small">&gt;</button>
+    </div>
+  </main>
+
+  <!-- === Script para el modo oscuro === -->
+<script>
+  const toggleBtn = document.getElementById("toggle-theme");
+
+  // Recuperar preferencia guardada
+  if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark-mode");
+    toggleBtn.textContent = "☀️ Light Mode";
+  }
+
+  toggleBtn.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
+    const isDark = document.body.classList.contains("dark-mode");
+
+    // Guardar preferencia
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+
+    // Cambiar texto del botón
+    toggleBtn.textContent = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
+  });
+
+  // Activar automáticamente si el sistema usa dark mode
+  if (!localStorage.getItem("theme")) {
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if (prefersDark) {
+      document.body.classList.add("dark-mode");
+      toggleBtn.textContent = "☀️ Light Mode";
+    }
+  }
+</script>
+
+<script src="/js/partials/footer.js"></script>

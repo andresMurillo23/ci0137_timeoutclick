@@ -1,0 +1,149 @@
+/* Add Friend - Estilos */
+
+/* Ventana central */
+.window {
+  margin-top: auto;
+  border: 3px solid var(--text);
+  padding: 16px;
+  display: grid;
+  gap: 16px;
+  background: transparent;
+  width: 100%;
+  font-family:"Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+}
+
+.content {
+  background: transparent;
+  padding: 80px;
+  gap: 16px;
+  grid-template-columns: 120px 1fr;
+}
+.content h2{
+  font-size: 22px;
+  margin: 14px 0 14px;
+  color: var(--row-background);
+}
+
+/* Buscador */
+.tools{
+  display:flex; 
+  gap:10px; 
+  justify-content:flex-end; 
+  align-items:center;
+  margin-bottom: 14px;
+}
+.search{
+  width: clamp(200px, 26vw, 260px);
+  height: 40px;
+  background: transparent;
+  color: var(--bar-background);
+  border:1px solid var(--row-background);
+  padding: 0 10px;
+  font: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-size: 16px;
+}
+.search::placeholder{ 
+  color:#8a8a8a; 
+}
+
+.icon-search{
+  height: 40px;
+  padding: 0 10px;
+  background : transparent;
+  border:1px solid var(--row-background);
+  cursor: pointer;
+}
+.icon-search::before{ 
+  content:"⌕"; 
+  color: var(--panel);
+  font-size: 30px;
+}
+
+/* Lista de amigos */
+.friend-list{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 18px;
+}
+
+.friend-row{
+  display: grid;
+  grid-template-columns: 42px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  background: #5e3b20;
+  color: var(--panel);
+  border: 1px solid var(--line-strong);
+  padding: 20px 12px;
+  border-radius: 20px;
+}
+
+.friend-row:hover {
+  background-color: var(--borders);
+  color: var(--text);
+  transform: scale(1.02);
+}
+
+.avatar{
+  width: 40px; height: 40px;
+  border: 1px solid var(--row-background);
+  display:flex; 
+  align-items:center; 
+  justify-content:center;
+  font-size: 10px; 
+  color:  var(--row-background);
+  border-radius: 10px;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-bottom: 1px solid #5e3b20;
+}
+
+.footer .btn {
+  margin-bottom: 20px;
+}
+
+/* Botones */
+.window .btn, .content .btn {
+  padding: 8px 14px;
+  border: 2px solid var(--text);
+  border-radius: 20px;
+  background: var(--green-button);
+  color: var(--accent);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.window .btn:hover,.content .btn:hover {
+  background: var(--green-hover);
+  color: var(--accent);
+  transform: scale(1.05);
+}
+
+.window .btn.small,
+.content .btn.small{ 
+  padding: 6px 12px; 
+}
+
+a:focus, button:focus, input:focus{
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+@media (max-width: 520px){
+  .friend-row{
+    grid-template-columns: 34px 1fr;
+    row-gap: 8px;
+  }
+  .friend-row .btn.small{ 
+    grid-column: 1 / -1; 
+    justify-self: end; }
+}
+

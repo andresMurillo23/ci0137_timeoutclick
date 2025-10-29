@@ -1,0 +1,73 @@
+<script src="/js/partials/head.js"></script>
+<script src="/js/partials/navbar.js"></script>
+
+<script src="/js/utils/addStylesheet.js"></script>
+<script>
+  addStylesheet("/css/pages/profile-style.css");
+</script>
+  <main class="page">
+    <h2 class="titles">PROFILE</h2>
+    <p class="subtitle">Account & Game overview</p>
+
+    <div class="stats" aria-label="Quick stats">
+      <div class="stat"><span class="k">RANK</span><span class="v">Silver II</span></div>
+      <div class="stat"><span class="k">WINS</span><span class="v">45</span></div>
+      <div class="stat"><span class="k">LOSSES</span><span class="v">32</span></div>
+      <div class="stat">
+        <div class="k">WIN RATE</div>
+        <div class="progress" aria-label="Win rate"><i style="width:58%"></i></div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="left-col">
+        <section class="panel">
+          <div class="ph">ACCOUNT</div>
+          <div class="body">
+            <div class="kv-grid">
+              <div class="kv">
+                <div class="label">username:</div><div class="value">exampleUser12</div>
+                <div class="label">email:</div>   <div class="value">email@example.com</div>
+                <div class="label">user id:</div> <div class="value">#A1F3-92D</div>
+              </div>
+              <div class="kv">
+                <div class="label">member since:</div> <div class="value">12/08/2025</div>
+                <div class="label">verification:</div> <div class="value">Email verificado</div>
+                <div class="label">password:</div>     <div class="value">•••••••••••</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="dots" aria-hidden="true"></div>
+
+        <section class="panel">
+          <div class="ph">GAME STATS</div>
+          <div class="body">
+            <div class="kv-grid">
+              <div class="kv">
+                <div class="label">wins / losses:</div>  <div class="value">45 / 32</div>
+                <div class="label">friends:</div>        <div class="value">27</div>
+              </div>
+              <div class="kv">
+                <div class="label">rank:</div>           <div class="value">Silver II</div>
+                <div class="label">win rate:</div>       <div class="value">58%</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="panel preview" aria-label="User panel / avatar">
+        <img src="/assets/images/profile.jpg" alt="Avatar del usuario">
+      </aside>
+
+      <div class="bottom">
+        <a class="btn btn-ghost left" href="/pages/start.html">BACK</a>
+        <a class="btn right" href="#" id="editBtn">EDIT</a>
+      </div>
+    </div>
+  </main>
+
+<script src="/js/utils/syncPreviewHeight.js" defer></script>
+<script src="/js/partials/footer.js"></script>
