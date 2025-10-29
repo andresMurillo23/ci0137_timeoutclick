@@ -1,73 +1,57 @@
-console.log("[popup] archivo cargado");
-
 document.addEventListener("DOMContentLoaded", () => {
-        console.log("[popup] DOM listo");
+  const overlay  = document.getElementById("confirmOverlay");
+  const dialog   = overlay?.querySelector(".dialog");
+  const noBtn    = document.getElementById("noBtn");
+  const yesBtn   = document.getElementById("yesBtn");
+  const who      = document.getElementById("who");
 
-    const overlay = document.getElementById("confirmOverlay");
-    const dialog = overlay ? overlay.querySelector(".dialog") : null;
-    const openBtn = document.getElementById("deleteBtn");
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
-    const who = document.getElementById("who");
-    const username = document.getElementById("username");
+  let lastTrigger = null;
+  let opponent = "";
 
-    
-    console.table({
-        overlay: !!overlay,
-    dialog: !!dialog,
-    openBtn: !!openBtn,
-    noBtn: !!noBtn,
-    yesBtn: !!yesBtn,
-    who: !!who,
-    username: !!username,
-    });
+  if (!overlay || !dialog || !noBtn || !yesBtn || !who) return;
 
-    if (!overlay || !dialog) {
-        console.error("[popup] Falta el overlay o el dialog en el DOM.");
-    return;
-    }
-
-    function openModal() {
-        if (username && who) who.textContent = (username.textContent || "").trim();
+  function openModal(fromBtn) {
+    lastTrigger = fromBtn || null;
+    const row = fromBtn?.closest(".row");
+    opponent = (row?.querySelector(".username")?.textContent || "").trim();
+    who.textContent = opponent || "Player";
     overlay.classList.add("open");
     overlay.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
-        setTimeout(() => dialog.focus(), 0);
-    console.log("[popup] openModal()");
-    }
-
-    function closeModal() {
-        overlay.classList.remove("open");
+    setTimeout(() => dialog.focus(), 0);
+  }
+  function closeModal() {
+    overlay.classList.remove("open");
     overlay.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
-    openBtn?.focus();
-    console.log("[popup] closeModal()");
+    lastTrigger?.focus();
+  }
+
+  // Solo abre si la fila es .available y el botón NO está disabled
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".action .btn, .action .btn-unavailable");
+    if (!btn) return;
+
+    // ignora botones deshabilitados
+    if (btn.disabled) return;
+
+    const row = btn.closest(".row");
+    if (!row) return;
+
+    if (row.classList.contains("available")) {
+      openModal(btn);
+    } else {
+      // showToast("This player is not available right now");
     }
+  });
 
-    
-    openBtn?.addEventListener("click", openModal);
-
-   
-    document.addEventListener("click", (e) => {
-        if (e.target.closest && e.target.closest("#deleteBtn")) {
-        openModal();
-        }
-    });
-
-    // Cerrar clic fuera
-    overlay.addEventListener("click", (e) => {
-        if (e.target === overlay) closeModal();
-    });
-
-    // Botones NO/YES
-    noBtn?.addEventListener("click", closeModal);
-    yesBtn?.addEventListener("click", () => {
-        // TODO: logica real
-        closeModal();
-    });
-
-    
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && overlay.classList.contains("open")) closeModal();
-    });
+  overlay.addEventListener("click", (e) => { if (e.target === overlay) closeModal(); });
+  noBtn.addEventListener("click", closeModal);
+  yesBtn.addEventListener("click", () => {
+    // TODO: lógica real ( llamar API)
+    closeModal();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && overlay.classList.contains("open")) closeModal();
+  });
 });
