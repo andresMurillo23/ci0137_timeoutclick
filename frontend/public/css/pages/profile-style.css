@@ -337,3 +337,49 @@ body {
     padding-top: calc(var(--navbar-height-mobile) + 26px)
   }
 }
+
+/* profileEdit extras */
+
+/* Formulario */
+.form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px 28px }
+.form-col{ display:grid; gap:16px }
+.field{ display:block }
+.field .label{
+  display:block; color:#6a4d35; font-family:var(--montfont);
+  font-size:14px; margin-bottom:6px;
+}
+.control{
+  width:100%; padding:10px 12px; border-radius:10px;
+  border:1.5px solid var(--borders); background:#fff7ea; color:#1e120b;
+  font-family:var(--montfont); font-size:14px; outline:none;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.5);
+}
+.control:focus{
+  border-color: var(--line-strong);
+  box-shadow: 0 0 0 3px color-mix(in lch, var(--line-strong) 45%, transparent);
+}
+.control[readonly]{ background:#f7eddc; color:#59422f; cursor:default }
+.group .group-two{ display:grid; grid-template-columns:1fr 1fr; gap:14px }
+.hint{ margin-top:8px; font-size:12px; color:#7a5a42 }
+
+/* Avatar / uploader */
+.avatar-stack{ width:100%; padding:18px }
+.avatar-frame{
+  aspect-ratio:1/1; width:100%; border-radius:14px; overflow:hidden;
+  border:1.5px solid var(--borders); background:#fff7ea; margin:0 0 14px 0;
+}
+.avatar-frame img{ width:100%; height:100%; object-fit:cover; display:block }
+.uploader .file{
+  width:100%; border:1.5px dashed var(--borders); border-radius:10px;
+  background:#fffdf7; padding:10px 12px; font-family:var(--montfont);
+}
+
+/* Progreso: permitir setear porcentaje por variable */
+.progress{ --pct: var(--winrate, 0%) }
+.progress>i{ width: clamp(0px, var(--pct), 100%) }
+
+/* Responsive */
+@media (max-width:780px){
+  .form-grid{ grid-template-columns:1fr }
+  .group .group-two{ grid-template-columns:1fr }
+}
