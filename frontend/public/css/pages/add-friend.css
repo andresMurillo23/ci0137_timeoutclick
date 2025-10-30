@@ -90,7 +90,15 @@ body {
   margin: 0;
   padding: 12px 24px;
   font-size: 14px;
-  font-weight: 600;
+  white-space: nowrap;
+}
+
+.search-bar .btn--secondary {
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 12px 24px;
+  font-size: 14px;
   white-space: nowrap;
 }
 
@@ -140,18 +148,15 @@ body {
   flex: 1;
 }
 
-/* Wrapper para botones Add en la lista de usuarios */
 .user-item .btn--primary-brown {
   width: auto;
   max-width: none;
   margin: 0;
   padding: 8px 20px;
   font-size: 12px;
-  font-weight: 600;
   border-radius: 20px;
 }
 
-/* Estados de foco usando variables globales */
 a:focus,
 button:focus,
 input:focus {

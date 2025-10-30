@@ -3,87 +3,60 @@
 
 <script src="/js/utils/addStylesheet.js"></script>
 
-<!-- Agrega estilos específicos para esta página, en este caso, Friends List -->
 <script>
   addStylesheet("/css/pages/friends-style.css");
 </script>
 
-<!-- Contenido panel -->
-<main class="window" role="main" aria-labelledby="friends-title">
-  <div class="header-strip" aria-hidden="true"></div>
+<main class="friend-list" role="main">
   <section class="content">
-    <div class="header-section">
-      <h2 id="friends-title">Friends list</h2>
-      
-      <div class="tools">
-        <input class="search" type="text" placeholder="Search Friends" aria-label="Search friends">
-        <button class="icon-search" type="button" aria-label="Search"></button>
-        <button class="btn add-btn" type="button">ADD FRIENDS</button>
-      </div>
-    </div>
+    <h2 class="titles--light">FRIENDS LIST</h2>
+    <p class="subtitle">Connect and challenge your friends</p>
 
-    <!-- Grid de amigos -->
-    <div class="friends-grid">
-      <!-- Tarjeta de amigo 1 -->
-      <div class="friend-card">
-        <div class="avatar-large">Avatar</div>
-        <div class="friend-info">
-          <div class="info-row">
-            <span class="label">Nombre</span>
-          </div>
-          <div class="info-row">
-            <span class="value">No.victorias</span>
+    <div class="wrap">
+      <section class="panel">
+        <div class="search-bar">
+          <input class="search" type="text" placeholder="Type the username of your friend" aria-label="Search friends">
+          <button class="btn--primary-brown" type="button" aria-label="Search">Search</button>
+          <a class="btn--secondary" href="/pages/addFriend.html">ADD A FRIEND</a>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="body">
+          <!-- Grid de amigos -->
+          <div class="friends-grid">
+            <!-- Tarjeta de amigo 1 -->
+            <div class="friend-card">
+              <div class="user-avatar">A</div>
+              <span class="user-name">andresmimi</span>
+              <button class="btn--primary-brown">CHALLENGE</button>
+            </div>
+
+            <!-- Tarjeta de amigo 2 -->
+            <div class="friend-card">
+              <div class="user-avatar">R</div>
+              <span class="user-name">rolipoli</span>
+              <button class="btn--primary-brown">CHALLENGE</button>
+            </div>
+
+            <!-- Tarjeta de amigo 3 -->
+            <div class="friend-card">
+              <div class="user-avatar">I</div>
+              <span class="user-name">isabel</span>
+              <button class="btn--primary-brown">CHALLENGE</button>
+            </div>
+
+            <!-- Tarjeta de amigo 4 -->
+            <div class="friend-card">
+              <div class="user-avatar">T</div>
+              <span class="user-name">tatsparamo</span>
+              <button class="btn--primary-brown">CHALLENGE</button>
+            </div>
           </div>
         </div>
-        <button class="btn-action" type="button">Desafiar</button>
-      </div>
-
-      <!-- Tarjeta de amigo 2 -->
-      <div class="friend-card">
-        <div class="avatar-large">Avatar</div>
-        <div class="friend-info">
-          <div class="info-row">
-            <span class="label">Nombre</span>
-          </div>
-          <div class="info-row">
-            <span class="value">No.victorias</span>
-          </div>
-        </div>
-        <button class="btn-action" type="button">Desafiar</button>
-      </div>
-
-      <!-- Tarjeta de amigo 3 -->
-      <div class="friend-card">
-        <div class="avatar-large">Avatar</div>
-        <div class="friend-info">
-          <div class="info-row">
-            <span class="label">Nombre</span>
-          </div>
-          <div class="info-row">
-            <span class="value">No.victorias</span>
-          </div>
-        </div>
-        <button class="btn-action" type="button">Desafiar</button>
-      </div>
-
-      <!-- Tarjeta de amigo 4 -->
-      <div class="friend-card">
-        <div class="avatar-large">Avatar</div>
-        <div class="friend-info">
-          <div class="info-row">
-            <span class="label">Nombre</span>
-          </div>
-          <div class="info-row">
-            <span class="value">No.victorias</span>
-          </div>
-        </div>
-        <button class="btn-action" type="button">Desafiar</button>
-      </div>
-    </div>
-
-    <div class="footer">
-      <button class="btn" type="button">Back</button>
+      </section>
     </div>
   </section>
+</main>
   
 <script src="/js/partials/footer.js"></script>
