@@ -29,7 +29,7 @@ var navbar =
 <!-- Pestañas comunes -->
 <nav class="tabs" aria-label="Navegación principal">
   <a class="tab" href="/pages/homeLogged.html">start game</a>
-  <a class="tab" href="/pages/registeredRanking.html">rankings</a>
+  <a class="tab" href="/pages/ranking.html">rankings</a>
   <a class="tab" href="/pages/history.html">history</a>
   <a class="tab" href="/pages/friends.html">friends</a>
   <a class="tab" href="/pages/profile.html">profile</a>

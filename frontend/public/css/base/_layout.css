@@ -114,6 +114,7 @@ body {
   border-top: none;
   border-bottom: 0.1875rem solid #26170e;
   box-sizing: border-box;
+  font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
 .tab {
@@ -123,6 +124,7 @@ body {
   color: #26170e;
   font-size: 0.9rem;
   font-weight: 500;
+  font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
 .tab:hover {

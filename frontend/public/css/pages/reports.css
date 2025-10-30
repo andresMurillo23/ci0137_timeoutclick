@@ -1,6 +1,6 @@
 /*  Fondo y tipografía general */
 body {
-  background: var(--bg);
+  background: var(--page-bg);
   color: var(--row-background);
   font-family: var(--montfont);
   min-height: 100vh;
