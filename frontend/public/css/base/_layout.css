@@ -184,15 +184,96 @@ body {
   letter-spacing: 1.5px;
 }
 
-/* Responsive navbar heights for .page containers */
-@media (max-width: 1024px) {
-  .page, .friend-list, .report {
-    padding-top: calc(var(--navbar-height-tablet) + 26px);
-  }
+.tabs{
+  justify-content: center;
+  gap: clamp(40px, 8vw, 96px);
+  overflow-x: hidden;
+  overflow-y: visible;
+  align-items: center;
 }
 
-@media (max-width: 768px) {
-  .page, .friend-list, .report {
-    padding-top: calc(var(--navbar-height-mobile) + 26px);
+.tab{ position: relative; }
+
+.tab[aria-current="page"]:hover,
+.tab.is-active:hover{
+  background: transparent;
+  color: #26170e;
+  border-radius: 0;
+}
+
+
+.tab[aria-current="page"]::before,
+.tab.is-active::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:-10px;
+  height:20px;
+  width:calc(100% + 28px);
+  background:#e6cc99;
+  border-radius:14px;
+  z-index:1;
+}
+
+.tab[aria-current="page"]::after,
+.tab.is-active::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:-26px;
+  width:0; height:0;
+  border-left:12px solid transparent;
+  border-right:12px solid transparent;
+  border-top:14px solid #f8ead6;
+  filter:drop-shadow(0 -1px 0 rgba(0,0,0,.35));
+}
+
+.tab{
+  font-size:1.25rem;
+  font-weight:800;
+}
+
+.tabs .tab{
+  font-weight: 600;
+}
+
+.tabs .tab.is-active,
+.tabs .tab[aria-current="page"]{
+  font-weight: 900;
+}
+
+.tabs{
+  justify-content: flex-start;
+  gap: clamp(16px, 4vw, 48px);
+  padding-left: 24px;
+}
+
+.titles{
+  text-align: left;
+}
+
+.subtitle{
+  text-align: left;
+}
+
+.tabs{
+  justify-content: flex-start;
+  gap: 0;
+  padding-left: 24px;
+}
+
+.tabs .tab{
+  flex: 0 0 var(--tab-w, 140px);
+  text-align: center;
+  white-space: nowrap;
+  margin-right: 24px;
+}
+
+@media (max-width: 768px){
+  .tabs .tab{
+    flex-basis: 110px;
+    margin-right: 16px;
   }
 }
