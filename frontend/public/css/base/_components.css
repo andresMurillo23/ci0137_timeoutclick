@@ -120,44 +120,47 @@
 .btn--back:active {
   transform: scale(1.03);
 }
-
-/* POSTER GLOBAL */
-
-.poster {
-  width: 100%;
-  max-width: 720px;
-  background: var(--panel);
-  border: 4px solid var(--black-bean);
-  border-radius: 20px;
-  box-shadow: 0 0 0 6px var(--line-strong);
-  padding: 24px 20px 28px;
-
-
-  margin-top: calc(var(--topbar-height) + var(--tabs-height));
-  max-height: calc(100dvh - var(--topbar-height) - var(--tabs-height) - 150px);
-  overflow-y: auto;             
-  padding-bottom: 24px;    
-  scrollbar-width: thin; 
+/* La tarjeta NO scrollea, solo define layout */
+.poster{
+  width:100%;
+  max-width:720px;
+  background:var(--panel);
+  border:4px solid var(--black-bean);
+  border-radius:20px;
+  box-shadow:0 0 0 6px var(--line-strong);
+  padding:24px 20px 28px;
+  margin-top:calc(var(--topbar-height) + var(--tabs-height));
+  max-height:calc(100dvh - var(--topbar-height) - var(--tabs-height) - 150px);
+  display:flex;
+  flex-direction:column;
+  gap:12px;
 }
 
-/* Scrollbar bonito en Chrome/Edge */
-.poster::-webkit-scrollbar {
-  width: 6px;
-}
-.poster::-webkit-scrollbar-thumb {
-  background: var(--line-strong);
-  border-radius: 4px;
-}
-.poster::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-@media (max-width: 768px) {
-  .poster {
-    padding: 20px 16px 24px;
-  }
+/* Solo este bloque scrollea */
+.poster__scroll{
+  min-height:0;
+  max-height:100%;
+  overflow:auto;
+  padding-right:10px;          /* espacio para la barra */
+  scrollbar-gutter:stable;     /* evita “empujón” */
+  
+  /* Firefox (simple) */
+  scrollbar-width:thin;
+  scrollbar-color:var(--line) transparent;
 }
 
+/* Chrome/Edge/Safari (simple) */
+.poster__scroll::-webkit-scrollbar{ width:8px; }
+.poster__scroll::-webkit-scrollbar-track{ background:transparent; }
+.poster__scroll::-webkit-scrollbar-thumb{
+  background:var(--line);
+  border-radius:999px;
+}
+
+/* Responsive */
+@media (max-width:768px){
+  .poster{ padding:20px 16px 24px; }
+}
 
 /*  INPUT GLOBAL */
 

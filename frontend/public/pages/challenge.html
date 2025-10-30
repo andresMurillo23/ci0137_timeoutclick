@@ -5,11 +5,12 @@
 <script>
   addStylesheet("/css/pages/challenge-style.css");
 </script>
-  <main class="poster">
-  
-    <h2 class="titles">CHALLENGE PLAYER</h2>
-    <hr class="divider">
 
+<main class="poster">
+  <h2 class="titles">CHALLENGE PLAYER</h2>
+  <hr class="divider">
+
+  <div class="poster__scroll">
     <section class="list">
       <!-- Disponible  -->
       <div class="row available">
@@ -40,11 +41,11 @@
           <span class="username dim">Player789</span>
         </div>
         <div class="action">
-          <button type="button" class="btn-unavailable" >CHALLENGE</button>
+          <button type="button" class="btn-unavailable">CHALLENGE</button>
         </div>
       </div>
 
-      <!--offline -->
+      <!-- Offline -->
       <div class="row unavailable">
         <div class="label">
           <span class="status-dot no" aria-hidden="true"></span>
@@ -55,15 +56,17 @@
         </div>
       </div>
     </section>
-     <hr class="divider">
-     <div class="actions">
-        <button type="button" class="btn btn--back" onclick="history.back()">BACK</button>
-      </div>
-  </main>
+  </div>
 
-    <!-- Confirm / Waiting Modal -->
-    <div id="confirmOverlay" class="confirm-overlay" aria-hidden="true">
-    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" tabindex="-1">
+  <hr class="divider">
+  <div class="actions">
+    <button type="button" class="btn btn--back" onclick="history.back()">BACK</button>
+  </div>
+</main>
+
+<!-- Confirm / Waiting Modal -->
+<div id="confirmOverlay" class="confirm-overlay" aria-hidden="true">
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" tabindex="-1">
 
     <!-- Estado: Confirmación -->
     <div class="panel panel-confirm" id="panelConfirm">
@@ -96,4 +99,3 @@
 
 <script src="/js/partials/popup.js"></script>
 <script src="/js/partials/footer.js"></script>
-

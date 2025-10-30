@@ -97,7 +97,18 @@ body {
   font-weight: bold;
   color: var(--black-bean);
 }
+/* Dale respiro al fondo del área con scroll */
+.poster__scroll{
+  padding-bottom: 24px;
+}
 
+.step-btn{
+  outline-offset: 0;
+}
+.step-btn:focus{
+  outline: none;
+  box-shadow: 0 0 0 3px var(--line-strong);
+}
 
 @keyframes fade {
   from { opacity: 0; transform: translateY(6px); }
