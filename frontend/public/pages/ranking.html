@@ -1,0 +1,115 @@
+<script src="/js/partials/head.js"></script>
+<script src="/js/partials/navbar.js"></script>
+
+<script src="/js/utils/addStylesheet.js"></script>
+<script>
+  addStylesheet("/css/pages/reports.css");
+</script>
+
+<main class="report">
+  <section class="content">
+    <h2 class="titles--light">Rankings</h2>
+    <p class="subtitle">Top duelists with the highest win rates in Timeout Click</p>
+
+    <!-- Filtros de fecha -->
+    <div class="report-filters">
+
+      <div class="filters-header">Filters</div>
+
+      <div class="filters-content">
+
+        <div class="date-range">
+          <div class="filter-controls">
+
+            <div class="date-input-group">
+              <label for="from-date">From Date</label>
+              <input type="date" id="from-date" value="2024-01-01">
+            </div>
+
+            <div class="date-input-group">
+              <label for="to-date">To Date</label>
+              <input type="date" id="to-date" value="2024-12-31">
+            </div>
+          </div>
+
+        </div>
+        <button class="btn--filter">Apply</button>
+      </div>
+    </div>
+
+    <table class="table" aria-label="Leaderboard">
+      <thead>
+        <tr>
+          <th>Position</th>
+          <th>Username</th>
+          <th>Wins</th>
+          <th>Losses</th>
+          <th>Winrate (%)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>andresmimi</td>
+          <td>120</td>
+          <td>18</td>
+          <td>87%</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>rolipoli</td>
+          <td>115</td>
+          <td>16</td>
+          <td>88%</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>isabel</td>
+          <td>110</td>
+          <td>19</td>
+          <td>85%</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>tatsparamo</td>
+          <td>97</td>
+          <td>22</td>
+          <td>81%</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>mariagu</td>
+          <td>90</td>
+          <td>27</td>
+          <td>77%</td>
+        </tr>
+      </tbody>
+      <tfoot class="table-footer">
+        <tr>
+          <td colspan="5">
+
+            <div class="table-pager">
+              <div class="table-pager-navigation">
+                <button class="table-pager-btn" disabled>◀</button>
+                <div class="table-pager-info">Page <strong>1</strong> of <strong>3</strong></div>
+                <button class="table-pager-btn">▶</button>
+              </div>
+              
+              <div class="table-pager-size">
+                <span class="table-pager-size-label">Show:</span>
+                <select class="table-pager-size-select">
+                  <option value="5">5</option>
+                  <option value="10" selected>10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </section>
+</main>
+
+<script src="/js/partials/footer.js"></script>
