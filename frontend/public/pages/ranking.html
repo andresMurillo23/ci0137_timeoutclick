@@ -9,7 +9,7 @@
 <main class="report">
   <section class="content">
     <h2 class="titles--light">RANKINGS</h2>
-    <p class="subtitle">Top duelists with the highest win rates in Timeout Click</p>
+    <p class="subtitle">Top duelists with more wins in Timeout Click</p>
 
 
     <table class="table" aria-label="Leaderboard">
@@ -86,34 +86,5 @@
     </table>
   </section>
 </main>
-
-<script>
-// Funcionalidad de ordenamiento de tabla
-document.addEventListener('DOMContentLoaded', function() {
-  const sortableHeaders = document.querySelectorAll('.sortable');
-  
-  sortableHeaders.forEach(header => {
-    header.addEventListener('click', function() {
-      const currentState = this.classList.contains('asc') ? 'asc' : 
-                          this.classList.contains('desc') ? 'desc' : 'none';
-      
-      // Limpiar otros headers
-      sortableHeaders.forEach(h => h.classList.remove('asc', 'desc'));
-      
-      // Cambiar estado: none -> asc -> desc -> asc -> desc...
-      if (currentState === 'none') {
-        this.classList.add('asc');
-      } else if (currentState === 'asc') {
-        this.classList.add('desc');
-      } else {
-        this.classList.add('asc');
-      }
-      
-      // Aquí puedes agregar la lógica para ordenar los datos
-      console.log(`Sorting by ${this.textContent.trim()} - ${this.classList.contains('asc') ? 'ASC' : 'DESC'}`);
-    });
-  });
-});
-</script>
 
 <script src="/js/partials/footer.js"></script>
