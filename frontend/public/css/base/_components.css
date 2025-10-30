@@ -131,6 +131,25 @@
   border-radius: 20px;
   box-shadow: 0 0 0 6px var(--line-strong);
   padding: 24px 20px 28px;
+
+
+  margin-top: calc(var(--topbar-height) + var(--tabs-height));
+  max-height: calc(100dvh - var(--topbar-height) - var(--tabs-height) - 150px);
+  overflow-y: auto;             
+  padding-bottom: 24px;    
+  scrollbar-width: thin; 
+}
+
+/* Scrollbar bonito en Chrome/Edge */
+.poster::-webkit-scrollbar {
+  width: 6px;
+}
+.poster::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: 4px;
+}
+.poster::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 @media (max-width: 768px) {

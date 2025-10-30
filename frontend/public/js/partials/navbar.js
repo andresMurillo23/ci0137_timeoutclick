@@ -22,7 +22,8 @@ var navbar =
         <span>TIMEOUT CLICK</span>
     </div>
     <div class="context" id="page-context" aria-live="polite"></div>
-    <button class="btn logout" type="button" aria-label="Cerrar sesión">Log out</button>
+    <button class="btn logout" type="button" aria-label="Cerrar sesión"
+        onclick="window.location.href='/pages/home.html'"> Log out</button>
 </header>
 
 <!-- Pestañas comunes -->
