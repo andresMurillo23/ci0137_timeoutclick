@@ -193,7 +193,7 @@ textarea:focus {
   outline-offset: 2px;
 }
 
-/* Títulos tipo “Challenge Player” */
+/* Títulos tipo "Challenge Player" */
 .titles {
   font-family: "Rye", cursive;
   text-align: center;
@@ -205,64 +205,35 @@ textarea:focus {
   text-shadow: 3px 3px 0 #e6cc99, 4px 4px 4px rgba(0, 0, 0, .3);
 }
 
+/* Variante clara de títulos */
+.titles--light {
+  font-family: "Rye", cursive;
+  text-align: center;
+  font-size: 44px;
+  font-weight: 700;
+  color: var(--panel);
+  letter-spacing: 3px;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 0 var(--black-bean), 3px 3px 8px rgba(0, 0, 0, 0.5);
+}
+
 /* Responsive para títulos */
 @media (max-width: 768px) {
-  .titles {
+  .titles,
+  .titles--light {
     font-size: 30px;
     letter-spacing: 3px;
   }
 }
 
 @media (max-width: 520px) {
-  .titles {
+  .titles,
+  .titles--light {
     font-size: 26px;
     letter-spacing: 2px;
   }
 }
 
-/* === TABLAS GLOBALES === */
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
-  background: var(--panel);
-}
-
-.table thead {
-  background: #a04005ff;
-  color: #fff8ed;
-  font-weight: bold;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-.table th,
-.table td {
-  padding: 16px 18px;
-  text-align: center;
-}
-
-.table tbody tr {
-  background: #f8ead6;
-  color: #3b2414;
-  transition: 0.2s ease;
-}
-
-.table tbody tr:nth-child(even) {
-  background: #f2e2c5;
-}
-
-.table tbody tr:hover {
-  background: #e6cc99;
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.15);
-}
-
-.table td:first-child {
-  font-weight: 800;
-  font-size: 18px;
-}
 
 /* No underline for anchor buttons (safe) */
 a.btn,

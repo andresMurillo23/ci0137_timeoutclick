@@ -1,276 +1,268 @@
-/* Friends List - Estilos */
+/* Friends List */
+body {
+  background: var(--bg);
+  color: var(--row-background);
+  font-family: var(--montfont);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 
-/* Ventana central */
-.window {
-    border: 3px solid var(--text);
-    padding: 16px;
-    display: grid;
-    gap: 16px;
-    background: var(--panel);
-    margin: 20px;
+.friend-list {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 50px 50px;
 }
 
 .content {
-    border: 4px solid #3b2414;
-    outline: 6px solid #e6cc99;
-    background: var(--panel);
-    padding: 60px;
-    gap: 16px;
-    display: flex;
-    flex-direction: column;
+  text-align: left;
+  max-width: 1100px;
+  width: 100%;
+  padding: 30px 20px 60px;
 }
 
-/* Header section */
-.header-section {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-bottom: 20px;
+.content .titles--light,
+.content .subtitle {
+  text-align: center;
 }
 
-.content h2 {
-    font-size: 22px;
-    margin: 0;
-    color: var(--text);
+.subtitle {
+  font-size: 18px;
+  color: var(--line-strong);
+  margin-bottom: 40px;
+  opacity: 0.9;
 }
 
-/* Buscador y botón Add Friends */
-.tools {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    align-items: center;
-    flex-wrap: wrap;
+.wrap {
+  display: grid;
+  gap: 18px;
+}
+
+/* Panel de búsqueda */
+.panel {
+  background: var(--panel);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.ph {
+  background: var(--sienna);
+  color: var(--panel);
+  padding: 15px 18px;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .search {
-    width: clamp(180px, 26vw, 260px);
-    height: 36px;
-    background: transparent;
-    color: var(--text);
-    border: 1px solid var(--line);
-    padding: 0 12px;
-    font: 14px/1.2 ui-monospace, monospace;
+  flex: 1;
+  height: 36px;
+  background: var(--bar-background);
+  color: var(--text);
+  border: 1px solid var(--borders);
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 14px;
 }
 
 .search::placeholder {
-    color: #8a8a8a;
+  color: var(--muted);
 }
 
-.icon-search {
-    height: 36px;
-    padding: 0 12px;
-    background: transparent;
-    color: var(--text);
-    border: 1px solid var(--line);
-    cursor: pointer;
+.search:focus {
+  outline: none;
+  border-color: var(--brown);
+  box-shadow: 0 0 0 2px rgba(160, 64, 5, 0.2);
 }
 
-.icon-search::before {
-    content: "🔍";
+/* Barra de búsqueda */
+.search-bar {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  padding: 18px;
 }
 
-.add-btn {
-    height: 36px;
-    padding: 0 16px;
-    background: #7a4e2b;
-    color: var(--panel);
-    border: 2px solid var(--text);
-    font-weight: bold;
-    cursor: pointer;
+.search-bar .btn--primary-brown {
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 12px 24px;
+  font-size: 14px;
+  white-space: nowrap;
 }
 
-.add-btn:hover {
-    background: #5e3b20;
-    color: var(--accent);
+.search-bar .btn--secondary {
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 12px 24px;
+  font-size: 14px;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.body {
+  padding: 16px;
+}
+
+/* Barra de acciones */
+.action-bar {
+  padding: 18px;
+  text-align: center;
 }
 
 /* Grid de tarjetas de amigos */
 .friends-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
 }
 
-/* Tarjeta de amigo */
 .friend-card {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 20px;
-    padding: 20px;
-    background: var(--panel);
-    border: 3px solid var(--text);
-    outline: 2px solid #e6cc99;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 16px;
+  border: 1px solid var(--borders);
+  border-radius: 8px;
+  background: var(--panel);
 }
 
-/* Avatar grande */
-.avatar-large {
-    width: 100px;
-    height: 100px;
-    border: 2px solid var(--line);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    color: var(--muted);
-    font-size: 12px;
+.friend-card:hover {
+  background: var(--bar-background);
 }
 
-/* Información del amigo */
-.friend-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    justify-content: center;
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  background: var(--accent);
+  color: var(--brown);
+  border: 1px solid var(--brown);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+  flex-shrink: 0;
 }
 
-.info-row {
-    display: flex;
-    gap: 8px;
-    align-items: baseline;
+.user-name {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--black-bean);
+  letter-spacing: .2px;
+  flex: 1;
 }
 
-.info-row .label {
-    font-weight: normal;
-    color: var(--text);
+/* Wrapper para botones Challenge en las tarjetas */
+.friend-card .btn--primary-brown {
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 8px 20px;
+  font-size: 12px;
+  border-radius: 20px;
 }
 
-.info-row .value {
-    font-weight: normal;
-    color: var(--text);
-}
-
-/* Botón Desafiar */
-.btn-action {
-    padding: 8px 16px;
-    background: transparent;
-    color: var(--text);
-    border: 2px solid var(--text);
-    cursor: pointer;
-    font-family: inherit;
-    font-weight: bold;
-    text-align: center;
-    white-space: nowrap;
-}
-
-.btn-action:hover {
-    background: var(--text);
-    color: var(--panel);
-}
-
-/* Footer */
-.footer {
-    display: flex;
-    justify-content: flex-start;
-    margin-top: 20px;
-    padding-top: 16px;
-    border-top: 1px solid var(--line);
-}
-
-/* Botones generales */
-.window .btn,
-.content .btn {
-    padding: 8px 14px;
-    border: 2px solid var(--text);
-    background: transparent;
-    color: var(--text);
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.window .btn:hover,
-.content .btn:hover {
-    background: var(--text);
-    color: #fff1e8;
-}
-
-/* Focus states */
+/* Estados de foco usando variables globales */
 a:focus,
 button:focus,
 input:focus {
-    outline: 2px solid var(--text);
-    outline-offset: 2px;
+  outline: 2px solid var(--brown);
+  outline-offset: 2px;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    .content {
-        padding: 40px 20px;
-    }
+  .content h2,
+  .titles--light {
+    font-size: 36px;
+  }
+  
+  .subtitle {
+    font-size: 16px;
+  }
+  
+  .search-bar {
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+  }
+  
+  .search {
+    width: 100%;
+  }
 
-    .tools {
-        justify-content: stretch;
-    }
+  .friends-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 
-    .search {
-        flex: 1;
-        min-width: 150px;
-    }
+  .friend-card {
+    padding: 14px;
+  }
+
+  .user-name {
+    font-size: 15px;
+  }
 }
 
 @media (max-width: 520px) {
-    .content {
-        padding: 20px 12px;
-    }
+  .content h2,
+  .titles--light {
+    font-size: 28px;
+  }
+  
+  .subtitle {
+    font-size: 14px;
+  }
+  
+  .search-bar {
+    padding: 8px;
+    gap: 8px;
+  }
+  
+  .body {
+    padding: 12px;
+  }
 
-    .content h2 {
-        font-size: 18px;
-    }
+  .friends-grid {
+    gap: 10px;
+  }
 
-    .window {
-        margin: 10px;
-    }
+  .friend-card {
+    padding: 12px;
+    gap: 12px;
+  }
 
-    .tools {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
-    }
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 12px;
+  }
 
-    .search {
-        width: 100%;
-        height: 40px;
-        font-size: 16px;
-    }
+  .user-name {
+    font-size: 14px;
+  }
 
-    .icon-search {
-        width: 100%;
-        height: 40px;
-    }
+  .friend-card .btn--primary-brown {
+    padding: 6px 16px;
+    font-size: 11px;
+  }
+}
 
-    .add-btn {
-        width: 100%;
-        height: 40px;
-    }
+/* Responsive navbar height */
+@media (max-width: 1024px) {
+  .friend-list {
+    padding-top: calc(var(--navbar-height-tablet) + 26px);
+  }
+}
 
-    .friends-grid {
-        grid-template-columns: 1fr;
-        gap: 14px;
-    }
-
-    .friend-card {
-        grid-template-columns: auto 1fr;
-        grid-template-rows: auto auto;
-        padding: 16px;
-        gap: 12px;
-    }
-
-    .avatar-large {
-        width: 70px;
-        height: 70px;
-        grid-row: 1 / 3;
-    }
-
-    .friend-info {
-        grid-column: 2;
-        grid-row: 1;
-    }
-
-    .btn-action {
-        grid-column: 2;
-        grid-row: 2;
-        justify-self: end;
-    }
+@media (max-width: 768px) {
+  .friend-list {
+    padding-top: calc(var(--navbar-height-mobile) + 26px);
+  }
 }
