@@ -183,3 +183,16 @@ body {
   font-family: "Rye", system-ui, sans-serif;
   letter-spacing: 1.5px;
 }
+
+/* Responsive navbar heights for .page containers */
+@media (max-width: 1024px) {
+  .page, .friend-list, .report {
+    padding-top: calc(var(--navbar-height-tablet) + 26px);
+  }
+}
+
+@media (max-width: 768px) {
+  .page, .friend-list, .report {
+    padding-top: calc(var(--navbar-height-mobile) + 26px);
+  }
+}

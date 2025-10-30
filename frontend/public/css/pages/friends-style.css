@@ -3,23 +3,18 @@ body {
   background: var(--page-bg);
   color: var(--row-background);
   font-family: var(--montfont);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
 .friend-list {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 50px 50px;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 26px 20px 96px;
+  padding-top: calc(var(--navbar-height) + 26px);
 }
 
 .content {
   text-align: left;
-  max-width: 1100px;
   width: 100%;
-  padding: 30px 20px 60px;
 }
 
 .content .titles--light,
@@ -254,15 +249,4 @@ input:focus {
   }
 }
 
-/* Responsive navbar height */
-@media (max-width: 1024px) {
-  .friend-list {
-    padding-top: calc(var(--navbar-height-tablet) + 26px);
-  }
-}
 
-@media (max-width: 768px) {
-  .friend-list {
-    padding-top: calc(var(--navbar-height-mobile) + 26px);
-  }
-}
