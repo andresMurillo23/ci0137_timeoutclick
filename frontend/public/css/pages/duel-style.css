@@ -1,387 +1,282 @@
-/* Duel - Estilo moderno para la pantalla de duelo */
-
-body {
-  background-image: none !important;
-  background-color: #2a1a0f;
-}
-
-.duel-container {
-  min-height: 100vh;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Layout principal: Game area + Side panel */
-.duel-layout {
+.duel-page {
   display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 0;
-  flex: 1;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: auto 1fr auto;
+  gap: 1.5rem;
+  padding:26px 20px 96px;
+  /* Variable CSS para reservar el espacio del navbar */
+  padding-top: calc(var(--navbar-height) + 26px);
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Montserrat", sans-serif;
 }
 
-/* Área de juego */
-.game-area {
+/* === Header === */
+.duel-header {
+  grid-column: 1 / -1;
+  background: var(--brown);
+  color: var(--panel);
+  text-align: center;
+  border-radius: 0.8rem;
+  padding: 0.75rem;
+}
+
+/* === Main Area === */
+.duel-content {
   background: var(--panel);
-  border: none;
-  border-radius: 0;
-  padding: 40px;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  gap: 40px;
-  box-shadow: none;
+  justify-content: space-evenly;
 }
 
-/* Marcador de rondas */
+/* --- Ronda y Goal Time centrados con jerarquía visual --- */
+.round-goal-centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.round-info, .goal-info {
+  text-align: center;
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+}
+
+/* ROUND y GOAL TIME (etiquetas pequeñas) */
+.round-label,
+.goal-label {
+  display: block;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 2px;
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+/* Los valores grandes (1 y 4s) */
+.round-number,
+.goal-value {
+  display: block;
+  font-weight: 800;
+  font-size: 2.5rem;
+  color: var(--text);
+  text-shadow: 1px 2px 0 var(--line);
+}
+
+/* --- Marcador y jugadores --- */
 .score-board {
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 20px;
-  font-size: 24px;
-  font-weight: bold;
+  gap: 1.2rem;
+  margin: 1rem 0 2rem;
 }
 
 .player-label {
-  color: var(--muted);
-  text-transform: uppercase;
-  font-size: 18px;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text);
 }
 
 .score {
-  font-size: 36px;
-  color: var(--text);
-  padding: 10px 20px;
   background: var(--line-strong);
-  border-radius: 8px;
-  min-width: 100px;
-  text-align: center;
+  color: var(--text);
+  border: 2px solid var(--line);
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
-/* Botón PRESS - El gatillo */
+
+/* Button */
 .press-button {
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  background: linear-gradient(145deg, #8b5a3c, #654321);
-  border: 4px solid var(--bg);
-  color: var(--accent);
-  font-size: 32px;
-  font-weight: bold;
-  font-family: inherit;
+  border: 3px solid var(--bg);
+  background: linear-gradient(145deg, var(--brown), var(--burnt-orange));
+  color: var(--panel);
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, background 0.2s ease;
   cursor: pointer;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-  transition: all 0.2s ease;
-  text-transform: uppercase;
-  letter-spacing: 2px;
 }
 
 .press-button:hover {
-  background: linear-gradient(145deg, #9d6b47, #764d2d);
   transform: scale(1.05);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+  background: linear-gradient(145deg, var(--burnt-orange), var(--syracuse-red-orange));
 }
 
-.press-button:active {
-  transform: scale(0.95);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.press-button:disabled {
-  background: linear-gradient(145deg, #b8b8b8, #888888);
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.press-button:disabled:hover {
-  transform: none;
-}
-
-/* Indicador de turno */
-.turn-indicator {
-  padding: 15px 30px;
-  background: var(--line-strong);
-  border: 2px solid var(--line);
-  border-radius: 8px;
-}
-
-.turn-text {
-  margin: 0;
-  font-size: 24px;
-  font-weight: bold;
-  color: var(--text);
-  text-align: center;
-}
-
-/* Estado: Turno del oponente */
-.turn-indicator.opponent-turn .turn-text {
+/* Press Time */
+.press-time {
+  font-weight: 600;
   color: var(--muted);
+  margin-top: 0.5rem;
 }
 
-/* Panel lateral */
-.side-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
+/* Side Panel */
+.duel-side {
   background: var(--panel);
-}
-
-/* Sección del oponente */
-.opponent-section {
-  background: var(--panel);
-  border: none;
-  border-radius: 0;
-  padding: 25px;
+  border-radius: 1rem;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.25);
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
-  box-shadow: none;
-  border-bottom: 2px solid var(--line);
+  gap: 1.5rem;
 }
 
-.opponent-avatar {
+/* Opponent Card */
+.opponent-card {
+  text-align: center;
+}
+.avatar {
   width: 120px;
   height: 120px;
+  border-radius: 50%;
   border: 2px solid var(--line);
-  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: var(--bar-background);
   color: var(--muted);
-  font-size: 14px;
 }
-
 .opponent-label {
-  font-size: 18px;
-  font-weight: bold;
-  color: var(--text);
+  display: block;
+  font-weight: 800;
   text-transform: uppercase;
+  margin-top: 0.5rem;
 }
 
-/* Historial */
+/* Turn status */
+.turn-status {
+  background: var(--line-strong);
+  border: 2px solid var(--line);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  width: 100%;
+}
+
+/* History */
 .history-section {
-  background: var(--panel);
-  border: none;
-  border-radius: 0;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  box-shadow: none;
-  flex: 1;
+  width: 100%;
 }
-
 .history-title {
-  margin: 0;
-  font-size: 20px;
-  font-weight: bold;
+  font-family: "Rye", cursive;
+  font-size: 1.3rem;
   color: var(--text);
   border-bottom: 2px solid var(--line);
-  padding-bottom: 10px;
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.3rem;
 }
-
 .history-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  max-height: 300px;
-  overflow-y: auto;
+  gap: 0.5rem;
 }
-
 .history-item {
-  padding: 12px 15px;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 500;
   border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  text-align: center;
 }
-
 .history-item.win {
   background: #d4edda;
   color: #155724;
-  border-color: #c3e6cb;
 }
-
 .history-item.loss {
   background: #f8d7da;
   color: #721c24;
-  border-color: #f5c6cb;
-}
-
-/* Scrollbar personalizado para el historial */
-.history-list::-webkit-scrollbar {
-  width: 8px;
-}
-
-.history-list::-webkit-scrollbar-track {
-  background: var(--line-strong);
-  border-radius: 4px;
-}
-
-.history-list::-webkit-scrollbar-thumb {
-  background: var(--line);
-  border-radius: 4px;
-}
-
-.history-list::-webkit-scrollbar-thumb:hover {
-  background: var(--bg);
 }
 
 /* Footer */
-.footer {
-  padding: 15px;
-  text-align: center;
-  background: var(--panel);
-  border-top: 2px solid var(--line);
+.duel-footer {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-start;
 }
-
 .btn-surrender {
-  background: #8b4513;
-  color: var(--accent);
-  border: 2px solid #5c2e0a;
-  padding: 12px 24px;
-  font-weight: bold;
-  transition: all 0.2s ease;
+  background: var(--brown);
+  color: var(--panel);
+  border-radius: 2rem;
+  padding: 0.8rem 2rem;
+  font-weight: 700;
+  border: none;
+  margin-left: 1rem;
+  transition: 0.2s ease;
 }
-
 .btn-surrender:hover {
-  background: #a0522d;
-  color: var(--accent);
   transform: scale(1.05);
+  background: var(--burnt-orange);
 }
 
-.btn-surrender:active {
-  transform: scale(0.98);
-}
-
-/* Modal de confirmación */
+/* Popup */
 .modal-overlay {
   display: none;
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 1000;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
   align-items: center;
   justify-content: center;
 }
-
 .modal-overlay.active {
   display: flex;
 }
-
 .modal-content {
   background: var(--panel);
   border: 3px solid var(--bg);
-  border-radius: 8px;
-  padding: 30px;
-  max-width: 400px;
-  width: 90%;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  border-radius: 0.75rem;
+  padding: 2rem;
   text-align: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
 }
 
-.modal-content h2 {
-  margin: 0 0 15px 0;
-  font-size: 28px;
-  color: var(--text);
-}
-
-.modal-content p {
-  margin: 0 0 25px 0;
-  font-size: 18px;
-  color: var(--muted);
-  line-height: 1.5;
-}
-
-.modal-actions {
+.popup-actions {
   display: flex;
-  gap: 15px;
   justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
 }
 
-.btn-cancel {
-  background: var(--line);
-  color: var(--accent);
-  border: 2px solid var(--bg);
-  padding: 12px 24px;
-  font-weight: bold;
-  transition: all 0.2s ease;
-}
-
-.btn-cancel:hover {
-  background: var(--line-strong);
-  color: var(--text);
-  transform: scale(1.05);
+.btn-confirm, .btn-cancel {
+  border-radius: 2rem;
+  padding: 0.6rem 1.5rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease;
 }
 
 .btn-confirm {
-  background: #c0392b;
-  color: var(--accent);
-  border: 2px solid #7f1d1d;
-  padding: 12px 24px;
-  font-weight: bold;
-  transition: all 0.2s ease;
+  background: var(--brown);
+  color: var(--panel);
 }
 
 .btn-confirm:hover {
-  background: #e74c3c;
-  transform: scale(1.05);
+  background: var(--burnt-orange);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .duel-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .game-area {
-    padding: 20px;
-    gap: 30px;
-  }
-
-  .score-board {
-    flex-direction: column;
-    gap: 10px;
-    text-align: center;
-  }
-
-  .score {
-    font-size: 28px;
-  }
-
-  .press-button {
-    width: 160px;
-    height: 160px;
-    font-size: 28px;
-  }
-
-  .side-panel {
-    order: -1;
-  }
+.btn-cancel {
+  background: var(--line-strong);
+  color: var(--text);
 }
 
-@media (max-width: 520px) {
-  .duel-header {
-    flex-direction: column;
-    gap: 10px;
-    text-align: center;
-  }
-
-  .duel-header h1 {
-    font-size: 24px;
-  }
-
-  .press-button {
-    width: 140px;
-    height: 140px;
-    font-size: 24px;
-  }
+.btn-cancel:hover {
+  background: var(--bar-background);
 }
