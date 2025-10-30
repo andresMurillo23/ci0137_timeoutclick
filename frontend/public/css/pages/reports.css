@@ -86,8 +86,7 @@ body {
   will-change: transform;
   transform-origin: center;
 
-  align-self: end;
-  margin-top: 24px;
+  flex-shrink: 0;
   height: 40px;
 }
 
@@ -104,7 +103,7 @@ body {
 @media (max-width: 768px) {
   .btn--filter {
     align-self: stretch;
-    margin-top: 16px;
+    width: 100%;
   }
 }
 
@@ -113,6 +112,6 @@ body {
     height: 36px;
     font-size: 13px;
     padding: 8px 16px;
-    margin-top: 12px;
+    width: 100%;
   }
 }
