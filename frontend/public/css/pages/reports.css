@@ -1,7 +1,7 @@
 /*  Fondo y tipografía general */
 body {
   background: var(--bg);
-  color: #f8ead6;
+  color: var(--row-background);
   font-family: var(--montfont);
   min-height: 100vh;
   display: flex;
@@ -58,60 +58,5 @@ body {
   
   .subtitle {
     font-size: 14px;
-  }
-}
-
-/*  BOTÓN ESPECÍFICO PARA FILTROS  */
-.btn--filter {
-  display: inline-block;
-  width: auto;
-  max-width: none;
-  margin: 0;
-  padding: 10px 20px;
-
-  border: 2px solid var(--brown);
-  background: var(--brown);
-  color: var(--panel);
-
-  font-weight: bold;
-  letter-spacing: 1px;
-  font-size: 14px;
-  line-height: 1.1;
-  font-family: var(--montfont);
-
-  border-radius: 20px;
-  cursor: pointer;
-
-  transition: transform .2s ease, background-color .2s ease;
-  will-change: transform;
-  transform-origin: center;
-
-  flex-shrink: 0;
-  height: 40px;
-}
-
-.btn--filter:hover {
-  transform: scale(1.05);
-  background-color: var(--licorice);
-}
-
-.btn--filter:active {
-  transform: scale(1.03);
-}
-
-/* Responsive para botón de filtros */
-@media (max-width: 768px) {
-  .btn--filter {
-    align-self: stretch;
-    width: 100%;
-  }
-}
-
-@media (max-width: 520px) {
-  .btn--filter {
-    height: 36px;
-    font-size: 13px;
-    padding: 8px 16px;
-    width: 100%;
   }
 }
