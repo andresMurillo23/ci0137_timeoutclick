@@ -3,18 +3,23 @@
 <script src="/js/utils/addStylesheet.js"></script>
 
 <script>
-  addStylesheet("/css/pages/auth-style.css");
+  addStylesheet("/css/pages/register-login.css");
 </script>
 
-<header class="saloon">
+<header class="topbar">
         <h1>TIMEOUT CLICK</h1>
     </header>
 
     <main class="poster">
-        <h2>RECOVERY PASSWORD</h2>
+        <h2 class="titles">RECOVERY PASSWORD</h2>
         <hr class="divider">
 
         <form>
+            <div class="field">
+                <label for="email">Email:</label>
+                <input id="email" type="email" placeholder="EMAIL">
+            </div>
+
             <div class="field">
                 <label for="newpass">New Password:</label>
                 <input id="newpass" type="password" placeholder="PASSWORD">
@@ -26,7 +31,8 @@
             </div>
 
             <div class="actions">
-                <button type="submit" class="btn">UPDATE</button>
+                <button type="button" class="btn btn--back" onclick="history.back()">BACK</button>
+                <button type="submit" class="btn btn--secondary">UPDATE</button>
             </div>
         </form>
     </main>

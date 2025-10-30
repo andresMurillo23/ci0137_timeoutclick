@@ -1,73 +1,96 @@
-console.log("[popup] archivo cargado");
-
 document.addEventListener("DOMContentLoaded", () => {
-        console.log("[popup] DOM listo");
+  const overlay  = document.getElementById("confirmOverlay");
+  const dialog   = overlay?.querySelector(".dialog");
+  const who      = document.getElementById("who");
+  const whoWaiting = document.getElementById("whoWaiting");
 
-    const overlay = document.getElementById("confirmOverlay");
-    const dialog = overlay ? overlay.querySelector(".dialog") : null;
-    const openBtn = document.getElementById("deleteBtn");
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
-    const who = document.getElementById("who");
-    const username = document.getElementById("username");
+  const panelConfirm = document.getElementById("panelConfirm");
+  const panelWaiting = document.getElementById("panelWaiting");
 
-    
-    console.table({
-        overlay: !!overlay,
-    dialog: !!dialog,
-    openBtn: !!openBtn,
-    noBtn: !!noBtn,
-    yesBtn: !!yesBtn,
-    who: !!who,
-    username: !!username,
-    });
+  const noBtn    = document.getElementById("noBtn");
+  const yesBtn   = document.getElementById("yesBtn");
+  const cancelWaitBtn = document.getElementById("cancelWaitBtn");
 
-    if (!overlay || !dialog) {
-        console.error("[popup] Falta el overlay o el dialog en el DOM.");
-    return;
+  let lastTrigger = null;
+  let opponent = "";
+  let waitTimer = null;
+
+  if (!overlay || !dialog) return;
+
+  function setState(state) {
+    if (state === "confirm") {
+      panelConfirm.hidden = false;
+      panelWaiting.hidden = true;
+      dialog.focus();
+    } else if (state === "waiting") {
+      panelConfirm.hidden = true;
+      panelWaiting.hidden = false;
+      dialog.focus();
     }
+  }
 
-    function openModal() {
-        if (username && who) who.textContent = (username.textContent || "").trim();
+  function openModal(fromBtn) {
+    lastTrigger = fromBtn || null;
+    const row = fromBtn?.closest(".row");
+    opponent = (row?.querySelector(".username")?.textContent || "").trim();
+    who.textContent = opponent || "Player";
+    whoWaiting.textContent = opponent || "Player";
+
+    setState("confirm");
     overlay.classList.add("open");
     overlay.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
-        setTimeout(() => dialog.focus(), 0);
-    console.log("[popup] openModal()");
-    }
+    setTimeout(() => dialog.focus(), 0);
+  }
 
-    function closeModal() {
-        overlay.classList.remove("open");
+  function closeModal() {
+    overlay.classList.remove("open");
     overlay.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
-    openBtn?.focus();
-    console.log("[popup] closeModal()");
-    }
+    clearTimeout(waitTimer);
+    waitTimer = null;
+    lastTrigger?.focus();
+  }
 
-    
-    openBtn?.addEventListener("click", openModal);
+  // Delegación: solo abre para filas disponibles y botón no deshabilitado
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".list .row.available .action .btn");
+    if (!btn) return;
+    openModal(btn);
+  });
 
-   
-    document.addEventListener("click", (e) => {
-        if (e.target.closest && e.target.closest("#deleteBtn")) {
-        openModal();
-        }
-    });
+  // NO -> cierra
+  noBtn?.addEventListener("click", closeModal);
 
-    // Cerrar clic fuera
-    overlay.addEventListener("click", (e) => {
-        if (e.target === overlay) closeModal();
-    });
+  // YES -> muestra "waiting"
+  yesBtn?.addEventListener("click", async () => {
+    setState("waiting");
+    // TODO: aquí integra tu lógica real:
+    // await sendChallenge(opponent);
+    // await waitForResponse(opponent);
 
-    // Botones NO/YES
-    noBtn?.addEventListener("click", closeModal);
-    yesBtn?.addEventListener("click", () => {
-        // TODO: logica real
-        closeModal();
-    });
+    // DEMO: simular respuesta en 4s. Cambia por tu promesa real.
+    waitTimer = setTimeout(() => {
+      // p.ej. navegar a la sala de juego:
+      // location.href = `/pages/versus.html?opponent=${encodeURIComponent(opponent)}`;
+      closeModal();
+      // O en lugar de cerrar, muestra un "accepted" / "declined".
+    }, 4000);
+  });
 
-    
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && overlay.classList.contains("open")) closeModal();
-    });
+  // Cancelar espera
+  cancelWaitBtn?.addEventListener("click", () => {
+    // TODO: cancelar challenge en backend si aplica
+    closeModal();
+  });
+
+  // Cerrar con clic fuera
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeModal();
+  });
+
+  // ESC
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && overlay.classList.contains("open")) closeModal();
+  });
 });

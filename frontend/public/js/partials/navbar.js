@@ -22,12 +22,13 @@ var navbar =
         <span>TIMEOUT CLICK</span>
     </div>
     <div class="context" id="page-context" aria-live="polite"></div>
-    <button class="btn logout" type="button" aria-label="Cerrar sesión">Log out</button>
+    <button class="btn logout" type="button" aria-label="Cerrar sesión"
+        onclick="window.location.href='/pages/home.html'"> Log out</button>
 </header>
 
 <!-- Pestañas comunes -->
 <nav class="tabs" aria-label="Navegación principal">
-    <a class="tab" href="#">start game</a>
+    <a class="tab" href="/pages/homeLogged.html">start game</a>
     <a class="tab" href="#">rankings</a>
     <a class="tab" href="#">history</a>
     <a href="/pages/addFriend.html" class="tab" href="#">friends</a>
