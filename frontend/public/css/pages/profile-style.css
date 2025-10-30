@@ -22,7 +22,7 @@ body {
     radial-gradient(1200px 60% at 50% -10%, rgba(255, 219, 165, .06), transparent 60%),
     linear-gradient(#2b1a10, #1f140d) fixed;
   color: var(--text);
-  font-family: inherit;
+  font-family: var(--montfont);
 }
 
 .page {
