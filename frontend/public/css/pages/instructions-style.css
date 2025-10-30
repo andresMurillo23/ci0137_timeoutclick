@@ -21,12 +21,17 @@
 /* Fondo y tipografia */
 html,
 body {
-  height: 100%;
+  min-height: 100%; 
 }
-
+body::before{
+  content:"";
+  position: fixed;
+  inset: 0;             
+  background: var(--licorice) url("/assets/images/desert-bg2.jpg") center/cover no-repeat;
+  z-index: -1;            
+}
 body {
-  margin: 0;
-  background: #f2e6d3 url("/assets/images/desert-bg2.jpg") center/cover no-repeat;
+margin: 0;
   color: #26170e;
   font-family: var(--montfont);
 }
@@ -55,6 +60,19 @@ body {
   opacity: .25;
 }
 
+.poster {
+  max-width: 720px;
+  margin: calc(var(--bar-h) + 12px) auto 16px;
+  max-height: calc(100dvh - var(--bar-h) - 28px);
+  overflow: hidden;
+
+  /* layout */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  padding: 20px 16px;
+}
 
 .instructions {
   min-height: 120px;
