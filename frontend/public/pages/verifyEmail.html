@@ -1,49 +1,49 @@
 <script src="/js/partials/head.js"></script>
 
 <script src="/js/utils/addStylesheet.js"></script>
-
 <script>
   addStylesheet("/css/pages/verifyEmail.css");
 </script>
 
 <header class="topbar">
-        <h1>TIMEOUT CLICK</h1>
-    </header>
+  <h1>TIMEOUT CLICK</h1>
+</header>
 
-    <main class="poster">
-        <h2 class="titles">VERIFY YOUR EMAIL</h2>
-        <hr class="divider">
+<main class="poster">
+  <h2 class="titles">VERIFY YOUR EMAIL</h2>
+  <hr class="divider">
 
-        <p class="indications">
-            Enter the 6-digit code we sent to <strong>mario***@gmail.com</strong>
-        </p>
+  <div class="poster__scroll">
+    <p class="indications">
+      Enter the 6-digit code we sent to <strong>mario***@gmail.com</strong>
+    </p>
 
-        <form>
-            <div class="code-grid">
-                <input class="code-box" type="text" inputmode="numeric" maxlength="1">
-                <input class="code-box" type="text" inputmode="numeric" maxlength="1">
-                <input class="code-box" type="text" inputmode="numeric" maxlength="1">
-                <input class="code-box" type="text" inputmode="numeric" maxlength="1">
-                <input class="code-box" type="text" inputmode="numeric" maxlength="1">
-                <input class="code-box" type="text" inputmode="numeric" maxlength="1">
-            </div>
+    <form>
+      <div class="code-grid">
+        <input class="code-box" type="text" inputmode="numeric" maxlength="1">
+        <input class="code-box" type="text" inputmode="numeric" maxlength="1">
+        <input class="code-box" type="text" inputmode="numeric" maxlength="1">
+        <input class="code-box" type="text" inputmode="numeric" maxlength="1">
+        <input class="code-box" type="text" inputmode="numeric" maxlength="1">
+        <input class="code-box" type="text" inputmode="numeric" maxlength="1">
+      </div>
 
-            <p class="muted">Invalid or expired code</p>
+      <p class="muted">Invalid or expired code</p>
 
-            <div class="actions">
-                <button type="button" class="btn btn--back" onclick="history.back()">BACK</button>
-                <!-- cambiar a submit en backend -->
-                <button type="button" class="btn btn--primary-brown" onclick="location.href='/pages/homeLogged.html'">VERIFY</button>
-            </div>
+      <div class="actions">
+        <button type="button" class="btn btn--back" onclick="history.back()">BACK</button>
+        <!-- cambiar a submit en backend -->
+        <button type="button" class="btn btn--secondary" onclick="location.href='/pages/homeLogged.html'">VERIFY</button>
+      </div>
 
-            <div class="row-links">
-                <a href="/pages/verifyEmail.html">Resend code?</a>
-                <a href="/pages/register.html">Change email</a>
-            </div>
+      <div class="row-links">
+        <a href="/pages/verifyEmail.html">Resend code?</a>
+        <a href="/pages/register.html">Change email</a>
+      </div>
 
-            <p class="signup"><a href="/pages/login.html">Already have an account?</a></p>
-        </form>
-    </main>
+      <p class="signup"><a href="/pages/login.html">Already have an account?</a></p>
+    </form>
+  </div>
+</main>
 
 <script src="/js/partials/footer.js"></script>
-
