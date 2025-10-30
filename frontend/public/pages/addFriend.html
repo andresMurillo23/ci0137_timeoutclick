@@ -7,41 +7,48 @@
   addStylesheet("/css/pages/add-friend.css");
 </script>
 
-<!-- Contenido panel -->
-<main class="window" role="main" aria-labelledby="add-friend-title">
-  <div class="header-strip" aria-hidden="true"></div>
+<main class="friend-list" role="main">
   <section class="content">
-    <h2 id="add-friend-title">ADD A NEW FRIEND</h2>
 
-    <div class="tools">
-      <input class="search" type="text" placeholder="andresmini" aria-label="Search user">
-      <button class="icon-search" type="button" aria-label="Search"></button>
+    <h2 class="titles--light">ADD A NEW FRIEND</h2>
+    <p class="subtitle">Find and connect with other players</p>
+
+    <div class="wrap">
+      <section class="panel">
+        <div class="ph">Search users</div>
+        
+          <div class="search-bar">
+            <input class="search" type="text" placeholder="Type the name of the user" aria-label="Search user">
+            <button class="btn--primary-brown filter-btn" type="button" aria-label="Search">Search</button>
+          </div>
+        
+      </section>
+
+      <section class="panel">
+        <div class="body">
+          <ul class="user-list">
+            <li class="user-item">
+              <div class="user-avatar">A</div>
+              <span class="user-name">andrescmf1</span>
+              <button class="btn--primary-brown">Add</button>
+            </li>
+            
+            <li class="user-item">
+              <div class="user-avatar">A</div>
+              <span class="user-name">andrescmf1121</span>
+              <button class="btn--primary-brown">Add</button>
+            </li>
+            
+            <li class="user-item">
+              <div class="user-avatar">A</div>
+              <span class="user-name">andrescmfnosca</span>
+              <button class="btn--primary-brown">Add</button>
+            </li>
+          </ul>
+        </div>
+      </section>
+   
     </div>
-
-    <ul class="friend-list">
-        <li class="friend-row">
-            <div class="avatar">avatar</div>
-            <span class="nick">andrescmf1</span>
-            <!--<button class="btn small" type="button">Add</button>-->
-            <a href="/pages/otherProfile.html" class="btn small" type="button">Add</a>
-        </li>
-
-      <li class="friend-row">
-        <div class="avatar">avatar</div>
-        <span class="nick">andrescmf1121</span>
-        <button class="btn small" type="button">Add</button>
-      </li>
-
-      <li class="friend-row">
-        <div class="avatar">avatar</div>
-        <span class="nick">andrescmfnosca</span>
-        <button class="btn small" type="button">Add</button>
-      </li>
-    </ul>
-    
-  
   </section>
-    <div class="footer">
-      <button class="btn" type="button">Back</button>
-    </div>
+</main>
 <script src="/js/partials/footer.js"></script>
