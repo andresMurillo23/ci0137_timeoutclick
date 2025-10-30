@@ -32,11 +32,13 @@ body {
 
 .subtitle {
   text-align: center;
-  color: #e8d7b4;
-  margin: 0 0 22px;
-  font-size: 13px;
-  opacity: .9;
-  font-family: var(--montfont);
+}
+
+.subtitle {
+  font-size: 18px;
+  color: var(--line-strong);
+  margin-bottom: 40px;
+  opacity: 0.9;
 }
 
 .titles {

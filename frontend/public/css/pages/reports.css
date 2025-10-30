@@ -14,12 +14,11 @@ body {
 }
 
 /*  Contenido central  */
-.content {
+.content .titles--light,
+.content .subtitle {
   text-align: center;
-  width: 100%;
 }
 
-/* Subtítulo */
 .subtitle {
   font-size: 18px;
   color: var(--line-strong);
