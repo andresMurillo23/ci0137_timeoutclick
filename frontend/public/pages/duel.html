@@ -1,0 +1,81 @@
+<script src="/js/partials/head.js"></script>
+<script src="/js/partials/navbar.js"></script>
+
+<script src="/js/utils/addStylesheet.js"></script>
+<script>
+  addStylesheet("/css/pages/duel-style.css");
+</script>
+
+<main class="duel-page">
+  <section class="duel-content">
+    <!-- Ronda y meta -->
+    <div class="round-goal-centered">
+      <div class="round-info">
+        <span class="round-label">ROUND</span>
+        <span class="round-number" id="roundNumber">1</span>
+      </div>
+      <div class="goal-info">
+        <span class="goal-label">GOAL TIME</span>
+        <span class="goal-value" id="goalValue">4s</span>
+      </div>
+    </div>
+
+    <!-- Marcador -->
+    <div class="score-board">
+      <span class="titles" id="player1">PLAYER541</span>
+      <span class="score" id="scoreValue">0 - 0</span>
+      <span class="titles" id="player2">PLAYER642</span>
+    </div>
+
+    <!-- Botón central -->
+    <button class="press-button" id="pressButton"><span>CLICK</span></button>
+    <p class="press-time" id="pressTime"></p>
+  </section>
+
+  <!-- Lateral -->
+  <aside class="duel-side">
+    <div class="opponent-card">
+      <div class="avatar">Avatar</div>
+      <span class="opponent-label">OPPONENT:</span>
+      <span class="opponent-name" id="opponentName">PLAYER642</span>
+    </div>
+
+    <div class="turn-status" id="turnStatus">Your Turn!</div>
+
+    <div class="history-section">
+      <h3 class="titles">History</h3>
+      <ul class="history-list" id="historyList"></ul>
+    </div>
+  </aside>
+
+  <!-- Footer -->
+  <footer class="duel-footer">
+    <button class="btn btn--secondary" id="surrenderBtn">Surrender</button>
+  </footer>
+
+  <!-- Popup de ronda -->
+  <div class="modal-overlay" id="winnerPopup">
+    <div class="modal-content">
+      <h2 id="winnerTitle">Round Results</h2>
+      <p id="winnerDetails"></p>
+      <div class="popup-actions">
+        <button class="btn btn-cancel" id="surrenderPopupBtn">Surrender</button>
+        <button class="btn btn-confirm" id="nextRoundBtn">Next Round</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup final -->
+  <div class="modal-overlay" id="finalPopup">
+    <div class="modal-content">
+      <h2 id="finalTitle">Final Results</h2>
+      <p id="finalDetails"></p>
+      <div class="popup-actions">
+        <button class="btn btn-cancel" id="rematchBtn">Rematch</button>
+        <button class="btn btn-confirm" id="returnHomeBtn">Return Home</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="/js/partials/duel-flow.js" defer></script>
