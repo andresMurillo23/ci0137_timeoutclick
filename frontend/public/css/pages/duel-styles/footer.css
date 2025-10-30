@@ -1,0 +1,19 @@
+/* === Footer === */
+.duel-footer {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.btn--secondary {
+  padding: 0.8rem 2rem;
+  font-weight: 700;
+  margin-left: 1rem;
+  transition: 0.2s ease;
+}
+
+.btn--secondary:hover {
+  transform: scale(1.05);
+  background: var(--burnt-orange);
+}
+
