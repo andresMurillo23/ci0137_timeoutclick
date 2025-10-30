@@ -526,3 +526,29 @@ body {
 body.profile-edit {
   background: linear-gradient(#2b1a10, #1f140d) fixed;
 }
+
+.bottom .btn,
+.bottom .btn-ghost{
+  height: 44px;
+  line-height: 42px;
+  min-width: 140px;
+  white-space: nowrap;
+  transition: filter .15s ease, box-shadow .15s ease;
+}
+
+.bottom .btn-ghost.left:hover{ filter: brightness(1.07); }
+.bottom .btn-ghost.left:active{ transform: none; }
+
+#editBtn:hover,
+.bottom .btn.right:hover{ filter: brightness(1.06); }
+#editBtn:active,
+.bottom .btn.right:active{ transform: none; }
+
+.bottom .btn:focus-visible,
+.bottom .btn-ghost:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 3px var(--line-strong);
+}
+
+.bottom .btn,
+.bottom .btn-ghost{ transform: none; }

@@ -65,16 +65,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // YES -> muestra "waiting"
   yesBtn?.addEventListener("click", async () => {
     setState("waiting");
-    // TODO: aquí integra tu lógica real:
-    // await sendChallenge(opponent);
-    // await waitForResponse(opponent);
 
-    // DEMO: simular respuesta en 4s. Cambia por tu promesa real.
     waitTimer = setTimeout(() => {
-      // p.ej. navegar a la sala de juego:
-      // location.href = `/pages/versus.html?opponent=${encodeURIComponent(opponent)}`;
-      closeModal();
-      // O en lugar de cerrar, muestra un "accepted" / "declined".
+      window.location.assign('/pages/duel.html');
+
     }, 4000);
   });
 

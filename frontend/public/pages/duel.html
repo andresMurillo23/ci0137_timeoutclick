@@ -65,17 +65,19 @@
     </div>
   </div>
 
-  <!-- Popup final -->
   <div class="modal-overlay" id="finalPopup">
-    <div class="modal-content">
+    <div class="modal-content" role="dialog" aria-labelledby="finalTitle" aria-modal="true">
       <h2 id="finalTitle">Final Results</h2>
       <p id="finalDetails"></p>
       <div class="popup-actions">
-        <button class="btn btn-cancel" id="rematchBtn">Rematch</button>
-        <button class="btn btn-confirm" id="returnHomeBtn">Return Home</button>
+        <button type="button" class="btn btn-cancel" id="rematchBtn">Rematch</button>
+        <a href="/pages/homeLogged.html" class="btn btn-confirm" id="returnHomeBtn" role="button">
+          Return Home
+        </a>
       </div>
     </div>
   </div>
+
 </main>
 
 <script src="/js/partials/duel-flow.js" defer></script>

@@ -14,24 +14,24 @@
   }
 })();
 
-var navbar = 
+var navbar =
 `
 <!-- Encabezado común -->
 <header class="topbar" aria-label="Barra superior">
-    <div class="brand" role="banner">
-        <span>TIMEOUT CLICK</span>
-    </div>
-    <div class="context" id="page-context" aria-live="polite"></div>
-    <button class="btn logout" type="button" aria-label="Cerrar sesión"
-        onclick="window.location.href='/pages/home.html'"> Log out</button>
+  <div class="brand" role="banner">
+    <span>TIMEOUT CLICK</span>
+  </div>
+  <div class="context" id="page-context" aria-live="polite"></div>
+  <button class="btn logout" type="button" aria-label="Cerrar sesión"
+    onclick="window.location.href='/pages/home.html'"> Log out</button>
 </header>
 
 <!-- Pestañas comunes -->
 <nav class="tabs" aria-label="Navegación principal">
-    <a class="tab" href="/pages/homeLogged.html">start game</a>
-    <a class="tab" href="#">rankings</a>
-    <a class="tab" href="#">history</a>
-    <a href="/pages/addFriend.html" class="tab" href="#">friends</a>
-    <a class="tab is-active" href="#" aria-current="page">profile</a>
+  <a class="tab" href="/pages/homeLogged.html">start game</a>
+  <a class="tab" href="/pages/registeredRanking.html">rankings</a>
+  <a class="tab" href="/pages/history.html">history</a>
+  <a class="tab" href="/pages/friends.html">friends</a>
+  <a class="tab" href="/pages/profile.html">profile</a>
 </nav>`;
 document.write(navbar);
