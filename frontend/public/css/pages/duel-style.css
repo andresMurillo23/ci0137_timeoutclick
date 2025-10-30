@@ -206,18 +206,21 @@ body {
 
 .opponent-card {
   text-align: center;
+  font-family: var(--montfont);
 }
 
 .avatar {
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  border: 2px solid var(--line);
+  border: 2px solid var(--black-bean);
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: var(--montfont);
   background: var(--bar-background);
-  color: var(--muted);
+  color: var(--black-bean);
+  
 }
 
 .opponent-label {
@@ -225,12 +228,15 @@ body {
   font-weight: 800;
   text-transform: uppercase;
   margin-top: 0.5rem;
+  font-family: "Rye", cursive;
+  color: var(--black-bean);
+   text-shadow: 3px 3px 0 #e6cc99, 4px 4px 4px rgba(0, 0, 0, .3);
 }
 
 /* === Turn Status === */
 .turn-status {
   background: var(--brown);
-  border: 2px solid var(--line);
+  border: 2px solid var(--sienna);
   border-radius: 0.5rem;
   padding: 0.75rem 1rem;
   font-weight: 700;
@@ -259,6 +265,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  font-family: var(--montfont);
 }
 
 .history-item {
@@ -269,13 +276,15 @@ body {
 }
 
 .history-item.win {
-  background: #d4edda;
-  color: #155724;
+  color: var(--available);
+  border: 2px solid var(--available);
+  background: var(--line-strong);
 }
 
 .history-item.loss {
-  background: #f8d7da;
-  color: #721c24;
+  border: 2px solid var(--unavailable);
+  color: var(--unavailable);
+  background: var(--line-strong);
 }
 
 /* === Footer === */
@@ -321,6 +330,18 @@ body {
   border: 4px solid var(--black-bean);
   border-radius: 20px;
   box-shadow: 0 0 0 6px var(--line-strong);
+  font-family: var(--montfont);
+}
+
+#winnerTitle, #finalTitle{
+  font-family: "Rye", system-ui, sans-serif;
+ text-shadow: 3px 3px 0 #e6cc99, 4px 4px 4px rgba(0, 0, 0, .3);
+  letter-spacing: 1.5px;
+  color:var(--sienna);
+}
+
+#winnerDetails, #finalDetails {
+  color: var(--black-bean);
 }
 
 .popup-actions {
@@ -330,13 +351,10 @@ body {
   margin-top: 1.5rem;
 }
 
-.modal-content > .titles{
-  font-size: 1rem;
-}
 
 .btn-confirm,
 .btn-cancel {
-  border-radius: 2rem;
+  border-radius: 1rem;
   padding: 0.6rem 1.5rem;
   font-weight: 700;
   border: none;
@@ -351,15 +369,17 @@ body {
 
 .btn-confirm:hover {
   background: var(--burnt-orange);
+  transform: scale(1.05);
 }
 
 .btn-cancel {
-  background: var(--line-strong);
-  color: var(--text);
+  background: var(--black-bean);
+  color: var(--panel);
 }
 
 .btn-cancel:hover {
-  background: var(--bar-background);
+ transform: scale(1.05);
+  background-color: var(--licorice);
 }
 
 /* === Animación del GOAL TIME === */
