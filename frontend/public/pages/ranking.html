@@ -8,43 +8,18 @@
 
 <main class="report">
   <section class="content">
-    <h2 class="titles--light">Rankings</h2>
+    <h2 class="titles--light">RANKINGS</h2>
     <p class="subtitle">Top duelists with the highest win rates in Timeout Click</p>
 
-    <!-- Filtros de fecha -->
-    <div class="report-filters">
-
-      <div class="filters-header">Filters</div>
-
-      <div class="filters-content">
-
-        <div class="date-range">
-          <div class="filter-controls">
-
-            <div class="date-input-group">
-              <label for="from-date">From Date</label>
-              <input type="date" id="from-date" value="2024-01-01">
-            </div>
-
-            <div class="date-input-group">
-              <label for="to-date">To Date</label>
-              <input type="date" id="to-date" value="2024-12-31">
-            </div>
-          </div>
-
-        </div>
-        <button class="btn--filter">Apply</button>
-      </div>
-    </div>
 
     <table class="table" aria-label="Leaderboard">
       <thead>
         <tr>
           <th>Position</th>
-          <th>Username</th>
-          <th>Wins</th>
-          <th>Losses</th>
-          <th>Winrate (%)</th>
+          <th >Username</th>
+          <th class="sortable desc">Wins</th>
+          <th class="sortable">Losses</th>
+          <th class="sortable">Winrate (%)</th>
         </tr>
       </thead>
       <tbody>
@@ -111,5 +86,34 @@
     </table>
   </section>
 </main>
+
+<script>
+// Funcionalidad de ordenamiento de tabla
+document.addEventListener('DOMContentLoaded', function() {
+  const sortableHeaders = document.querySelectorAll('.sortable');
+  
+  sortableHeaders.forEach(header => {
+    header.addEventListener('click', function() {
+      const currentState = this.classList.contains('asc') ? 'asc' : 
+                          this.classList.contains('desc') ? 'desc' : 'none';
+      
+      // Limpiar otros headers
+      sortableHeaders.forEach(h => h.classList.remove('asc', 'desc'));
+      
+      // Cambiar estado: none -> asc -> desc -> asc -> desc...
+      if (currentState === 'none') {
+        this.classList.add('asc');
+      } else if (currentState === 'asc') {
+        this.classList.add('desc');
+      } else {
+        this.classList.add('asc');
+      }
+      
+      // Aquí puedes agregar la lógica para ordenar los datos
+      console.log(`Sorting by ${this.textContent.trim()} - ${this.classList.contains('asc') ? 'ASC' : 'DESC'}`);
+    });
+  });
+});
+</script>
 
 <script src="/js/partials/footer.js"></script>

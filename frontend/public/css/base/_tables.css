@@ -11,8 +11,7 @@
 }
 
 .table thead {
-  background: var(--brown);
-  color: #fff8ed;
+  background: var(--sienna);
   font-weight: bold;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -41,11 +40,58 @@
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.15);
 }
 
-/* Responsive simplificado */
+/* SORT INDICATORS */
+.table th.sortable {
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.table th.sortable:hover {
+  background: var(--burnt-orange);
+}
+
+.table th.sortable::after {
+  content: "⇅";
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.6;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.table th.sortable.asc::after {
+  content: "▲";
+  opacity: 1;
+  color: var(--panel);
+  font-size: 14px;
+}
+
+.table th.sortable.desc::after {
+  content: "▼";
+  opacity: 1;
+  color: var(--panel);
+  font-size: 14px;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .table th,
   .table td {
     font-size: clamp(0.8rem, 2vw, 0.95rem);
+  }
+  
+  .table th.sortable::after {
+    font-size: 14px;
+    right: 4px;
+  }
+  
+  .table th.sortable.asc::after,
+  .table th.sortable.desc::after {
+    font-size: 12px;
   }
 }
 
@@ -208,8 +254,7 @@
 }
 
 .filters-header {
-  background: var(--brown);
-  color: #fff8ed;
+  background: var(--sienna);
   padding: 8px 16px;
   font-family: var(--montfont);
   font-size: 14px;
@@ -320,8 +365,8 @@
   margin: 0;
   padding: 10px 20px;
 
-  border: 2px solid var(--brown);
-  background: var(--brown);
+  border: 2px solid var(--muted);
+  background: var(--black-bean);
   color: var(--panel);
 
   font-weight: bold;

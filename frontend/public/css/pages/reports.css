@@ -27,7 +27,7 @@ body {
 /* Subtítulo */
 .subtitle {
   font-size: 18px;
-  color: #e6cc99;
+  color: var(--line-strong);
   margin-bottom: 40px;
   opacity: 0.9;
 }

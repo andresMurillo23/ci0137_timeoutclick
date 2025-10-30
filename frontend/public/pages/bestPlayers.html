@@ -11,41 +11,17 @@
 
 <main class="report">
   <section class="content">
-    <h2 class="titles--light">Best players</h2>
+    <h2 class="titles--light">BEST PLAYERS</h2>
     <p class="subtitle">Top players and their stats in Timeout Click</p>
-
-    <!-- Filtros -->
-    <div class="report-filters">
-
-      <div class="filters-header">Filters</div>
-      <div class="filters-content">
-
-        <div class="date-range">
-          <div class="filter-controls">
-            <div class="date-input-group">
-              <label for="from-date">From Date</label>
-              <input type="date" id="from-date" value="2024-01-01">
-            </div>
-
-            <div class="date-input-group">
-              <label for="to-date">To Date</label>
-              <input type="date" id="to-date" value="2024-12-31">
-            </div>
-          </div>
-
-        </div>
-        <button class="btn--filter">Apply</button>
-      </div>
-    </div>
 
     <table class="table" aria-label="Unregistered Leaderboard">
       <thead>
         <tr>
           <th>Position</th>
           <th>Username</th>
-          <th>Wins</th>
-          <th>Losses</th>
-          <th>Winrate (%)</th>
+          <th class="sortable">Wins</th>
+          <th class="sortable">Losses</th>
+          <th class="sortable">Winrate (%)</th>
         </tr>
       </thead>
       <tbody>
