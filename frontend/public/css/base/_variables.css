@@ -45,7 +45,9 @@
   --sepia: #5a380bff;
   --black-bean: #411308ff;
   --licorice: #240B04;
-  --page-bg: var(--black-bean);
+  --page-bg:
+    radial-gradient(1200px 60% at 50% -10%, rgba(255, 219, 165, .06), transparent 60%),
+    linear-gradient(#2b1a10, #1f140d) fixed;
 
   /* Fuentes */
   --montfont: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;

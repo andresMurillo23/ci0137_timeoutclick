@@ -18,9 +18,7 @@ body {
 
 body {
   margin: 0;
-  background:
-    radial-gradient(1200px 60% at 50% -10%, rgba(255, 219, 165, .06), transparent 60%),
-    linear-gradient(#2b1a10, #1f140d) fixed;
+  background: var(--page-bg);
   color: var(--text);
   font-family: var(--montfont);
 }
