@@ -1,6 +1,9 @@
 <script src="/js/partials/head.js"></script>
 <script src="/js/partials/navbar.js"></script>
 
+<script>window.NAV_ACTIVE = "start";</script>
+<script src="/js/utils/activeTab.js" defer></script>
+
 <link rel="stylesheet" href="/css/pages/challenge-style.css">
 
 <main class="poster">
@@ -9,7 +12,6 @@
 
   <div class="poster__scroll">
     <section class="list">
-      <!-- Disponible  -->
       <div class="row available">
         <div class="label">
           <span class="status-dot ok" aria-hidden="true"></span>
@@ -20,7 +22,6 @@
         </div>
       </div>
 
-      <!-- Ocupado  -->
       <div class="row busy">
         <div class="label">
           <span class="status-dot busy" aria-hidden="true"></span>
@@ -31,7 +32,6 @@
         </div>
       </div>
 
-      <!-- No disponible offline -->
       <div class="row unavailable">
         <div class="label">
           <span class="status-dot no" aria-hidden="true"></span>
@@ -42,7 +42,6 @@
         </div>
       </div>
 
-      <!-- Offline -->
       <div class="row unavailable">
         <div class="label">
           <span class="status-dot no" aria-hidden="true"></span>
@@ -61,11 +60,9 @@
   </div>
 </main>
 
-<!-- Confirm / Waiting Modal -->
 <div id="confirmOverlay" class="confirm-overlay" aria-hidden="true">
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" tabindex="-1">
 
-    <!-- Estado: Confirmación -->
     <div class="panel panel-confirm" id="panelConfirm">
       <h3 id="confirmTitle" class="confirm-title">CONFIRM CHALLENGE</h3>
       <p class="confirm-text">

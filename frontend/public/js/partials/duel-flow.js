@@ -32,7 +32,7 @@ surrenderBtn.addEventListener("click", () => showFinalPopup("Surrender"));
 nextRoundBtn.addEventListener("click", nextRound);
 rematchBtn.addEventListener("click", resetGame);
 returnHomeBtn.addEventListener("click", () => (window.location.href = "/"));
-
+surrenderPopupBtn.addEventListener("click", () => showFinalPopup("Surrender"));
 window.addEventListener("load", startNewRoundAnimation);
 
 // ==== CICLO DE RONDA ====
@@ -98,7 +98,7 @@ function handleClickOnce() {
   setTimeout(() => {
     showPressTime(simulatedPressPlayer);
     const winner =
-      parseFloat(simulatedPressPlayer) <= parseFloat(simulatedPressOpponent)
+      parseFloat(simulatedPressPlayer) >= parseFloat(simulatedPressOpponent)
         ? "PLAYER541"
         : "PLAYER642";
 
@@ -186,6 +186,7 @@ function showFinalPopup(reason) {
 // ==== REINICIAR PARTIDA ====
 function resetGame() {
   finalPopup.classList.remove("active");
+  winnerPopup.classList.remove("active");
   historyList.innerHTML = "";
   score1 = 0;
   score2 = 0;
