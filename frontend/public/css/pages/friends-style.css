@@ -164,7 +164,7 @@ body {
 }
 
 /* Wrapper para botones Challenge en las tarjetas */
-.friend-card .btn--primary-brown {
+.friend-card .btn--secondary {
   width: auto;
   max-width: none;
   margin: 0;
