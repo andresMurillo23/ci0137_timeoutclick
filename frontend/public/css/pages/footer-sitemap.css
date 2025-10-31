@@ -7,15 +7,19 @@
   background-color: var(--bg);  
   border-top: 3px solid var(--navbar-border);
   color: var(--panel);
-
-   padding: 10px 0;
-  text-align: center;                   
+  height: 60px; 
+  padding: 10px 0;
+  text-align: center;  
+  display: flex;
+  justify-content: center;
+  align-items: center;   
 }
 
 .footer-links {
   list-style: none;
   display: flex;
   justify-content: center;
+  align-items: center;  
   gap: 20px;
 }
 
@@ -25,13 +29,14 @@
   text-decoration: none;
 }
 .footer-links a:hover { 
-    color: var(--tangerine); 
-    text-decoration: underline; 
+  color: var(--tangerine); 
+  text-decoration: underline; 
 }
 
 body {
-  padding-bottom: 0 !important; /* muy importante */
+ padding-bottom: 60px;  /* muy importante */
 }
 main {
   flex: 1;
 }
+

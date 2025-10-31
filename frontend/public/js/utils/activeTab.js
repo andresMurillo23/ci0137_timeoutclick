@@ -22,6 +22,7 @@
     "/pages/bestplayers":  "start",
     "/pages/instructions": "start",
     "/pages/duel":         "start",
+    "/pages/sitemap":      "start",
 
     "/pages/ranking":      "rankings",
     "/pages/history":      "history",
