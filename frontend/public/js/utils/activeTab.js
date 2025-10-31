@@ -1,27 +1,37 @@
 (function () {
   function normalize(path) {
     try {
-      const a = document.createElement('a');
+      var a = document.createElement('a');
       a.href = path;
-      return (a.pathname || '').replace(/\/+$/, '');
-    } catch { return String(path || '').replace(/\/+$/, ''); }
+      var p = (a.pathname || "/");
+      p = p.replace(/\/+$/, "")
+           .replace(/\/index\.html$/i, "")
+           .replace(/\.html$/i, "");
+      return p || "/";
+    } catch {
+      return String(path || "/")
+        .replace(/\/+$/, "")
+        .replace(/\/index\.html$/i, "")
+        .replace(/\.html$/i, "") || "/";
+    }
   }
 
-  function pickByPath(tabs, path) {
-    const want = normalize(path || location.pathname);
-    let best = null, bestLen = -1;
-    tabs.forEach(el => {
-      const href = normalize(el.getAttribute('href') || '');
-      if (!href) return;
-      if (want.includes(href) || href.includes(want)) {
-        if (href.length > bestLen) { best = el; bestLen = href.length; }
-      }
-    });
-    return best;
-  }
+  var SECTION_BY_PATH = {
+    "/pages/homelogged":   "start",
+    "/pages/challenge":    "start",
+    "/pages/bestplayers":  "start",
+    "/pages/instructions": "start",
+    "/pages/duel":         "start",
+
+    "/pages/ranking":      "rankings",
+    "/pages/history":      "history",
+    "/pages/friends":      "friends",
+    "/pages/profile":      "profile",
+    "/pages/profileEdit":  "profile"
+  };
 
   function clearAll(tabs){
-    tabs.forEach(el => {
+    tabs.forEach(function (el) {
       el.classList.remove('is-active');
       el.removeAttribute('aria-current');
     });
@@ -33,18 +43,57 @@
     el.setAttribute('aria-current', 'page');
   }
 
-  window.setActiveTab = function(targetPath){
-    const tabs = Array.from(document.querySelectorAll('.tabs .tab, nav.tabs a'));
+  function pickBySection(tabs, section){
+    if (!section) return null;
+    return tabs.find(function (el) {
+      return (el.getAttribute('data-section') || "").toLowerCase() === section.toLowerCase();
+    }) || null;
+  }
+
+  function pickByPath(tabs, path) {
+    var want = normalize(path || location.pathname);
+    var best = null, bestLen = -1;
+    tabs.forEach(function (el) {
+      var href = normalize(el.getAttribute('href') || '');
+      if (!href) return;
+      var same = (want === href);
+      var sameFolder = want.startsWith(href.replace(/\/[^/]+$/, ""));
+      if ((same || sameFolder) && href.length > bestLen) {
+        best = el; bestLen = href.length;
+      }
+    });
+    return best;
+  }
+
+  window.setActiveTab = function(target){
+    var tabs = Array.from(document.querySelectorAll('.tabs .tab, nav.tabs a'));
     if (!tabs.length) return;
 
     clearAll(tabs);
-    const el = pickByPath(tabs, targetPath || location.pathname);
+
+    var forcedSection = window.NAV_ACTIVE;
+    if (!forcedSection) {
+      var meta = document.querySelector('meta[name="active-tab"]');
+      if (meta && meta.content) forcedSection = meta.content.trim();
+    }
+    if (typeof target === "string" && !target.includes("/")) {
+      forcedSection = target;
+    }
+    if (forcedSection) {
+      var bySec = pickBySection(tabs, forcedSection);
+      if (bySec) { mark(bySec); return; }
+    }
+
+    var norm = normalize(location.pathname);
+    var section = SECTION_BY_PATH[norm];
+    var el = section ? pickBySection(tabs, section) : null;
+
+    if (!el) el = pickByPath(tabs, location.pathname);
+
     mark(el);
   };
 
-  if (document.querySelector('.tabs .tab')) {
-    window.setActiveTab();
-  } else {
-    requestAnimationFrame(() => window.setActiveTab());
-  }
+  var run = function(){ window.setActiveTab(); };
+  if (document.querySelector('.tabs .tab')) run();
+  else requestAnimationFrame(run);
 })();
