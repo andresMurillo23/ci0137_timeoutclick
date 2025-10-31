@@ -28,10 +28,7 @@ body {
 
 /*  Responsive  */
 @media (max-width: 768px) {
-  .leaderboard {
-    padding: 60px 10px;
-  }
-  
+
   .content h2 {
     font-size: 36px;
   }
@@ -62,9 +59,9 @@ body {
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  -webkit-text-decoration: none;
 }
 
+/* TODO: cambiar colores */
 .bottom .btn-ghost.left {
   background: #3a2a1f;
   color: #fde9c9;
@@ -91,9 +88,6 @@ body {
 }
 
 @media (max-width: 520px) {
-  .leaderboard {
-    padding: 40px 5px;
-  }
   
   .content h2 {
     font-size: 28px;
