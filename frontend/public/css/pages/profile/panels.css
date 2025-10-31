@@ -1,0 +1,25 @@
+/*  Panels  */
+.panel {
+  background: var(--panel);
+  border: 1.5px solid var(--borders);
+  border-radius: 16px;
+  overflow: hidden;
+  color: var(--text);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .25);
+}
+
+.panel .ph {
+  font-family: var(--montfont) !important;
+  font-weight: 900;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+  color: var(--sienna);
+  background: #fff3e0;
+  border-bottom: 1.5px solid var(--borders);
+  padding: 16px 18px;
+}
+
+.panel .body {
+  padding: 18px 20px;
+  font-family: var(--montfont);
+}
