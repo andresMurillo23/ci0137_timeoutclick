@@ -42,14 +42,6 @@ body {
   overflow: hidden;
 }
 
-.ph {
-  background: var(--sienna);
-  color: var(--panel);
-  padding: 15px 18px;
-  font-size: 16px;
-  font-weight: 600;
-}
-
 .search {
   flex: 1;
   height: 36px;
@@ -98,14 +90,8 @@ body {
   text-decoration: none;
 }
 
-.body {
+.friends-grid-container {
   padding: 16px;
-}
-
-/* Barra de acciones */
-.action-bar {
-  padding: 18px;
-  text-align: center;
 }
 
 /* Grid de tarjetas de amigos */
@@ -127,6 +113,31 @@ body {
 
 .friend-card:hover {
   background: var(--bar-background);
+}
+
+/* Puntito de estado */
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;         
+  margin-right: 12px;      
+}
+
+.status-dot.ok,
+.status-dot.available, 
+.status-dot.on {
+  background: var(--available);
+}
+
+.status-dot.busy {
+  background: var(--busy);
+}
+
+.status-dot.no,
+.status-dot.off {
+  background: var(--unavailable);
 }
 
 .user-avatar {
@@ -153,13 +164,31 @@ body {
 }
 
 /* Wrapper para botones Challenge en las tarjetas */
-.friend-card .btn--primary-brown {
+.friend-card .btn--secondary {
   width: auto;
   max-width: none;
   margin: 0;
   padding: 8px 20px;
   font-size: 12px;
   border-radius: 20px;
+}
+
+
+/* Desabilita botón de chllange para  */
+.friend-card.busy .btn--primary-brown,
+.friend-card.unavailable .btn--primary-brown {
+  background: #b9a895;
+  border-color: #b9a895;
+  color: #3b2d22;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none;
+}
+
+.friend-card.unavailable .user-name,
+.friend-card.unavailable .user-name.dim {
+  color: var(--line);
+  font-weight: 700;
 }
 
 /* Estados de foco usando variables globales */
