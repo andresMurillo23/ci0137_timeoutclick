@@ -32,7 +32,7 @@ surrenderBtn.addEventListener("click", () => showFinalPopup("Surrender"));
 nextRoundBtn.addEventListener("click", nextRound);
 rematchBtn.addEventListener("click", resetGame);
 returnHomeBtn.addEventListener("click", () => (window.location.href = "/"));
-
+surrenderPopupBtn.addEventListener("click", () => showFinalPopup("Surrender"));
 window.addEventListener("load", startNewRoundAnimation);
 
 // ==== CICLO DE RONDA ====
