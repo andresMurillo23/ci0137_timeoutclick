@@ -12,7 +12,17 @@
   --line: #7a4e2b;
   --line-strong: #e6cc99;
   --borders: #d9b77e;
-  --accent: #ffffff;
+  --background-brown:#3a2a1f;
+  --border-brown: #4f3826;
+
+  /* stacks */
+  --stack-color: #f0d7a7;
+  --accent: #fff3db;
+  --winrate-brown: #2b1d14;
+  --background-strong: #fbefda;
+  --back-strong-stack: #fff7ea;
+  --control-back: #f7eddc;
+  --control-letters: #1e120b;
 
   /* Navbar */
   --navbar-bg: #754c29;
