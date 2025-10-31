@@ -54,8 +54,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Delegación: solo abre para filas disponibles y botón no deshabilitado
+// Delegación: abrir modal desde diferentes estructuras compatibles
   document.addEventListener("click", (e) => {
-    const btn = e.target.closest(".row, .available");
+    // Selector original (listas tipo tabla)
+    let btn = e.target.closest(".list .row.available .action .btn");
+
+    // Selector adicional (tarjetas tipo friend-card)
+    if (!btn) {
+      btn = e.target.closest(".friend-card.available button.btn--secondary");
+    }
+
     if (!btn) return;
     openModal(btn);
   });
