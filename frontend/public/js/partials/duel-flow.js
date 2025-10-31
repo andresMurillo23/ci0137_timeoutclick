@@ -98,7 +98,7 @@ function handleClickOnce() {
   setTimeout(() => {
     showPressTime(simulatedPressPlayer);
     const winner =
-      parseFloat(simulatedPressPlayer) <= parseFloat(simulatedPressOpponent)
+      parseFloat(simulatedPressPlayer) >= parseFloat(simulatedPressOpponent)
         ? "PLAYER541"
         : "PLAYER642";
 
