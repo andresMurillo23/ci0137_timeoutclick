@@ -277,3 +277,12 @@ body {
     margin-right: 16px;
   }
 }
+
+.brand{
+  text-decoration: none;
+  color: inherit;
+}
+.brand:focus-visible{
+  outline: 2px solid #e6cc99;
+  outline-offset: 2px;
+}

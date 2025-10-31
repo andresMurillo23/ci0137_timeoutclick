@@ -1,0 +1,155 @@
+:root {
+  --preview-w: 430px;
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 10px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box
+}
+
+html,
+body {
+  height: 100%
+}
+
+body {
+  margin: 0;
+  background: var(--page-bg);
+  color: var(--text);
+  font-family: var(--montfont);
+}
+
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 26px 20px 96px;
+  padding-top: calc(var(--navbar-height) + 26px);
+}
+
+.subtitle {
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: var(--line-strong);
+  margin-bottom: 40px;
+  opacity: 0.9;
+}
+
+.titles {
+  font-family: "Rye", system-ui, sans-serif;
+  color: #fae9c9;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, .35);
+  letter-spacing: 1.5px;
+}
+
+/*  Stats (chips)  */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.stat {
+  background: var(--background-brown);
+  border: 1.5px solid var(--border-brown);
+  border-radius: 14px;
+  padding: 12px 16px;
+  color: #f4ead8;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .25), inset 0 1px 0 rgba(255, 255, 255, .03);
+}
+
+.stat .k {
+  display: block;
+  font-family: var(--montfont);
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: .5px;
+  color: var(--stack-color);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.stat .v {
+  display: flex;
+  justify-content: flex-end;
+  font-family: var(--montfont);
+  font-weight: 900;
+  font-size: 20px;
+  color: var(--accent);
+}
+
+/* ===== Progress (win rate) ===== */
+.progress {
+  position: relative;
+  overflow: hidden;
+  height: 12px;
+  background: var(--progress-bg, --winrate-brown);
+  /* fixed */
+  border: 1px solid var(--black-bean);
+  border-radius: 999px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06);
+}
+
+.progress>i {
+  display: block;
+  height: 100%;
+  width: clamp(0px, var(--pct, 0%), 100%);
+  background: var(--progress-fill, var(--sienna));
+  /* themable */
+  border-radius: inherit;
+  transition: width .35s ease;
+}
+
+/* ===== Preview card ===== */
+.preview {
+  background: var(--background-strong);
+  border: 1.5px solid var(--borders);
+  min-height: 320px;
+  max-width: var(--preview-w);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .28);
+}
+
+.preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block
+}
+
+
+@media (max-width:780px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr)
+  }
+
+  .kv-grid {
+    grid-template-columns: 1fr
+  }
+
+  .kv {
+    grid-template-columns: 1fr
+  }
+}
+
+@media (max-width:768px) {
+  .page {
+    padding-top: calc(var(--navbar-height-tablet) + 26px)
+  }
+}
+
+@media (max-width:520px) {
+  .page {
+    padding-top: calc(var(--navbar-height-mobile) + 26px)
+  }
+}

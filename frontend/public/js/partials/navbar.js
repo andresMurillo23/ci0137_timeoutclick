@@ -1,10 +1,7 @@
 (function() {
   var href = "/css/main.css";
-  var links = document.querySelectorAll('link[rel="stylesheet"]');
-  var found = false;
-  links.forEach(function(link) {
-    if (link.href.includes(href)) found = true;
-  });
+  var found = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
+    .some(link => link.href.includes(href));
   if (!found) {
     var styleLink = document.createElement("link");
     styleLink.rel = "stylesheet";
@@ -13,16 +10,16 @@
   }
 })();
 
-var navbar =
-`
+var navbar = `
 <!-- Encabezado común -->
 <header class="topbar" aria-label="Barra superior">
-  <div class="brand" role="banner">
+  <a class="brand" role="banner" aria-label="Ir al inicio"
+     href="/pages/homeLogged.html">
     <span>TIMEOUT CLICK</span>
-  </div>
+  </a>
   <div class="context" id="page-context" aria-live="polite"></div>
   <button class="btn logout" type="button" aria-label="Cerrar sesión"
-    onclick="window.location.href='/pages/home.html'"> Log out</button>
+    onclick="window.location.href='/pages/home.html'">Log out</button>
 </header>
 
 <!-- Pestañas comunes -->
