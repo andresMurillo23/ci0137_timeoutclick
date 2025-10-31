@@ -53,27 +53,25 @@ document.addEventListener("DOMContentLoaded", () => {
     lastTrigger?.focus();
   }
 
-  // Delegación: abrir modal desde distintas estructuras
   document.addEventListener("click", (e) => {
     let btn =
-      // Selector original (otras páginas)
+      // CSS Selector for challenge.html
       e.target.closest(".list .row.available .action .btn") ||
-      // Nuevo selector específico para friend cards
+      // CSS Selector for friends.html
       e.target.closest(".friend-card.available .challenge-btn");
 
     if (!btn) return;
 
-    // Evita que el clic suba al .friend-card (y redirija)
     e.stopPropagation();
     e.preventDefault();
 
     openModal(btn);
   });
 
-  // NO -> cierra
+  // NO -> Close the modal
   noBtn?.addEventListener("click", closeModal);
 
-  // YES -> muestra "waiting"
+  // YES -> shows waiting panel and starts wait timer
   yesBtn?.addEventListener("click", async () => {
     setState("waiting");
 
@@ -83,18 +81,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 4000);
   });
 
-  // Cancelar espera
+  // Cancel waiting
   cancelWaitBtn?.addEventListener("click", () => {
-    // TODO: cancelar challenge en backend si aplica
     closeModal();
   });
 
-  // Cerrar con clic fuera
+  // Close on outside click
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) closeModal();
   });
 
-  // ESC
+  // ESC key to close
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && overlay.classList.contains("open")) closeModal();
   });

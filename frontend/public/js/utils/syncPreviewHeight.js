@@ -4,18 +4,18 @@
     var prev  = document.querySelector('.preview');
     if (!left || !prev) return;
 
-    // Altura exacta de la columna izquierda (ACCOUNT + GAME STATS + separadores)
+    // Exact height of the left column (ACCOUNT + GAME STATS + separators)
     var h = left.offsetHeight;
 
-    // Fijar altura del marco derecho para que la foto termine en el mismo punto
+    // Set right frame height so the photo ends at the same point
     prev.style.height = h + 'px';
   }
 
-  // Ejecutar al cargar todo y al redimensionar
+  // Executed on full load and on resize
   window.addEventListener('load',  syncPreviewHeight);
   window.addEventListener('resize', syncPreviewHeight);
 
-  // Observa cambios de tamaño por contenido dinámico (opcional pero robusto)
+  // Observe size changes due to dynamic content (optional but robust)
   var leftEl = document.querySelector('.left-col');
   if (leftEl && 'ResizeObserver' in window) {
     var ro = new ResizeObserver(syncPreviewHeight);
