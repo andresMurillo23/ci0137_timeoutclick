@@ -18,11 +18,10 @@ body {
 
 body {
   margin: 0;
-  background: var(--page-bg);
+  background: var(--background-brown-profiles);
   color: var(--text);
   font-family: var(--montfont);
 }
-
 .page {
   max-width: 1180px;
   margin: 0 auto;

@@ -1,3 +1,10 @@
+body {
+  margin: 0;
+  background: var(--background-brown-profiles);
+  color: var(--text);
+  font-family: var(--montfont);
+}
+
 .other-profile .page {
     padding-bottom: 96px
 }

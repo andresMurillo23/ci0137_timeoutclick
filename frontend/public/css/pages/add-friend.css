@@ -1,6 +1,6 @@
 /* Add Friend */
 body {
-  background: var(--page-bg);
+  background: var(--background-brown-profiles);
   color: var(--row-background);
   font-family: var(--montfont);
 }
