@@ -1,49 +1,55 @@
 <script src="/js/partials/head.js"></script>
 <link rel="stylesheet" href="/css/pages/instructions-style.css">
 
+<!-- Top bar -->
 <header class="topbar">
-    <h1>TIMEOUT CLICK</h1>
+  <h1>TIMEOUT CLICK</h1>
 </header>
 
+<!-- Main content -->
 <main class="poster">
-
   <h2 class="titles">INSTRUCTIONS</h2>
   <hr class="divider">
- <div class="poster__scroll">
-  <section class="instructions">
-    <div class="step active">
-      <h3>Step 1</h3>
-      <p>Click PLAY to start the game.</p>
-    </div>
 
-    <div class="step">
-      <h3>Step 2</h3>
-      <p>Challenge another player or wait to be challenged.</p>
-    </div>
+  <div class="poster__scroll">
+    <!-- Steps carousel (JS updates active step) -->
+    <section class="instructions">
+      <div class="step active">
+        <h3>Step 1</h3>
+        <p>Click PLAY to start the game.</p>
+      </div>
 
-    <div class="step">
-      <h3>Step 3</h3>
-      <p>Tap as fast as you can before the timer runs out!</p>
-    </div>
+      <div class="step">
+        <h3>Step 2</h3>
+        <p>Challenge another player or wait to be challenged.</p>
+      </div>
 
-    <div class="step">
-      <h3>Step 4</h3>
-      <p>Win matches to appear in the Best Players ranking.</p>
-    </div>
-  </section>
+      <div class="step">
+        <h3>Step 3</h3>
+        <p>Tap as fast as you can before the timer runs out!</p>
+      </div>
 
-  <!-- Navegación -->
-  <div class="nav-steps">
-    <button class="step-btn" id="prevBtn">‹</button>
-    <span class="counter"><span id="currentStep">1</span>/4</span>
-    <button class="step-btn" id="nextBtn">›</button>
+      <div class="step">
+        <h3>Step 4</h3>
+        <p>Win matches to appear in the Best Players ranking.</p>
+      </div>
+    </section>
+
+    <!-- Step navigation controls -->
+    <div class="nav-steps">
+      <button class="step-btn" id="prevBtn">‹</button>
+      <span class="counter"><span id="currentStep">1</span>/4</span>
+      <button class="step-btn" id="nextBtn">›</button>
+    </div>
   </div>
-  </div>
+
+  <!-- Divider + back action -->
   <div class="divider-footer">
     <hr class="divider">
     <button type="button" class="btn btn--back" onclick="history.back()">Back</button>
   </div>
 </main>
 
+<!-- Shared footer + step logic -->
 <script src="/js/partials/footer.js"></script>
 <script src="/js/partials/instructions.js"></script>

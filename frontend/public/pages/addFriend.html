@@ -4,15 +4,19 @@
 <script>window.NAV_ACTIVE = "friends";</script>
 <script src="/js/utils/activeTab.js" defer></script>
 
+<!-- Page styles -->
 <link rel="stylesheet" href="/css/pages/add-friend.css">
 <link rel="stylesheet" href="/css/pages/profile/btns.css">
+
 <main class="friend-list" role="main">
   <section class="content">
 
+    <!-- Page title + short context -->
     <h2 class="titles--light">ADD A NEW FRIEND</h2>
     <p class="subtitle">Find and connect with other players</p>
 
     <div class="wrap">
+      <!-- Search bar: not wired yet (UI only) -->
       <section class="panel">
         <div class="search-bar">
           <input class="search" type="text" placeholder="Type the name of the user you want to find" aria-label="Search user">
@@ -20,34 +24,40 @@
         </div>
       </section>
 
+      <!-- Results grid (static examples for now) -->
       <section class="panel">
         <div class="friends-grid-container">
           <div class="friends-grid">
 
+              <!-- Card 1: clicking the card opens public profile; button stops propagation -->
               <div class="friend-card" onclick="if (event.target.closest('button')) return; location.href='/pages/otherProfile.html'">
                 <div class="user-avatar">A</div>
                 <span class="user-name">andrescmf1</span>
                 <button class="btn--secondary">ADD FRIEND</button>
               </div>
 
+              <!-- Card 2 -->
               <div class="friend-card" onclick="if (event.target.closest('button')) return; location.href='/pages/otherProfile.html'">
                 <div class="user-avatar">M</div>
                 <span class="user-name">maria89</span>
                 <button class="btn--secondary">ADD FRIEND</button>
               </div>
 
+              <!-- Card 3 -->
               <div class="friend-card" onclick="if (event.target.closest('button')) return; location.href='/pages/otherProfile.html'">
                 <div class="user-avatar">J</div>
                 <span class="user-name">juan_g</span>
                 <button class="btn--secondary">ADD FRIEND</button>
               </div>
 
+              <!-- Card 4 -->
               <div class="friend-card" onclick="if (event.target.closest('button')) return; location.href='/pages/otherProfile.html'">
                 <div class="user-avatar">C</div>
                 <span class="user-name">carlos99</span>
                 <button class="btn--secondary">ADD FRIEND</button>
               </div>
 
+              <!-- Card 5 -->
               <div class="friend-card" onclick="if (event.target.closest('button')) return; location.href='/pages/otherProfile.html'">
                 <div class="user-avatar">L</div>
                 <span class="user-name">luisa_k</span>
@@ -57,6 +67,7 @@
         </div>
       </section>
 
+      <!-- Back to previous page -->
       <div class="bottom">
         <button type="button" class="btn btn-ghost left" onclick="history.back()">BACK</button>
       </div>
@@ -64,4 +75,6 @@
   </section>
   
 </main>
+
+<!-- Shared footer scripts -->
 <script src="/js/partials/footer.js"></script>

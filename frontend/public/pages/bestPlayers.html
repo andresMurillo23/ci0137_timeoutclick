@@ -4,24 +4,29 @@
 <script>window.NAV_ACTIVE = "start";</script>
 <script src="/js/utils/activeTab.js" defer></script>
 
+<!-- Tables/reports stylesheet -->
 <link rel="stylesheet" href="/css/pages/reports.css">
 
 <main class="report">
   <section class="content">
+    <!-- Page title + short context -->
     <h2 class="titles--light">BEST PLAYERS</h2>
     <p class="subtitle">Top players and their stats in Timeout Click</p>
 
+    <!-- Public leaderboard table (static sample data for now) -->
     <table class="table" aria-label="Unregistered Leaderboard">
       <thead>
         <tr>
           <th>Position</th>
           <th>Username</th>
+          <!-- Marked sortable: wire real sort with JS later -->
           <th class="sortable">Wins</th>
           <th class="sortable">Losses</th>
           <th class="sortable">Winrate (%)</th>
         </tr>
       </thead>
       <tbody>
+        <!-- Row 1 -->
         <tr>
           <td>1</td>
           <td>playerThree</td>
@@ -29,6 +34,7 @@
           <td>18</td>
           <td>64%</td>
         </tr>
+        <!-- Row 2 -->
         <tr>
           <td>2</td>
           <td>playerFour</td>
@@ -36,6 +42,7 @@
           <td>17</td>
           <td>62%</td>
         </tr>
+        <!-- Row 3 -->
         <tr>
           <td>3</td>
           <td>playerFive</td>
@@ -43,6 +50,7 @@
           <td>18</td>
           <td>58%</td>
         </tr>
+        <!-- Row 4 -->
         <tr>
           <td>4</td>
           <td>playerTwo</td>
@@ -50,6 +58,7 @@
           <td>8</td>
           <td>65%</td>
         </tr>
+        <!-- Row 5 -->
         <tr>
           <td>5</td>
           <td>playerOne</td>
@@ -58,13 +67,15 @@
           <td>67%</td>
         </tr>
       </tbody>
+
+      <!-- Pagination / page size controls (UI only; hook with JS) -->
       <tfoot class="table-footer">
         <tr>
           <td colspan="5">
             <div class="table-pager">
 
               <div class="table-pager-navigation">
-                <button class="table-pager-btn" disabled>◀</button>
+                <button class="table-pager-btn" disabled>◀</button> <!-- disabled on first page -->
                 <div class="table-pager-info">Page <strong>1</strong> of <strong>3</strong></div>
                 <button class="table-pager-btn">▶</button>
               </div>

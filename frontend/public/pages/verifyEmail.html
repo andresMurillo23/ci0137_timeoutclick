@@ -14,7 +14,9 @@
       Enter the 6-digit code we sent to <strong>mario***@gmail.com</strong>
     </p>
 
+    <!-- Verification form -->
     <form>
+      <!-- Six single-character inputs (consider: name, required, pattern="\d") -->
       <div class="code-grid">
         <input class="code-box" type="text" inputmode="numeric" maxlength="1">
         <input class="code-box" type="text" inputmode="numeric" maxlength="1">
@@ -24,14 +26,16 @@
         <input class="code-box" type="text" inputmode="numeric" maxlength="1">
       </div>
 
+      <!-- Error message -->
       <p class="muted">Invalid or expired code</p>
 
+      <!-- Actions -->
       <div class="actions">
         <button type="button" class="btn btn--back" onclick="history.back()">BACK</button>
-        <!-- cambiar a submit en backend -->
         <button type="button" class="btn btn--secondary" onclick="location.href='/pages/homeLogged.html'">VERIFY</button>
       </div>
 
+      <!-- Secondary links -->
       <div class="row-links">
         <a href="/pages/verifyEmail.html">Resend code?</a>
         <a href="/pages/register.html">Change email</a>

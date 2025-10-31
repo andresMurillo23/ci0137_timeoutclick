@@ -1,9 +1,12 @@
 <script src="/js/partials/head.js"></script>
+<!-- Global navbar -->
 <script src="/js/partials/navbar.js"></script>
 
+<!-- Sets active tab in navbar -->
 <script>window.NAV_ACTIVE = "profile";</script>
 <script src="/js/utils/activeTab.js" defer></script>
 
+<!-- Page styles (scoped to profile/edit) -->
 <link rel="stylesheet" href="/css/pages/profile/btns.css">
 <link rel="stylesheet" href="/css/pages/profile/keys-values.css">
 <link rel="stylesheet" href="/css/pages/profile/main-style.css">
@@ -11,11 +14,13 @@
 <link rel="stylesheet" href="/css/pages/profile/profileEdit.css">
 <link rel="stylesheet" href="/css/pages/profile/layout.css">
 </head>
+
 <body class="profile-edit">
   <main class="page">
     <h2 class="titles">EDIT PROFILE</h2>
     <p class="subtitle">Update your account details & appearance</p>
 
+    <!-- Read-only quick stats -->
     <section class="stats" aria-label="Quick stats (read-only)">
       <div class="stat"><span class="k">rank</span><span class="v">Silver II</span></div>
       <div class="stat"><span class="k">wins</span><span class="v">45</span></div>
@@ -28,6 +33,7 @@
 
     <div class="wrap">
       <div class="left-col">
+        <!-- Account form panel -->
         <section class="panel">
           <div class="ph">ACCOUNT</div>
           <div class="body">
@@ -62,6 +68,7 @@
                     <input type="text" class="control" value="Email verified" readonly>
                   </div>
 
+                  <!-- Optional password change -->
                   <div class="field group">
                     <div class="group-two">
                       <div>
@@ -83,6 +90,7 @@
 
         <div class="dots" aria-hidden="true"></div>
 
+        <!-- Read-only game stats panel -->
         <section class="panel">
           <div class="ph">GAME STATS</div>
           <div class="body">
@@ -100,6 +108,7 @@
         </section>
       </div>
 
+      <!-- Avatar editor (preview + file input) -->
       <aside class="panel preview" aria-label="Avatar editor">
         <div class="avatar-stack">
           <figure class="avatar-frame">
@@ -121,6 +130,7 @@
         </div>
       </aside>
 
+      <!-- Page actions -->
       <div class="bottom">
         <a class="btn-ghost left" href="/pages/profile.html">CANCEL</a>
         <a class="btn right" id="saveBtn" href="/pages/profile.html" role="button">SAVE</a>
@@ -128,6 +138,7 @@
     </div>
   </main>
 
+  <!-- Helpers: live avatar preview + responsive layout sync -->
   <script src="/js/utils/avatarPreview.js" defer></script>
   <script src="/js/utils/syncPreviewHeight.js" defer></script>
   <script src="/js/partials/footer.js"></script>

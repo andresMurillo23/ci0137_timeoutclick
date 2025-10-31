@@ -5,20 +5,23 @@
 
 <main class="report">
   <section class="content">
+    <!-- Page title + brief context -->
     <h2 class="titles--light">RANKINGS</h2>
     <p class="subtitle">Top duelists with more wins in Timeout Click</p>
 
-
+    <!-- Leaderboard -->
     <table class="table" aria-label="Leaderboard">
       <thead>
         <tr>
           <th>Position</th>
-          <th >Username</th>
+          <th>Username</th>
           <th class="sortable desc">Wins</th>
           <th class="sortable">Losses</th>
           <th class="sortable">Winrate (%)</th>
         </tr>
       </thead>
+
+      <!-- Sample static rows -->
       <tbody>
         <tr>
           <td>1</td>
@@ -56,17 +59,19 @@
           <td>77%</td>
         </tr>
       </tbody>
+
+      <!-- Pager -->
       <tfoot class="table-footer">
         <tr>
           <td colspan="5">
-
             <div class="table-pager">
               <div class="table-pager-navigation">
                 <button class="table-pager-btn" disabled>◀</button>
                 <div class="table-pager-info">Page <strong>1</strong> of <strong>3</strong></div>
                 <button class="table-pager-btn">▶</button>
               </div>
-              
+
+              <!-- Page size selector -->
               <div class="table-pager-size">
                 <span class="table-pager-size-label">Show:</span>
                 <select class="table-pager-size-select">
@@ -84,4 +89,5 @@
   </section>
 </main>
 
+<!-- Shared footer -->
 <script src="/js/partials/footer.js"></script>

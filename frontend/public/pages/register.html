@@ -1,6 +1,7 @@
 <script src="/js/partials/head.js"></script>
 <link rel="stylesheet" href="/css/pages/register-login.css">
 
+
 <header class="topbar">
   <h1>TIMEOUT CLICK</h1>
 </header>
@@ -10,14 +11,17 @@
   <hr class="divider">
 
   <div class="poster__scroll">
+    <!-- Registration form (split in two columns) -->
     <form>
       <div class="form-columns">
         <div class="column">
+          <!-- Username -->
           <div class="field">
             <label for="username">Username:</label>
             <input id="username" type="text" placeholder="USERNAME">
           </div>
 
+          <!-- Email -->
           <div class="field">
             <label for="email">Email:</label>
             <input id="email" type="email" placeholder="EMAIL">
@@ -25,25 +29,31 @@
         </div>
 
         <div class="column">
+          <!-- Password -->
           <div class="field">
             <label for="password">Password:</label>
             <input id="password" type="password" placeholder="PASSWORD">
           </div>
 
+          <!-- Confirm password -->
           <div class="field">
             <label for="confirm">Confirm Password:</label>
             <input id="confirm" type="password" placeholder="PASSWORD">
           </div>
         </div>
-      </div>  
+      </div>
     </form>
   </div>
+
+  <!-- Page actions -->
   <div class="actions">
     <button type="button" class="btn btn--back" onclick="history.back()">BACK</button>
-    <!-- cambiar a submit en backend -->
     <button type="button" class="btn btn--secondary" onclick="location.href='/pages/verifyEmail.html'">REGISTER</button>
   </div>
+
+  <!-- Link for existing users -->
   <p class="signup"><a href="/pages/login.html">Already have an account?</a></p>
 </main>
 
+<!-- Shared footer -->
 <script src="/js/partials/footer.js"></script>

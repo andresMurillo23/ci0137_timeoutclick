@@ -1,26 +1,32 @@
 <script src="/js/partials/head.js"></script>
 
+<!-- Page stylesheet for reports/tables -->
 <link rel="stylesheet" href="/css/pages/reports.css">
 
 <header class="topbar">
-    <h1>TIMEOUT CLICK</h1>
+  <h1>TIMEOUT CLICK</h1>
 </header>
 
 <main class="report">
   <section class="content">
+    <!-- Page title + short description -->
     <h2 class="titles--light">BEST PLAYERS</h2>
     <p class="subtitle">Top players and their stats in Timeout Click</p>
 
+    <!-- Leaderboard table (public view) -->
     <table class="table" aria-label="Unregistered Leaderboard">
       <thead>
         <tr>
           <th>Position</th>
           <th>Username</th>
+          <!-- Marked sortable for future JS sorting -->
           <th class="sortable">Wins</th>
           <th class="sortable">Losses</th>
           <th class="sortable">Winrate (%)</th>
         </tr>
       </thead>
+
+      <!-- Static sample data; replace with server data -->
       <tbody>
         <tr>
           <td>1</td>
@@ -58,17 +64,20 @@
           <td>67%</td>
         </tr>
       </tbody>
+
+      <!-- Footer: pager + page size selector -->
       <tfoot class="table-footer">
         <tr>
           <td colspan="5">
             <div class="table-pager">
-
+              <!-- Prev/Next buttons; prev disabled on first page -->
               <div class="table-pager-navigation">
                 <button class="table-pager-btn" disabled>◀</button>
                 <div class="table-pager-info">Page <strong>1</strong> of <strong>3</strong></div>
                 <button class="table-pager-btn">▶</button>
               </div>
-              
+
+              <!-- Page size control -->
               <div class="table-pager-size">
                 <span class="table-pager-size-label">Show:</span>
                 <select class="table-pager-size-select">
@@ -84,10 +93,12 @@
       </tfoot>
     </table>
 
+    <!-- Back to public home -->
     <div class="bottom">
       <a class="btn btn-ghost left" href="/pages/home.html">BACK</a>
     </div>
   </section>
 </main>
 
+<!-- Shared footer -->
 <script src="/js/partials/footer.js"></script>

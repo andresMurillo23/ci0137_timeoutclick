@@ -11,28 +11,34 @@
   <hr class="divider">
 
   <div class="poster__scroll">
+    <!-- Login form -->
     <form>
+      <!-- Email -->
       <div class="field">
         <label for="email">Email:</label>
         <input id="email" type="email" placeholder="EMAIL">
       </div>
 
+      <!-- Password + recovery link -->
       <div class="field">
         <label for="password">Password:</label>
         <input id="password" type="password" placeholder="PASSWORD">
         <p class="hint"><a href="/pages/recovery.html">Forgot your password?</a></p>
       </div>
-
-     
     </form>
-    </div>
-        <div class="actions">
-        <button type="button" class="btn btn--back" onclick="history.back()">BACK</button>
-        <button type="button" class="btn btn--secondary" onclick="location.href='/pages/homeLogged.html'">LOGIN</button>
-    </div>
-    <p class="signup">
-      <a href="/pages/register.html">Sign up?</a>
-    </p>
+  </div>
+
+  <!-- Page actions -->
+  <div class="actions">
+    <button type="button" class="btn btn--back" onclick="history.back()">BACK</button>
+    <button type="button" class="btn btn--secondary" onclick="location.href='/pages/homeLogged.html'">LOGIN</button>
+  </div>
+
+  <!-- Link to registration -->
+  <p class="signup">
+    <a href="/pages/register.html">Sign up?</a>
+  </p>
 </main>
 
+<!-- Shared footer -->
 <script src="/js/partials/footer.js"></script>

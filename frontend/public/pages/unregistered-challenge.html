@@ -11,8 +11,9 @@
   <hr class="divider">
 
   <div class="poster__scroll">
+    <!-- Player list (status drives button state/styles) -->
     <section class="list">
-      <!-- Disponible  -->
+      <!-- Available -->
       <div class="row available">
         <div class="label">
           <span class="status-dot ok" aria-hidden="true"></span>
@@ -23,7 +24,7 @@
         </div>
       </div>
 
-      <!-- Ocupado  -->
+      <!-- Busy -->
       <div class="row busy">
         <div class="label">
           <span class="status-dot busy" aria-hidden="true"></span>
@@ -34,7 +35,7 @@
         </div>
       </div>
 
-      <!-- No disponible offline -->
+      <!-- Unavailable (offline) -->
       <div class="row unavailable">
         <div class="label">
           <span class="status-dot no" aria-hidden="true"></span>
@@ -45,7 +46,7 @@
         </div>
       </div>
 
-      <!-- Offline -->
+      <!-- Unavailable -->
       <div class="row unavailable">
         <div class="label">
           <span class="status-dot no" aria-hidden="true"></span>
@@ -59,16 +60,17 @@
   </div>
 
   <hr class="divider">
+  <!-- Back to previous screen -->
   <div class="actions">
     <button type="button" class="btn btn--back" onclick="history.back()">BACK</button>
   </div>
 </main>
 
-<!-- Confirm / Waiting Modal -->
+<!-- Challenge modal (two states: confirm -> waiting) -->
 <div id="confirmOverlay" class="confirm-overlay" aria-hidden="true">
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" tabindex="-1">
 
-    <!-- Estado: Confirmación -->
+    <!-- Confirm -->
     <div class="panel panel-confirm" id="panelConfirm">
       <h3 id="confirmTitle" class="confirm-title">CONFIRM CHALLENGE</h3>
       <p class="confirm-text">
@@ -80,7 +82,7 @@
       </div>
     </div>
 
-    <!-- Estado: Espera -->
+    <!-- Waiting -->
     <div class="panel panel-waiting" id="panelWaiting" aria-live="polite" hidden>
       <h3 class="confirm-title">WAITING FOR PLAYER…</h3>
       <div class="loading">
@@ -97,5 +99,6 @@
   </div>
 </div>
 
+<!-- Popup logic (opens modal, toggles states) -->
 <script src="/js/partials/popup.js"></script>
 <script src="/js/partials/footer.js"></script>

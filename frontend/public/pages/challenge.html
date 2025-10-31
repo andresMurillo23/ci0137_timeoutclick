@@ -4,6 +4,7 @@
 <script>window.NAV_ACTIVE = "start";</script>
 <script src="/js/utils/activeTab.js" defer></script>
 
+<!-- Page styles -->
 <link rel="stylesheet" href="/css/pages/challenge-style.css">
 
 <main class="poster">
@@ -11,7 +12,9 @@
   <hr class="divider">
 
   <div class="poster__scroll">
+    <!-- Player list (status controls button availability) -->
     <section class="list">
+      <!-- Available -->
       <div class="row available">
         <div class="label">
           <span class="status-dot ok" aria-hidden="true"></span>
@@ -22,6 +25,7 @@
         </div>
       </div>
 
+      <!-- Busy -->
       <div class="row busy">
         <div class="label">
           <span class="status-dot busy" aria-hidden="true"></span>
@@ -32,6 +36,7 @@
         </div>
       </div>
 
+      <!-- Unavailable -->
       <div class="row unavailable">
         <div class="label">
           <span class="status-dot no" aria-hidden="true"></span>
@@ -42,6 +47,7 @@
         </div>
       </div>
 
+      <!-- Unavailable -->
       <div class="row unavailable">
         <div class="label">
           <span class="status-dot no" aria-hidden="true"></span>
@@ -55,9 +61,11 @@
   </div>
 </main>
 
+<!-- Modal: confirm challenge (state 1) / waiting (state 2) -->
 <div id="confirmOverlay" class="confirm-overlay" aria-hidden="true">
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" tabindex="-1">
 
+    <!-- Confirm -->
     <div class="panel panel-confirm" id="panelConfirm">
       <h3 id="confirmTitle" class="confirm-title">CONFIRM CHALLENGE</h3>
       <p class="confirm-text">
@@ -69,7 +77,7 @@
       </div>
     </div>
 
-    <!-- Estado: Espera -->
+    <!-- Waiting -->
     <div class="panel panel-waiting" id="panelWaiting" aria-live="polite" hidden>
       <h3 class="confirm-title">WAITING FOR PLAYER…</h3>
       <div class="loading">
@@ -86,5 +94,7 @@
   </div>
 </div>
 
+<!-- Modal behavior (open/close, switch states) -->
 <script src="/js/partials/popup.js"></script>
+<!-- Shared footer -->
 <script src="/js/partials/footer.js"></script>

@@ -4,6 +4,7 @@
 <script>window.NAV_ACTIVE = "start";</script>
 <script src="/js/utils/activeTab.js" defer></script>
 
+<!-- Duel page styles -->
 <link rel="stylesheet" href="/css/pages/duel-styles/main-side.css">
 <link rel="stylesheet" href="/css/pages/duel-styles/click-btn.css">
 <link rel="stylesheet" href="/css/pages/duel-styles/popups-styles.css">
@@ -13,7 +14,7 @@
 <main class="duel-page">
   <div class="principal">
     <section class="duel-content">
-      <!-- Ronda y meta -->
+      <!-- Round + target time -->
       <div class="round-goal-centered">
         <div class="round-info">
           <span class="round-label">ROUND</span>
@@ -25,19 +26,19 @@
         </div>
       </div>
 
-      <!-- Marcador -->
+      <!-- Scoreboard -->
       <div class="score-board">
         <span class="titles" id="player1">PLAYER541</span>
         <span class="score" id="scoreValue">0 - 0</span>
         <span class="titles" id="player2">PLAYER642</span>
       </div>
 
-      <!-- Botón central -->
+      <!-- Main click button + live time -->
       <button class="press-button" id="pressButton"><span>CLICK</span></button>
       <p class="press-time" id="pressTime"></p>
     </section>
 
-    <!-- Lateral -->
+    <!-- Right side: opponent, turn status, history, actions -->
     <aside class="duel-side">
       <div class="opponent-card">
         <div class="avatar">
@@ -47,10 +48,12 @@
         <span class="opponent-name" id="opponentName">PLAYER642</span>
       </div>
 
+      <!-- Announced to screen readers when it changes -->
       <div class="turn-status is-ready" id="turnStatus" role="status" aria-live="polite">
         Your Turn!
       </div>
 
+      <!-- Per-round log -->
       <div class="history-section">
         <h3 class="titles">History</h3>
         <ul class="history-list" id="historyList">
@@ -58,6 +61,7 @@
         </ul>
       </div>
 
+      <!-- Surrender action -->
       <div class="side-actions">
         <div class="side-divider" aria-hidden="true"></div>
         <button class="btn btn--secondary btn--surrender" id="surrenderBtn">SURRENDER</button>
@@ -66,6 +70,7 @@
 
   </div>
 
+  <!-- Round result popup -->
   <div class="modal-overlay" id="winnerPopup">
     <div class="modal-content">
       <h2 id="winnerTitle">Round Results</h2>
@@ -77,6 +82,7 @@
     </div>
   </div>
 
+  <!-- Final result popup (modal dialog) -->
   <div class="modal-overlay" id="finalPopup">
     <div class="modal-content" role="dialog" aria-labelledby="finalTitle" aria-modal="true">
       <h2 id="finalTitle">Final Results</h2>
@@ -91,4 +97,5 @@
   </div>
 </main>
 
+<!-- Duel flow logic: timings, rounds, popups -->
 <script src="/js/partials/duel-flow.js" defer></script>

@@ -4,43 +4,45 @@
 <script>window.NAV_ACTIVE = "start";</script>
 <script src="/js/utils/activeTab.js" defer></script>
 
+<!-- Page styles -->
 <link rel="stylesheet" href="/css/pages/instructions-style.css">
 
 <main class="poster">
-
   <h2 class="titles">INSTRUCTIONS</h2>
   <hr class="divider">
- <div class="poster__scroll">
-  <section class="instructions">
-    <div class="step active">
-      <h3>Step 1</h3>
-      <p>Click FIND MATCH to start the game.</p>
-    </div>
 
-    <div class="step">
-      <h3>Step 2</h3>
-      <p>Challenge another player or wait to be challenged.</p>
-    </div>
+  <div class="poster__scroll">
+    <section class="instructions">
+      <div class="step active">
+        <h3>Step 1</h3>
+        <p>Click FIND MATCH to start the game.</p>
+      </div>
 
-    <div class="step">
-      <h3>Step 3</h3>
-      <p>Click as close to the goal time as you can without going over.</p>
-    </div>
+      <div class="step">
+        <h3>Step 2</h3>
+        <p>Challenge another player or wait to be challenged.</p>
+      </div>
 
-    <div class="step">
-      <h3>Step 4</h3>
-      <p>Win matches to appear in the Best Players ranking.</p>
-    </div>
-  </section>
+      <div class="step">
+        <h3>Step 3</h3>
+        <p>Click as close to the goal time as you can without going over.</p>
+      </div>
 
-  <!-- Navegación -->
-  <div class="nav-steps">
-    <button class="step-btn" id="prevBtn">‹</button>
-    <span class="counter"><span id="currentStep">1</span>/4</span>
-    <button class="step-btn" id="nextBtn">›</button>
-  </div>
+      <div class="step">
+        <h3>Step 4</h3>
+        <p>Win matches to appear in the Best Players ranking.</p>
+      </div>
+    </section>
+
+    <!-- Step navigation -->
+    <div class="nav-steps">
+      <button class="step-btn" id="prevBtn">‹</button>
+      <span class="counter"><span id="currentStep">1</span>/4</span>
+      <button class="step-btn" id="nextBtn">›</button>
+    </div>
   </div>
 </main>
 
+<!-- Footer + step logic -->
 <script src="/js/partials/footer.js"></script>
 <script src="/js/partials/instructions.js"></script>

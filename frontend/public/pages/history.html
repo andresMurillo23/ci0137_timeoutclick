@@ -2,23 +2,22 @@
 <script src="/js/partials/navbar.js"></script>
 <script src="/js/utils/activeTab.js"></script>
 
+<!-- Reports/tables stylesheet -->
 <link rel="stylesheet" href="/css/pages/reports.css">
 
 <main class="report">
   <section class="content">
-
+    <!-- Title + context -->
     <h2 class="titles--light">BATTLE HISTORY</h2>
     <p class="subtitle">Your complete duel history in Timeout Click</p>
 
-    <!-- Filtros de fecha -->
+    <!-- Filters panel -->
     <div class="report-filters">
-
       <div class="filters-header">Filters</div>
 
       <div class="filters-content">
-
+        <!-- Date range + type filter -->
         <div class="date-range">
-
           <div class="filter-controls">
             <div class="date-input-group">
               <label for="from-date">From Date</label>
@@ -37,14 +36,16 @@
                 <option value="wins">Wins</option>
                 <option value="losses">Losses</option>
               </select>
-
             </div>
           </div>
         </div>
+
+        <!-- Apply filters -->
         <button class="btn--filter">Apply</button>
       </div>
     </div>
 
+    <!-- History table -->
     <table class="table" aria-label="Battle History">
       <thead>
         <tr>
@@ -56,6 +57,8 @@
           <th>Winner</th>
         </tr>
       </thead>
+
+      <!-- Sample rows -->
       <tbody>
         <tr>
           <td>12/08/2025</td>
@@ -72,7 +75,6 @@
           <td>3.98</td>
           <td>5</td>
           <td>youruser</td>
-
         </tr>
         <tr>
           <td>19/08/2025</td>
@@ -83,17 +85,18 @@
           <td>isabel</td>
         </tr>
       </tbody>
+
+      <!-- Pager + page-size selector -->
       <tfoot class="table-footer">
         <tr>
           <td colspan="6">
             <div class="table-pager">
-
               <div class="table-pager-navigation">
                 <button class="table-pager-btn" disabled>◀</button>
                 <div class="table-pager-info">Page <strong>1</strong> of <strong>3</strong></div>
                 <button class="table-pager-btn">▶</button>
               </div>
-              
+
               <div class="table-pager-size">
                 <span class="table-pager-size-label">Show:</span>
                 <select class="table-pager-size-select">
@@ -111,6 +114,5 @@
   </section>
 </main>
 
-
-
+<!-- Shared footer -->
 <script src="/js/partials/footer.js"></script>
