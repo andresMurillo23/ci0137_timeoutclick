@@ -21,26 +21,39 @@
       </section>
 
       <section class="panel">
-        <div class="body">
-          <ul class="user-list">
-            <li class="user-item">
-              <div class="user-avatar">A</div>
-              <span class="user-name">andrescmf1</span>
-              <button class="btn--primary-brown">ADD</button>
-            </li>
-            
-            <li class="user-item">
-              <div class="user-avatar">A</div>
-              <span class="user-name">andrescmf1121</span>
-              <button class="btn--primary-brown">ADD</button>
-            </li>
-            
-            <li class="user-item">
-              <div class="user-avatar">A</div>
-              <span class="user-name">andrescmfnosca</span>
-              <button class="btn--primary-brown">ADD</button>
-            </li>
-          </ul>
+        <div class="friends-grid-container">
+          <div class="friends-grid">
+
+              <div class="friend-card" onclick="if (event.target.closest('button')) return; location.href='/pages/otherProfile.html'">
+                <div class="user-avatar">A</div>
+                <span class="user-name">andrescmf1</span>
+                <button class="btn--secondary">ADD FRIEND</button>
+              </div>
+
+              <div class="friend-card" onclick="if (event.target.closest('button')) return; location.href='/pages/otherProfile.html'">
+                <div class="user-avatar">M</div>
+                <span class="user-name">maria89</span>
+                <button class="btn--secondary">ADD FRIEND</button>
+              </div>
+
+              <div class="friend-card" onclick="if (event.target.closest('button')) return; location.href='/pages/otherProfile.html'">
+                <div class="user-avatar">J</div>
+                <span class="user-name">juan_g</span>
+                <button class="btn--secondary">ADD FRIEND</button>
+              </div>
+
+              <div class="friend-card" onclick="if (event.target.closest('button')) return; location.href='/pages/otherProfile.html'">
+                <div class="user-avatar">C</div>
+                <span class="user-name">carlos99</span>
+                <button class="btn--secondary">ADD FRIEND</button>
+              </div>
+
+              <div class="friend-card" onclick="if (event.target.closest('button')) return; location.href='/pages/otherProfile.html'">
+                <div class="user-avatar">L</div>
+                <span class="user-name">luisa_k</span>
+                <button class="btn--secondary">ADD FRIEND</button>
+              </div>
+              
         </div>
       </section>
 

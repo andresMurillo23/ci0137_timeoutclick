@@ -97,7 +97,7 @@ body {
 /* Grid de tarjetas de amigos */
 .friends-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(1, 1fr);
   gap: 15px;
 }
 
@@ -174,7 +174,7 @@ body {
 }
 
 
-/* Desabilita botón de chllange para  */
+/* Desabilita botón de challange para  */
 .friend-card.busy .btn--secondary,
 .friend-card.unavailable .btn--secondary {
   background: #b9a895;

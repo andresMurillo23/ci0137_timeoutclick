@@ -89,27 +89,29 @@ body {
   white-space: nowrap;
 }
 
-.body {
+.friends-grid-container {
   padding: 16px;
 }
 
-/* Lista usuarios */
-.user-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+/* Grid de tarjetas de amigos */
+.friends-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 15px;
 }
 
-.user-item {
+.friend-card {
   display: flex;
   align-items: center;
   gap: 15px;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--borders);
+  padding: 16px;
+  border: 1px solid var(--borders);
+  border-radius: 8px;
+  background: var(--panel);
 }
 
-.user-item:last-child {
-  border-bottom: none;
+.friend-card:hover {
+  background: var(--bar-background);
 }
 
 .user-avatar {
@@ -135,7 +137,7 @@ body {
   flex: 1;
 }
 
-.user-item .btn--primary-brown {
+.friend-card .btn--secondary {
   width: auto;
   max-width: none;
   margin: 0;
