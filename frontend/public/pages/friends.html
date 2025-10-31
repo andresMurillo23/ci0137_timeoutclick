@@ -23,7 +23,7 @@
           <!-- Grid de amigos -->
           <div class="friends-grid">
             <!-- Tarjeta de amigo 1 -->
-            <div class="friend-card">
+            <div class="friend-card" onclick="if (event.target.closest('button')) return; location.href='/pages/deleteFriend.html'">
               <span class="status-dot on" aria-hidden="true"></span>
               <div class="user-avatar">A</div>
               <span class="user-name">andresmimi</span>
@@ -31,7 +31,7 @@
             </div>
 
             <!-- Tarjeta de amigo 2 -->
-            <div class="friend-card busy">
+            <div class="friend-card busy" onclick="if (event.target.closest('button')) return; location.href='/pages/deleteFriend.html'">
               <span class="status-dot busy" aria-hidden="true"></span>
               <div class="user-avatar">R</div>
               <span class="user-name">rolipoli</span>
@@ -39,7 +39,7 @@
             </div>
 
             <!-- Tarjeta de amigo 3 -->
-            <div class="friend-card">
+            <div class="friend-card" onclick="if (event.target.closest('button')) return; location.href='/pages/deleteFriend.html'">
               <span class="status-dot on" aria-hidden="true"></span>
               <div class="user-avatar">I</div>
               <span class="user-name">isabel</span>
@@ -47,7 +47,7 @@
             </div>
 
             <!-- Tarjeta de amigo 4 -->
-            <div class="friend-card unavailable ">
+            <div class="friend-card unavailable " onclick="if (event.target.closest('button')) return; location.href='/pages/deleteFriend.html'">
               <span class="status-dot off" aria-hidden="true"></span>
               <div class="user-avatar">T</div>
               <span class="user-name">tatsparamo</span>
