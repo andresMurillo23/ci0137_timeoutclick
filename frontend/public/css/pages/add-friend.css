@@ -34,7 +34,7 @@ body {
   gap: 18px;
 }
 
-/* Panel de búsqueda */
+/* Search panel */
 .panel {
   background: var(--panel);
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
@@ -63,7 +63,7 @@ body {
   box-shadow: 0 0 0 2px rgba(160, 64, 5, 0.2);
 }
 
-/* Barra de búsqueda */
+/* Search bar */
 .search-bar {
   display: flex;
   gap: 15px;
@@ -93,7 +93,7 @@ body {
   padding: 16px;
 }
 
-/* Grid de tarjetas de amigos */
+/* Friends grid */
 .friends-grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);

@@ -1,3 +1,5 @@
+/* Loads main styles */
+
 @import url("base/_variables.css");
 @import url("base/_layout.css");
 @import url("base/_components.css");

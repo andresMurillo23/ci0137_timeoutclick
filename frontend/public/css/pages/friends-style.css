@@ -35,7 +35,7 @@ body {
   gap: 18px;
 }
 
-/* Panel de búsqueda */
+/* Search Panel */
 .panel {
   background: var(--panel);
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
@@ -64,7 +64,7 @@ body {
   box-shadow: 0 0 0 2px rgba(160, 64, 5, 0.2);
 }
 
-/* Barra de búsqueda */
+/* Search Bar */
 .search-bar {
   display: flex;
   gap: 15px;
@@ -95,7 +95,7 @@ body {
   padding: 16px;
 }
 
-/* Grid de tarjetas de amigos */
+/* Friends grid*/
 .friends-grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
@@ -116,7 +116,7 @@ body {
   background: var(--bar-background);
 }
 
-/* Puntito de estado */
+/* Status dots */
 .status-dot {
   width: 12px;
   height: 12px;
@@ -164,7 +164,7 @@ body {
   flex: 1;
 }
 
-/* Wrapper para botones Challenge en las tarjetas */
+/* Wrapper challenge buttons inside the cards */
 .friend-card .btn--secondary {
   width: auto;
   max-width: none;
@@ -175,7 +175,7 @@ body {
 }
 
 
-/* Desabilita botón de challange para  */
+/* Inhabilite the challenge button for unavailable friends */
 .friend-card.busy .btn--secondary,
 .friend-card.unavailable .btn--secondary {
   background: #b9a895;
@@ -192,7 +192,7 @@ body {
   font-weight: 700;
 }
 
-/* Estados de foco usando variables globales */
+/* Focus states using variables */
 a:focus,
 button:focus,
 input:focus {
@@ -279,14 +279,14 @@ input:focus {
   }
 }
 
-/* ===== CONFIRM MODAL ===== */
+/* CONFIRM MODAL  */
 
 /* Overlay */
 .confirm-overlay {
   position: fixed;
-  inset: 0; /* top:0,left:0,right:0,bottom:0 */
+  inset: 0;
   background: rgba(0, 0, 0, .45);
-  display: none; /* oculto por defecto */
+  display: none; /* hidden by default */
   justify-content: center;
   align-items: center;
   z-index: 2000;
@@ -296,7 +296,7 @@ input:focus {
   display: flex;
 }
 
-/* Caja modal */
+/* Modal box */
 .dialog {
   background: var(--panel);
   border: 4px solid var(--black-bean);
@@ -318,8 +318,7 @@ input:focus {
   overflow: visible;
 }
 
-
-/* Títulos y texto */
+/* Titles and text */
 .confirm-title {
   font-size: 26px;
   color: var(--black-bean);
@@ -339,7 +338,7 @@ input:focus {
   gap: 12px;
 }
 
-/* Modal: animación */
+/* Modal: animation */
 @keyframes popup-in {
   from {
     opacity: 0;
@@ -350,7 +349,7 @@ input:focus {
     transform: scale(1) translateY(0);
   }
 }
-/* Panels (dos vistas) */
+/* Panels (two views) */
 .panel { display: block; }
 .panel[hidden] { display: none !important; }
 

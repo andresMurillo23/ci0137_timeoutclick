@@ -1,3 +1,4 @@
+/* Delete Profile styles */
 body {
   margin: 0;
   background: var(--background-brown-profiles);
@@ -49,7 +50,7 @@ body {
     width: clamp(0px, var(--pct), 100%)
 }
 
-/* Panel principal */
+/* Principal panel */
 .op-grid {
     display: grid;
     grid-template-columns: 160px 1fr;
@@ -75,7 +76,7 @@ body {
     display: block
 }
 
-/* Campos públicos */
+/* Public fields */
 .op-fields {
     display: grid;
     gap: 14px

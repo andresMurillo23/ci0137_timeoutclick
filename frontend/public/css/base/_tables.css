@@ -1,4 +1,4 @@
-/* TABLAS GLOBALES */
+/* Global table styles */
 
 .table {
   width: 100%;
@@ -95,7 +95,7 @@
   }
 }
 
-/* UTILIDADES */
+/* Utilities */
 .table-responsive {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -116,13 +116,13 @@
   border-radius: 3px;
 }
 
-/* Utilidades de flex y overflow */
+/* Utilities for flex and overflow */
 .flex-nowrap { flex-wrap: nowrap !important; }
 .flex-wrap { flex-wrap: wrap !important; }
 .min-width-fit { min-width: fit-content !important; }
 .overflow-x-auto { overflow-x: auto !important; }
 
-/* PAGINADOR DE TABLAS */
+/* TABLE PAGINATOR */
 .table-footer {
   background: var(--panel);
   color: var(--text);
@@ -149,7 +149,7 @@
   gap: 0.75rem;
 }
 
-/* Estilos base para elementos del pager */
+/* Styles for the various pager elements */
 .table-pager-btn,
 .table-pager-info,
 .table-pager-size-label,
@@ -243,7 +243,7 @@
   }
 }
 
-/* FILTROS DE REPORTES */
+/* REPORT FILTERS */
 .report-filters {
   margin-bottom: 2rem;
   background: var(--panel);
@@ -287,7 +287,7 @@
   display: contents;
 }
 
-/* Estilos base para grupos de filtros */
+/* Styles for filter groups */
 .date-input-group,
 .filter-input-group {
   display: flex;
@@ -337,7 +337,7 @@
   box-shadow: 0 0 0 2px rgba(160, 64, 5, 0.1);
 }
 
-/* Responsive para filtros */
+/* Responsive for filters */
 @media (max-width: 768px) {
   .filters-content {
     padding: 1rem;
@@ -395,7 +395,7 @@
   transform: scale(1.03);
 }
 
-/* Responsive para botón de filtros */
+/* Responsive for filter button */
 @media (max-width: 768px) {
   .btn--filter {
     align-self: stretch;
