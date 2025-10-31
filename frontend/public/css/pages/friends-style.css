@@ -1,7 +1,8 @@
 /* Friends List */
 body {
-  background: var(--page-bg);
-  color: var(--row-background);
+  margin: 0;
+  background: var(--background-brown-profiles);
+  color: var(--text);
   font-family: var(--montfont);
 }
 
