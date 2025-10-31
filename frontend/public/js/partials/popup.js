@@ -53,17 +53,20 @@ document.addEventListener("DOMContentLoaded", () => {
     lastTrigger?.focus();
   }
 
-  // Delegación: solo abre para filas disponibles y botón no deshabilitado
+  // Delegación: abrir modal desde distintas estructuras
   document.addEventListener("click", (e) => {
-    // Selector original (listas tipo tabla)
-    let btn = e.target.closest(".list .row.available .action .btn");
-
-    // Selector adicional (tarjetas tipo friend-card)
-    if (!btn) {
-      btn = e.target.closest(".friend-card.available button.btn--secondary");
-    }
+    let btn =
+      // Selector original (otras páginas)
+      e.target.closest(".list .row.available .action .btn") ||
+      // Nuevo selector específico para friend cards
+      e.target.closest(".friend-card.available .challenge-btn");
 
     if (!btn) return;
+
+    // Evita que el clic suba al .friend-card (y redirija)
+    e.stopPropagation();
+    e.preventDefault();
+
     openModal(btn);
   });
 
