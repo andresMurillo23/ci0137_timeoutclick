@@ -28,10 +28,10 @@ var navbar =
 
 <!-- Pestañas comunes -->
 <nav class="tabs" aria-label="Navegación principal">
-  <a class="tab" href="/pages/homeLogged.html">start game</a>
-  <a class="tab" href="/pages/ranking.html">rankings</a>
-  <a class="tab" href="/pages/history.html">history</a>
-  <a class="tab" href="/pages/friends.html">friends</a>
-  <a class="tab" href="/pages/profile.html">profile</a>
+  <a class="tab" href="/pages/homeLogged.html">HOME</a>
+  <a class="tab" href="/pages/ranking.html">RANKINGS</a>
+  <a class="tab" href="/pages/history.html">HISTORY</a>
+  <a class="tab" href="/pages/friends.html">FRIENDS</a>
+  <a class="tab" href="/pages/profile.html">PROFILE</a>
 </nav>`;
 document.write(navbar);
