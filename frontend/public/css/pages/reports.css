@@ -62,19 +62,22 @@ body {
   align-items: center;
   justify-content: center;
   text-decoration: none;
+  
   -webkit-text-decoration: none;
+
 }
 
 .bottom .btn-ghost.left {
-  background: #3a2a1f;
-  color: #fde9c9;
-  border: 2px solid #2b1d14;
+  border: 2px solid var(--black-bean);
+  background: var(--panel);
+  color: var(--black-bean);
   box-shadow: 0 2px 0 rgba(0, 0, 0, .25);
 }
 
 .bottom .btn-ghost.left:hover {
-  filter: brightness(1.07);
-  transform: translateY(-1px);
+ transform: scale(1.05);
+  background-color: var(--line-strong);
+  color: var(--black-bean);
 }
 
 .bottom .btn-ghost.left:active {
