@@ -305,7 +305,18 @@ input:focus {
   padding: 26px;
   text-align: center;
   animation: popup-in .25s ease-out;
+  overflow: visible !important;
 }
+
+.dialog .panel {
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  border: none;
+  padding: 0;
+  overflow: visible;
+}
+
 
 /* Títulos y texto */
 .confirm-title {
