@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+
   const overlay  = document.getElementById("confirmOverlay");
   const dialog   = overlay?.querySelector(".dialog");
   const who      = document.getElementById("who");
@@ -31,8 +32,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function openModal(fromBtn) {
     lastTrigger = fromBtn || null;
-    const row = fromBtn?.closest(".row");
-    opponent = (row?.querySelector(".username")?.textContent || "").trim();
+    const row = fromBtn?.closest(".row, .friend-card");
+    opponent = (row?.querySelector(".username, .user-name")?.textContent || "").trim();
     who.textContent = opponent || "Player";
     whoWaiting.textContent = opponent || "Player";
 
@@ -54,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Delegación: solo abre para filas disponibles y botón no deshabilitado
   document.addEventListener("click", (e) => {
-    const btn = e.target.closest(".list .row.available .action .btn");
+    const btn = e.target.closest(".row, .available");
     if (!btn) return;
     openModal(btn);
   });
