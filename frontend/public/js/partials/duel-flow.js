@@ -186,6 +186,7 @@ function showFinalPopup(reason) {
 // ==== REINICIAR PARTIDA ====
 function resetGame() {
   finalPopup.classList.remove("active");
+  winnerPopup.classList.remove("active");
   historyList.innerHTML = "";
   score1 = 0;
   score2 = 0;
