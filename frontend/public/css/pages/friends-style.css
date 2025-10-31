@@ -175,8 +175,8 @@ body {
 
 
 /* Desabilita botón de chllange para  */
-.friend-card.busy .btn--primary-brown,
-.friend-card.unavailable .btn--primary-brown {
+.friend-card.busy .btn--secondary,
+.friend-card.unavailable .btn--secondary {
   background: #b9a895;
   border-color: #b9a895;
   color: #3b2d22;
