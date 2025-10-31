@@ -54,7 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Delegación: solo abre para filas disponibles y botón no deshabilitado
-// Delegación: abrir modal desde diferentes estructuras compatibles
   document.addEventListener("click", (e) => {
     // Selector original (listas tipo tabla)
     let btn = e.target.closest(".list .row.available .action .btn");
