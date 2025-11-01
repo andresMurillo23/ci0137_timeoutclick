@@ -19,12 +19,9 @@ margin: 0;
 .app {
   padding-top: var(--bar-h);
   min-height: calc(100dvh - var(--bar-h));
-
-  /* centrado  */
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding-left: 16px;
   padding-right: 16px;
 }

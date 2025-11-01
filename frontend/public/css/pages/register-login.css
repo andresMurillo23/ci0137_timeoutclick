@@ -25,29 +25,21 @@ margin: 0;
 .app {
   padding-top: var(--bar-h);
   min-height: calc(100dvh - var(--bar-h));
-
-  /* centrado  */
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding-left: 16px;
   padding-right: 16px;
 }
-
-
 
 .poster {
   max-width: 720px;
   margin: calc(var(--bar-h) + 12px) auto 16px;
   max-height: calc(100dvh - var(--bar-h) - 28px);
   overflow: hidden;
-
-  /* layout */
   display: flex;
   flex-direction: column;
   gap: 12px;
-
   padding: 20px 16px;
 }
 
@@ -55,12 +47,9 @@ margin: 0;
   flex: 1 1 auto;
   min-height: 0;
   overflow: auto;
-
-  padding-right: 10px;        /* espacio para la barra */
-  padding-bottom: 0;          /* <- clave para quitar hueco */
+  padding-right: 10px;
+  padding-bottom: 0;
   scrollbar-gutter: stable;
-
-  /* barras */
   scrollbar-width: thin;
   scrollbar-color: var(--line) transparent;
 }
@@ -126,7 +115,7 @@ label {
   color: var(--black-bean);
 }
 
-/* Columnas */
+/* Columns */
 .form-columns {
   display: flex;
   gap: 20px;

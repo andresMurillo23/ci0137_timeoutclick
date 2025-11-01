@@ -24,7 +24,7 @@ margin: 0;
   padding-top: var(--bar-h);
   min-height: calc(100dvh - var(--bar-h));
 
-  /* centrado  */
+  /* Centered */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -47,7 +47,7 @@ margin: 0;
   max-height: calc(100dvh - var(--bar-h) - 28px);
   overflow: hidden;
 
-  /* layout */
+  /* Layout */
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -91,7 +91,7 @@ margin: 0;
   font-weight: 700;
 }
 
-/* Puntito de estado */
+/* Status dot */
 .status-dot {
   width: 12px;
   height: 12px;
@@ -110,12 +110,10 @@ margin: 0;
   justify-content: center;
   align-items: center;
   flex: 0 0 280px;
-  /* ancho estable */
   max-width: 40%;
 }
 
-
-/* Botón gris deshabilitado para no disponibles */
+/* Disabled gray button for unavailable users */
 .row.busy .btn-unavailable,
 .row.unavailable .btn-unavailable {
   display: block;
@@ -152,7 +150,7 @@ margin: 0;
   font-weight: 600;
 }
 
-/* Responsivo */
+/* Responsive */
 @media (max-width:768px) {
   .poster {
     padding: 20px 16px 24px;
@@ -197,33 +195,32 @@ margin: 0;
 }
 
 
-/*Punto de estado */
+/* Status dot */
 .status-dot {
   width: 12px;
   height: 12px;
   border-radius: 50%;
 }
 
-/* Disponible */
+/* Available */
 .status-dot.ok,
 .status-dot.available {
   background: var(--available);
 }
 
-/* Ocupado */
+/* Busy */
 .status-dot.busy {
   background: var(--busy);
 }
 
-/* Inactivo / No disponible */
+/* Inactive / Unavailable */
 .status-dot.off,
 .status-dot.no,
 .row.unavailable .status-dot {
   background: var(--unavailable);
 }
 
-
-/* Botón gris DESHABILITADO para no disponibles u ocupados */
+/* Disabled gray button for unavailable or busy users */
 .row.busy .btn,
 .row.unavailable .btn {
   background: #b9a895;
@@ -234,7 +231,7 @@ margin: 0;
   transform: none;
 }
 
-/* ===== Responsivo==== */
+/* Responsive */
 @media (max-width:768px) {
   .action {
     flex-basis: 260px;
@@ -249,14 +246,14 @@ margin: 0;
   }
 }
 
-/* ===== CONFIRM MODAL ===== */
+/* Confirm Modal */
 
 /* Overlay */
 .confirm-overlay {
   position: fixed;
-  inset: 0; /* top:0,left:0,right:0,bottom:0 */
+  inset: 0;
   background: rgba(0, 0, 0, .45);
-  display: none; /* oculto por defecto */
+  display: none;
   justify-content: center;
   align-items: center;
   z-index: 2000;
@@ -266,7 +263,7 @@ margin: 0;
   display: flex;
 }
 
-/* Caja modal */
+/* Modal box */
 .dialog {
   background: var(--panel);
   border: 4px solid var(--black-bean);
@@ -278,7 +275,7 @@ margin: 0;
   animation: popup-in .25s ease-out;
 }
 
-/* Títulos y texto */
+/* Titles and text */
 .confirm-title {
   font-size: 26px;
   color: var(--black-bean);
@@ -291,14 +288,14 @@ margin: 0;
   margin-bottom: 20px;
 }
 
-/* Botones */
+/* Buttons */
 .confirm-actions {
   display: flex;
   justify-content: center;
   gap: 12px;
 }
 
-/* Modal: animación */
+/* Modal animation */
 @keyframes popup-in {
   from {
     opacity: 0;
@@ -309,7 +306,7 @@ margin: 0;
     transform: scale(1) translateY(0);
   }
 }
-/* Panels (dos vistas) */
+/* Panels */
 .panel { display: block; }
 .panel[hidden] { display: none !important; }
 

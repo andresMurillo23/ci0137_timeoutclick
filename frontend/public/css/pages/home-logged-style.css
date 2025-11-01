@@ -1,6 +1,6 @@
 @import url("/css/base/_components.css");
 
-/* Fondo general */
+/* General background */
 body {
   background: #f2e6d3 url("/assets/images/desert-bg2.jpg") center/cover no-repeat;
   color: var(--text);
@@ -19,7 +19,7 @@ body {
   box-sizing: border-box;
 }
 
-/* Ajuste responsivo */
+/* Responsive */
 @media (max-width: 600px) {
   .poster {
     margin: 90px 14px;

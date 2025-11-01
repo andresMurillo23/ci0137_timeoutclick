@@ -1,13 +1,13 @@
 @import url("/css/base/_components.css");
 
-/* Reset y variables*/
+/* Reset and variables */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* Altura visible de la barra fija  */
+/* Visible height of fixed bar */
 :root {
   --bar-h: 64px;
 }
@@ -18,7 +18,7 @@
   }
 }
 
-/* Fondo y tipografia */
+/* Background and typography */
 html,
 body {
   min-height: 100%; 
@@ -36,18 +36,13 @@ margin: 0;
   font-family: var(--montfont);
 }
 
-/* Contenedor de pagina */
+/* Page container */
 .app {
-  /* deja espacio de la barra y usa el alto libre */
   padding-top: var(--bar-h);
   min-height: calc(100dvh - var(--bar-h));
-
-  /* centrado perfecto */
   display: flex;
   align-items: center;
   justify-content: center;
-
-  /* respiro lateral en móviles */
   padding-left: 16px;
   padding-right: 16px;
 }
@@ -65,12 +60,9 @@ margin: 0;
   margin: calc(var(--bar-h) + 12px) auto 16px;
   max-height: calc(100dvh - var(--bar-h) - 28px);
   overflow: hidden;
-
-  /* layout */
   display: flex;
   flex-direction: column;
   gap: 12px;
-
   padding: 20px 16px;
 }
 
@@ -115,7 +107,8 @@ margin: 0;
   font-weight: bold;
   color: var(--black-bean);
 }
-/* Dale respiro al fondo del área con scroll */
+
+/* Add bottom padding to scroll area */
 .poster__scroll{
   padding-bottom: 24px;
 }

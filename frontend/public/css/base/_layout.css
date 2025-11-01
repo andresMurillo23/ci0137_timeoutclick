@@ -1,4 +1,4 @@
-/* LAYOUT GLOBAL */
+/* Global Layout */
 
 /* Reset */
 * {
@@ -12,7 +12,7 @@ body {
   padding: 0;
 }
 
-/* Fondo general */
+/* General background */
 body {
   background-color: #3b2414;
   color: var(--text);
@@ -29,7 +29,7 @@ body {
   margin: 0 auto;
 }
 
-/* Encabezado superior (Topbar) */
+/* Top header (Topbar) */
 .topbar {
   position: fixed;
   top: 0;
@@ -56,14 +56,14 @@ body {
   box-sizing: border-box;
 }
 
-/* Responsivo */
+/* Responsive */
 @media (max-width: 768px) {
   body {
     font-size: 16px;
   }
 }
 
-/* Navbar - Estilos */
+/* Navbar styles */
 
 .brand {
   display: flex;
@@ -83,7 +83,7 @@ body {
   margin-left: auto;
 }
 
-/* Botón específico del navbar */
+/* Navbar specific button */
 .topbar .btn {
   background: transparent;
   color: #f8ead6;
@@ -164,11 +164,11 @@ body {
   max-width: 1180px;
   margin: 0 auto;
   padding: 26px 20px 96px;
-  /* empuje bajo la barra; usa alturas globales */
+  /* Push below bar using global heights */
   padding-top: calc(var(--navbar-height, 6.5rem) + 26px);
 }
 
-/* Shared subtitle (neutro) */
+/* Shared subtitle */
 .subtitle {
   text-align: center;
   margin: 0 0 22px;
@@ -177,7 +177,7 @@ body {
   opacity: .9;
 }
 
-/* Shared hero title (solo familia y tracking) */
+/* Shared hero title */
 .titles {
   text-align: center;
   font-family: "Rye", system-ui, sans-serif;

@@ -234,7 +234,7 @@
   border-color: var(--brown);
   box-shadow: 0 0 0 2px rgba(160, 64, 5, 0.1);
 }
-/* Responsive para pager */
+/* Responsive for pager */
 @media (max-width: 768px) {
   .table-pager {
     grid-template-columns: 1fr;

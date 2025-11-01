@@ -42,8 +42,7 @@
     width: clamp(0px, var(--pct), 100%)
 }
 
-/* Panel principal */
-
+/* Main panel */
 .op-grid {
     display: grid;
     grid-template-columns: 160px 1fr;
@@ -69,7 +68,7 @@
     display: block
 }
 
-/* Campos públicos */
+/* Public fields */
 .op-fields {
     display: grid;
     gap: 14px

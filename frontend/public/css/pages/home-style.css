@@ -1,13 +1,13 @@
 @import url("/css/base/_components.css");
 
-/* Reset y variables*/
+/* Reset and variables */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* Altura visible de la barra fija  */
+/* Visible height of fixed bar */
 :root {
   --bar-h: 64px;
 }
@@ -18,7 +18,7 @@
   }
 }
 
-/* Fondo y tipografia */
+/* Background and typography */
 html,
 body {
   height: 100%;
@@ -31,18 +31,13 @@ body {
   font-family: var(--montfont);
 }
 
-/* Contenedor de pagina */
+/* Page container */
 .app {
-  /* deja espacio de la barra y usa el alto libre */
   padding-top: var(--bar-h);
   min-height: calc(100dvh - var(--bar-h));
-
-  /* centrado perfecto */
   display: flex;
   align-items: center;
   justify-content: center;
-
-  /* respiro lateral en móviles */
   padding-left: 16px;
   padding-right: 16px;
 }
@@ -55,8 +50,6 @@ body {
   opacity: .25;
 }
 
-/*login y signup*/
-
 .btn-row {
   display: flex;
   justify-content: center;
@@ -65,7 +58,6 @@ body {
   max-width: 480px;
 }
 
-/* Estilo de los botones dentro de la fila */
 .btn-row .btn{
   border: 2px solid var(--muted);
   background: var(--black-bean);
@@ -78,6 +70,7 @@ body {
   font-size: medium;
   transition: transform .2s ease, background-color .2s ease;
 }
+
 .btn-row .btn:hover {
   transform: scale(1.05);
   background-color: var(--licorice);
@@ -87,8 +80,7 @@ body {
   transform: scale(1.03);
 }
 
-
-/* Responsivo */
+/* Responsive */
 @media (max-width: 768px) {
   .poster h2 {
     font-size: 30px;

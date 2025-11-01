@@ -1,11 +1,11 @@
-/*  Fondo y tipografía general */
+/* General background and typography */
 body {
   background: var(--background-brown-profiles);
   color: var(--row-background);
   font-family: var(--montfont);
 }
 
-/*  Contenedor principal  */
+/* Main container */
 .report {
   max-width: 1180px;
   margin: 0 auto;
@@ -13,7 +13,7 @@ body {
   padding-top: calc(var(--navbar-height) + 26px);
 }
 
-/*  Contenido central  */
+/* Central content */
 .content .titles--light,
 .content .subtitle {
   text-align: center;
@@ -26,7 +26,7 @@ body {
   opacity: 0.9;
 }
 
-/*  Responsive  */
+/* Responsive */
 @media (max-width: 768px) {
 
   .content h2 {
@@ -38,7 +38,7 @@ body {
   }
 }
 
-/* ===== Bottom Button Container ===== */
+/* Bottom Button Container */
 .bottom {
   margin-top: 30px;
   display: grid;
@@ -62,7 +62,6 @@ body {
   -webkit-text-decoration: none;
 }
 
-/* TODO: cambiar colores */
 .bottom .btn-ghost.left {
   border: 2px solid var(--black-bean);
   background: var(--panel);

@@ -35,7 +35,7 @@ body {
   gap: 18px;
 }
 
-/* Search Panel */
+/* Search panel */
 .panel {
   background: var(--panel);
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
@@ -64,7 +64,7 @@ body {
   box-shadow: 0 0 0 2px rgba(160, 64, 5, 0.2);
 }
 
-/* Search Bar */
+/* Search bar */
 .search-bar {
   display: flex;
   gap: 15px;
@@ -96,7 +96,7 @@ body {
   padding: 16px;
 }
 
-/* Friends grid*/
+/* Friends grid */
 .friends-grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
@@ -165,7 +165,7 @@ body {
   flex: 1;
 }
 
-/* Wrapper challenge buttons inside the cards */
+/* Challenge button wrapper inside cards */
 .friend-card .btn--secondary {
   width: auto;
   max-width: none;
@@ -175,8 +175,7 @@ body {
   border-radius: 20px;
 }
 
-
-/* Inhabilite the challenge button for unavailable friends */
+/* Disable challenge button for unavailable friends */
 .friend-card.busy .btn--secondary,
 .friend-card.unavailable .btn--secondary {
   background: #b9a895;
@@ -193,7 +192,7 @@ body {
   font-weight: 700;
 }
 
-/* Focus states using variables */
+/* Focus states */
 a:focus,
 button:focus,
 input:focus {
@@ -280,14 +279,14 @@ input:focus {
   }
 }
 
-/* CONFIRM MODAL  */
+/* Confirm modal */
 
 /* Overlay */
 .confirm-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, .45);
-  display: none; /* hidden by default */
+  display: none;
   justify-content: center;
   align-items: center;
   z-index: 2000;
@@ -332,14 +331,14 @@ input:focus {
   margin-bottom: 20px;
 }
 
-/* Botones */
+/* Buttons */
 .confirm-actions {
   display: flex;
   justify-content: center;
   gap: 12px;
 }
 
-/* Modal: animation */
+/* Modal animation */
 @keyframes popup-in {
   from {
     opacity: 0;
@@ -350,7 +349,7 @@ input:focus {
     transform: scale(1) translateY(0);
   }
 }
-/* Panels (two views) */
+/* Panels */
 .panel { display: block; }
 .panel[hidden] { display: none !important; }
 

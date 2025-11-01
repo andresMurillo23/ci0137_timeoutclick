@@ -32,7 +32,7 @@
   transition: all 0.3s ease;
 }
 
-/* Hover suave */
+/* Hover */
 .press-button:hover:not(:disabled){
   transform: translateY(-3px);
   background: #9c300a;
@@ -61,7 +61,7 @@
   box-shadow: none;
 }
 
-/* conteo */
+/* Countdown */
 .press-button span.countdown{
   font-size: 3rem;
   color: #fff;
@@ -76,7 +76,7 @@
                0 0 20px rgba(255, 150, 60, 0.25);
 }
 
-/* Press Time */
+/* Press time */
 .press-time{
   font-weight: 600;
   color: var(--muted);

@@ -50,7 +50,7 @@ body {
     width: clamp(0px, var(--pct), 100%)
 }
 
-/* Principal panel */
+/* Main panel */
 .op-grid {
     display: grid;
     grid-template-columns: 160px 1fr;
