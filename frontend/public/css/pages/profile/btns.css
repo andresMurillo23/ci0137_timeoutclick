@@ -28,7 +28,8 @@
 
 .bottom .btn-ghost.left:hover {
   filter: brightness(1.07);
-  transform: translateY(-1px)
+  transform: translateY(-1px);
+  background-color: var(--stack-color);
 }
 
 .bottom .btn-ghost.left:active {
