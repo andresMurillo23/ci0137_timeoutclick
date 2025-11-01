@@ -19,9 +19,10 @@
         <div class="search-bar">
           <input class="search" type="text" placeholder="Type the username" aria-label="Search invitations">
           <button class="btn--primary-brown" type="button" aria-label="Search">SEARCH</button>
-          <div class="tab-bar">
-            <button class="btn--secondary" role="tab" aria-selected="true" data-target="receivedPanel">RECEIVED</button>
-            <button class="btn--secondary" role="tab" aria-selected="false" data-target="sentPanel">SENT</button>
+          <div class="tab-bar invitations-tabs">
+            <button class="tab" role="tab" aria-selected="true" data-target="receivedPanel">RECEIVED</button>
+            <button class="tab" role="tab" aria-selected="false" data-target="sentPanel">SENT</button>
+            <div class="tab-indicator"></div>
           </div>
         </div>
       </section>
@@ -39,8 +40,8 @@
                 <div class="invitation-meta">Sent 2 min ago</div>
               </div>
               <div class="invitation-actions">
-                <button class="btn btn--secondary" type="button" aria-label="Accept invitation">ACCEPT</button>
                 <button class="btn btn--back" type="button" aria-label="Decline invitation">DECLINE</button>
+                <button class="btn btn--secondary" type="button" aria-label="Accept invitation">ACCEPT</button>
               </div>
             </div>
 
@@ -53,8 +54,8 @@
                 <div class="invitation-meta">Sent 1h ago</div>
               </div>
               <div class="invitation-actions">
-                <button class="btn btn--secondary" type="button" aria-label="Accept invitation">ACCEPT</button>
                 <button class="btn btn--back" type="button" aria-label="Decline invitation">DECLINE</button>
+                <button class="btn btn--secondary" type="button" aria-label="Accept invitation">ACCEPT</button>
               </div>
             </div>
           </div>
@@ -74,50 +75,18 @@
                 <button class="btn--primary-brown" type="button" aria-label="Cancel invitation">CANCEL</button>
               </div>
             </div>
-
-            <!-- Sent accepted (example, disabled cancel) -->
-            <div class="invitation-card">
-              <span class="status-dot on" aria-hidden="true"></span>
-              <div class="user-avatar">T</div>
-              <div class="invitation-info">
-                <div class="user-name">tatsparamo</div>
-                <div class="invitation-meta">Accepted • 3h ago</div>
-              </div>
-              <div class="invitation-actions">
-                <button class="btn--primary-brown" type="button" aria-label="Cancel invitation" disabled>—</button>
-              </div>
-            </div>
           </div>
         </div>
       </section>
     </div>
     <!-- Back to previous page -->
-      <div class="bottom">
-        <button type="button" class="btn btn-ghost left" onclick="location.href='/pages/friends.html'">BACK</button>
-      </div>
+    <div class="bottom">
+      <button type="button" class="btn btn-ghost left" onclick="location.href='/pages/friends.html'">BACK</button>
+    </div>
     </div>
   </section>
 </main>
 
 <!-- shared footer -->
 <script src="/js/partials/footer.js"></script>
-
-<script>
-  // Simple tab switcher: toggles panels and aria-selected
-  (function(){
-    const tabs = Array.from(document.querySelectorAll('.tab-bar button[role="tab"]'));
-    function activate(tab) {
-      tabs.forEach(t => {
-        const panelId = t.getAttribute('data-target');
-        const panel = document.getElementById(panelId);
-        const selected = t === tab;
-        t.setAttribute('aria-selected', selected ? 'true' : 'false');
-        if (panel) panel.hidden = !selected;
-      });
-    }
-    tabs.forEach(t => t.addEventListener('click', () => activate(t)));
-    // ensure initial active
-    const initial = document.querySelector('.tab[aria-selected="true"]');
-    if (initial) activate(initial);
-  })();
-</script>
+<script src="/js/partials/invitation-list-switch.js"></script>

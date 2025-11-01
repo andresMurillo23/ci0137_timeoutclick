@@ -78,6 +78,7 @@ body {
   padding: 12px 24px;
   font-size: 14px;
   white-space: nowrap;
+  border-radius: 12px;
 }
 
 .search-bar .btn--secondary {
@@ -144,6 +145,7 @@ body {
   padding: 8px 20px;
   font-size: 12px;
   border-radius: 20px;
+  border-radius: 12px;
 }
 
 a:focus,
