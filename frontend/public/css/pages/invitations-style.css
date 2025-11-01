@@ -286,6 +286,10 @@ input:focus {
   gap: 12px;
 }
 
+.btn--back:hover {
+  background: var(--bar-background);
+}
+
 /* Invitation card */
 .invitation-card {
   display: flex;
@@ -298,7 +302,7 @@ input:focus {
 }
 
 .invitation-card:hover {
-  background: var(--bar-background);
+  background: var(--stack-color);
 }
 
 .invitation-info {
