@@ -99,6 +99,7 @@ body {
   color: #f8ead6;
 }
 
+/* Navigation tabs */
 .tabs {
   position: fixed;
   top: var(--topbar-height);
@@ -133,7 +134,7 @@ body {
   border-radius: 0.625rem;
 }
 
-/* Page container spacing once for all pages */
+/* Page container */
 .page {
   max-width: 1180px;
   margin: 0 auto;
@@ -141,7 +142,7 @@ body {
   padding-top: calc(var(--navbar-height) + 26px);
 }
 
-/* Generic page subtitle */
+/* Page subtitle */
 .subtitle {
   text-align: center;
   color: #e8d7b4;
@@ -151,7 +152,7 @@ body {
   font-family: var(--montfont);
 }
 
-/* Hero titles (already similar in your base; keep just one) */
+/* Hero titles */
 .titles {
   font-family: "Rye", system-ui, sans-serif;
   color: #fae9c9;
@@ -184,6 +185,7 @@ body {
   letter-spacing: 1.5px;
 }
 
+/* Tab styles and active states */
 .tabs{
   justify-content: center;
   gap: clamp(40px, 8vw, 96px);
@@ -194,6 +196,7 @@ body {
 
 .tab{ position: relative; }
 
+/* Active tab hover state */
 .tab[aria-current="page"]:hover,
 .tab.is-active:hover{
   background: transparent;
@@ -201,7 +204,7 @@ body {
   border-radius: 0;
 }
 
-
+/* Active tab indicator background */
 .tab[aria-current="page"]::before,
 .tab.is-active::before{
   content:"";
@@ -216,6 +219,7 @@ body {
   z-index:1;
 }
 
+/* Active tab indicator arrow */
 .tab[aria-current="page"]::after,
 .tab.is-active::after{
   content:"";
@@ -230,6 +234,7 @@ body {
   filter:drop-shadow(0 -1px 0 rgba(0,0,0,.35));
 }
 
+/* Tab typography */
 .tab{
   font-size:1.25rem;
   font-weight:800;
@@ -264,6 +269,7 @@ body {
   padding-left: 24px;
 }
 
+/* Tab layout adjustments */
 .tabs .tab{
   flex: 0 0 var(--tab-w, 140px);
   text-align: center;
@@ -278,6 +284,7 @@ body {
   }
 }
 
+/* Brand link */
 .brand{
   text-decoration: none;
   color: inherit;

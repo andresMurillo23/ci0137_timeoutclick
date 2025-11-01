@@ -1,10 +1,11 @@
-/* Key-value  */
+/* Key-value grid layout */
 .kv-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px 28px
 }
 
+/* Individual key-value pair */
 .kv {
   display: grid;
   grid-template-columns: 160px 1fr;
@@ -12,11 +13,13 @@
   row-gap: 12px
 }
 
+/* Key label */
 .label {
   color: var(--line);
   font-family: var(--montfont)
 }
 
+/* Value field */
 .value {
   color: var(--winrate-brown);
   font-weight: 800;

@@ -86,6 +86,7 @@
   transform: scale(1.03);
 }
 
+/* Back button variant */
 .btn--back {
   display: block;
   width: 100%;
@@ -263,7 +264,7 @@ a.btn-ghost {
   box-shadow: 0 2px 0 rgba(0, 0, 0, .22);
 }
 
-/* Brand variants */
+/* Brand color variants */
 .btn.btn--sienna {
   background: var(--sienna);
   color: #fff;
@@ -276,6 +277,7 @@ a.btn-ghost {
   border: 2px solid #2b1d14;
 }
 
+/* Utility classes */
 .u-justify-start {
   justify-self: start;
 }
@@ -295,6 +297,7 @@ a.btn-ghost {
   width: 100%;
 }
 
+/* Progress bar */
 .progress[data-base] {
   --progress-bg: #2b1d14;
   --progress-border: #4b2a1b;

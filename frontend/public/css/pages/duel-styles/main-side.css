@@ -1,3 +1,4 @@
+/* Page background */
 body {
   background: var(--page-bg) center/cover no-repeat;
   color: var(--text);
@@ -5,7 +6,7 @@ body {
   margin: 0;
 }
 
-/*  Layout  */
+/* Duel page layout */
 .duel-page {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -18,6 +19,7 @@ body {
   font-family: var(--montfont);
 }
 
+/* Header section */
 .duel-header {
   grid-column: 1 / -1;
   background: var(--brown);
@@ -27,7 +29,7 @@ body {
   padding: 0.75rem;
 }
 
-/*  Main content  */
+/* Main content panel */
 .duel-content {
   background: var(--panel);
   border-radius: 20px;
@@ -40,6 +42,7 @@ body {
   justify-content: space-evenly;
 }
 
+/* Round and goal display */
 .round-goal-centered {
   display: flex;
   flex-direction: column;
@@ -47,6 +50,7 @@ body {
   margin-bottom: 1rem;
 }
 
+/* Info sections */
 .round-info,
 .goal-info {
   text-align: center;
@@ -54,7 +58,7 @@ body {
   margin-bottom: 0.5rem;
 }
 
-/* Labels */
+/* Round and goal labels */
 .round-label,
 .goal-label {
   display: block;
@@ -65,11 +69,12 @@ body {
   opacity: 0.8;
 }
 
+/* Title size */
 .titles {
   font-size: 1rem;
 }
 
-/* Values */
+/* Numeric values */
 .round-number,
 .goal-value {
   display: block;
@@ -79,7 +84,7 @@ body {
   text-shadow: 1px 2px 0 var(--golden-brown);
 }
 
-/*  Scoreboard  */
+/* Scoreboard display */
 .score-board {
   display: flex;
   justify-content: center;
@@ -88,12 +93,14 @@ body {
   margin: 1rem 0 2rem;
 }
 
+/* Player label */
 .player-label {
   font-weight: 700;
   font-size: 1rem;
   color: var(--text);
 }
 
+/* Score display */
 .score {
   background: var(--line-strong);
   color: var(--black-bean);

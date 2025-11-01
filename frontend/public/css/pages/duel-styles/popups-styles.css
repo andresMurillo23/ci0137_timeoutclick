@@ -1,3 +1,4 @@
+/* Modal overlay */
 .modal-overlay{
   display: none;
   position: fixed;
@@ -8,10 +9,12 @@
   z-index: 10000;
 }
 
+/* Active state */
 .modal-overlay.active{
   display: flex;
 }
 
+/* Modal content box */
 .modal-content{
   position: relative;
   z-index: 10001;
@@ -24,6 +27,7 @@
   font-family: var(--montfont);
 }
 
+/* Modal titles */
 #winnerTitle, #finalTitle{
   font-family: "Rye", system-ui, sans-serif;
   text-shadow: 3px 3px 0 #e6cc99, 4px 4px 4px rgba(0, 0, 0, .3);
@@ -31,10 +35,12 @@
   color: var(--sienna);
 }
 
+/* Modal details text */
 #winnerDetails, #finalDetails{
   color: var(--black-bean);
 }
 
+/* Action buttons container */
 .popup-actions{
   display: flex;
   justify-content: center;
@@ -42,6 +48,7 @@
   margin-top: 1.5rem;
 }
 
+/* Modal buttons base */
 .btn-confirm,
 .btn-cancel{
   border-radius: 1rem;
@@ -52,21 +59,25 @@
   transition: 0.2s ease;
 }
 
+/* Confirm button */
 .btn-confirm{
   background: var(--brown);
   color: var(--panel);
 }
 
+/* Confirm hover */
 .btn-confirm:hover{
   background: var(--burnt-orange);
   transform: scale(1.05);
 }
 
+/* Cancel button */
 .btn-cancel{
   background: var(--black-bean);
   color: var(--panel);
 }
 
+/* Cancel hover */
 .btn-cancel:hover{
   transform: scale(1.05);
   background-color: var(--licorice);

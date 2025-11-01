@@ -1,5 +1,6 @@
 @import url("/css/base/_components.css");
 
+/* Reset styles */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -10,12 +11,15 @@ body {
   height: 100%;
 }
 
+/* Background with image */
 body {
 margin: 0;
   background: var(--licorice) url("/assets/images/desert-bg2.jpg") center/cover no-repeat;
   color: #26170e;
   font-family: var(--montfont);
 }
+
+/* Main container */
 .app {
   padding-top: var(--bar-h);
   min-height: calc(100dvh - var(--bar-h));
@@ -26,6 +30,7 @@ margin: 0;
   padding-right: 16px;
 }
 
+/* Section divider */
 .divider {
   border: 0;
   height: 4px;
@@ -34,6 +39,7 @@ margin: 0;
   opacity: 0.25;
 }
 
+/* Action buttons container */
 .actions {
   display: flex;
   justify-content: center;
@@ -42,7 +48,7 @@ margin: 0;
   max-width: 480px;
 }
 
-/* Verify Email */
+/* Verification code input grid */
 .code-grid {
     display: flex;
     justify-content: center;
@@ -50,6 +56,7 @@ margin: 0;
     margin: 18px 0 12px;
 }
 
+/* Individual code input box */
 .code-box {
     width: 56px;
     height: 56px;
@@ -59,22 +66,26 @@ margin: 0;
     background: var(--panel);
 }
 
+/* Focus state */
 .code-box:focus {
     outline: 2px solid var(--black-bean);
     outline-offset: 2px;
     background: var(--line-strong);
 }
 
+/* Hover state */
 .code-box:hover {
     background: var(--line-strong);
 }
 
+/* Muted text */
 .muted {
     color: #b3a690;
     text-align: center;
     margin: 10px 0 14px;
 }
 
+/* Link row container */
 .row-links {
     display: flex;
     justify-content: center;
@@ -84,6 +95,7 @@ margin: 0;
     font-size: 14px;
 }
 
+/* Link styling */
 .row-links a {
     color: var(--navbar-border);
     text-decoration: underline;
@@ -93,9 +105,12 @@ margin: 0;
     transition: opacity .2s ease;
 }
 
+/* Link hover state */
 .row-links a:hover {
     opacity: 0.7;
 }
+
+/* Instructions text */
 .indications {
     text-align: center;
     margin-bottom: 10px;

@@ -1,19 +1,22 @@
-
+/* Form layout */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 18px 28px
 }
 
+/* Form column */
 .form-col {
   display: grid;
   gap: 16px
 }
 
+/* Form field */
 .field {
   display: block
 }
 
+/* Field label */
 .field .label {
   display: block;
   color: var(--navbar-bg);
@@ -22,6 +25,7 @@
   margin-bottom: 6px;
 }
 
+/* Input control */
 .control {
   width: 100%;
   padding: 10px 12px;
@@ -35,35 +39,40 @@
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5);
 }
 
+/* Focus state */
 .control:focus {
   border-color: var(--line-strong);
   box-shadow: 0 0 0 3px color-mix(in lch, var(--line-strong) 45%, transparent);
 }
 
+/* Readonly control */
 .control[readonly] {
   background: var(--control-back);
   color: var(--line);
   cursor: default
 }
 
+/* Two-column group */
 .group .group-two {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px
 }
 
+/* Field hint */
 .hint {
   margin-top: 8px;
   font-size: 12px;
   color: var(--navbar-bg);
 }
 
-/* Avatar / uploader */
+/* Avatar container */
 .avatar-stack {
   width: 100%;
   padding: 18px
 }
 
+/* Avatar frame */
 .avatar-frame {
   aspect-ratio: 1/1;
   width: 100%;
@@ -74,6 +83,7 @@
   margin: 0 0 14px 0;
 }
 
+/* Avatar image */
 .avatar-frame img {
   width: 100%;
   height: 100%;
@@ -81,6 +91,7 @@
   display: block
 }
 
+/* File uploader */
 .uploader .file {
   width: 100%;
   border: 1.5px dashed var(--borders);
@@ -90,10 +101,12 @@
   font-family: var(--montfont);
 }
 
+/* Progress variable */
 .progress {
   --pct: var(--winrate, 0%)
 }
 
+/* Progress fill */
 .progress>i {
   width: clamp(0px, var(--pct), 100%)
 }
@@ -121,10 +134,12 @@
   border: 0;
 }
 
+/* Avatar frame positioning */
 .avatar-frame {
   position: relative
 }
 
+/* Edit button trigger */
 .edit-trigger {
   position: absolute;
   right: 10px;
@@ -148,19 +163,23 @@
   transform: translateY(-1px)
 }
 
+/* Active state */
 .edit-trigger:active {
   transform: translateY(0)
 }
 
+/* Focus visible state */
 .edit-trigger:focus-visible {
   outline: 3px solid var(--line-strong);
   outline-offset: 2px
 }
 
+/* Edit icon */
 .edit-icon {
   fill: #fff
 }
 
+/* Screen reader only */
 .visually-hidden {
   position: absolute !important;
   width: 1px;
@@ -173,6 +192,7 @@
   border: 0;
 }
 
+/* Filename display */
 .filename {
   display: block;
   margin-top: 6px;
@@ -184,6 +204,7 @@
   text-overflow: ellipsis;
 }
 
+/* Page background */
 body.profile-edit {
   background: var(--page-bg);
 }
