@@ -80,6 +80,7 @@ body {
   font-size: 14px;
   white-space: nowrap;
   text-decoration: none;
+  border-radius: 18px;
 }
 
 .search-bar .btn--secondary {
@@ -90,6 +91,7 @@ body {
   font-size: 14px;
   white-space: nowrap;
   text-decoration: none;
+  border-radius: 12px;
 }
 
 .friends-grid-container {
@@ -172,7 +174,7 @@ body {
   margin: 0;
   padding: 8px 20px;
   font-size: 12px;
-  border-radius: 20px;
+  border-radius: 12px;
 }
 
 
