@@ -1,15 +1,3 @@
-// (function() {
-//   var href = "/css/main.css";
-//   var found = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
-//     .some(link => link.href.includes(href));
-//   if (!found) {
-//     var styleLink = document.createElement("link");
-//     styleLink.rel = "stylesheet";
-//     styleLink.href = href;
-//     document.head.appendChild(styleLink);
-//   }
-// })();
-
 var navbar = `
 <!-- Encabezado común -->
 <header class="topbar" aria-label="Barra superior">
@@ -30,7 +18,7 @@ var navbar = `
   <a class="tab" data-section="friends"  href="/pages/friends.html">friends</a>
   <a class="tab" data-section="profile"  href="/pages/profile.html">profile</a>
 </nav>`;
-// document.write(navbar);
+
 document.addEventListener('DOMContentLoaded', () => {
   const app = document.querySelector('.app') || document.body;
   app.insertAdjacentHTML('afterbegin', navbar);

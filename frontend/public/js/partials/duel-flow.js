@@ -1,4 +1,4 @@
-// ==== ELEMENTOS DEL DOM ====
+// DOM elements
 const pressBtn = document.getElementById("pressButton");
 const pressTimeDisplay = document.getElementById("pressTime");
 const historyList = document.getElementById("historyList");
@@ -19,7 +19,7 @@ const rematchBtn = document.getElementById("rematchBtn");
 const returnHomeBtn = document.getElementById("returnHomeBtn");
 const surrenderBtn = document.getElementById("surrenderBtn");
 
-// ==== VARIABLES ====
+// State
 let round = 1;
 const totalRounds = 3;
 let score1 = 0;
@@ -27,7 +27,7 @@ let score2 = 0;
 let goalTime = 4;
 let isCounting = false;
 
-// ==== EVENTOS PRINCIPALES ====
+// Main events
 surrenderBtn.addEventListener("click", () => showFinalPopup("Surrender"));
 nextRoundBtn.addEventListener("click", nextRound);
 rematchBtn.addEventListener("click", resetGame);
@@ -35,7 +35,7 @@ returnHomeBtn.addEventListener("click", () => (window.location.href = "/"));
 surrenderPopupBtn.addEventListener("click", () => showFinalPopup("Surrender"));
 window.addEventListener("load", startNewRoundAnimation);
 
-// ==== CICLO DE RONDA ====
+// Start-of-round animation then countdown
 function startNewRoundAnimation() {
   const span = pressBtn.querySelector("span");
   span.textContent = "";
@@ -43,7 +43,7 @@ function startNewRoundAnimation() {
   pressBtn.disabled = true;
   pressTimeDisplay.textContent = "";
 
-  // Enfasis visual en el GOAL TIME
+  // brief highlight on goal time
   goalValue.classList.add("goal-highlight");
   setTimeout(() => {
     goalValue.classList.remove("goal-highlight");
@@ -51,7 +51,7 @@ function startNewRoundAnimation() {
   }, 1200);
 }
 
-// ==== CONTEO 3,2,1,CLICK ====
+// 3-2-1-CLICK countdown
 function startCountdown() {
   isCounting = true;
   let count = 3;
@@ -64,39 +64,37 @@ function startCountdown() {
     if (count > 0) {
       span.textContent = count;
     } else if (count === 0) {
-      span.textContent = "CLICK!";
+      span.textContent = "CLICK!"; 
       span.classList.remove("countdown");
       span.classList.add("ready");
       clearInterval(interval);
       pressBtn.disabled = false;
       isCounting = false;
-
-      // Activar click solo una vez
       pressBtn.addEventListener("click", handleClickOnce, { once: true });
     }
   }, 1000);
 }
 
-// ==== CUANDO SE HACE CLICK ====
+// Handle the single click for this round
 function handleClickOnce() {
   pressBtn.disabled = true;
 
-  // Mantiene el texto "CLICK!" visible
   const span = pressBtn.querySelector("span");
   span.textContent = "CLICK!";
   span.classList.remove("ready");
   span.style.opacity = "0.9";
 
-  // Muestra "Measuring..." debajo del botón
-  pressTimeDisplay.textContent = "Measuring...";
+  pressTimeDisplay.textContent = "Measuring..."; // feedback while computing
 
-  // Simular tiempos
+  // Simulated times
   const simulatedPressPlayer = (Math.random() * 3 + 1).toFixed(2);
   const simulatedPressOpponent = (Math.random() * 3 + 1).toFixed(2);
 
-  // Esperar un momento y luego mostrar resultados
+  // Show result after short delay
   setTimeout(() => {
     showPressTime(simulatedPressPlayer);
+
+    // current rule: tie goes to PLAYER541 (>=)
     const winner =
       parseFloat(simulatedPressPlayer) >= parseFloat(simulatedPressOpponent)
         ? "PLAYER541"
@@ -108,17 +106,19 @@ function handleClickOnce() {
   }, 1000 + Math.random() * 600);
 }
 
-// ==== FUNCIONES BASE ====
+// Update the "your press time" label
 function showPressTime(time) {
   pressTimeDisplay.textContent = `Your Press Time: ${time}s`;
 }
 
+// Update scores and scoreboard text
 function updateScores(winner) {
   if (winner === "PLAYER541") score1++;
   else score2++;
   scoreValue.textContent = `${score1} - ${score2}`;
 }
 
+// Append round summary to history list
 function updateHistory(winner, t1, t2) {
   const li = document.createElement("li");
   li.classList.add("history-item");
@@ -132,7 +132,7 @@ function updateHistory(winner, t1, t2) {
   historyList.appendChild(li);
 }
 
-// ==== POPUP DE RESULTADOS ====
+// Open round results popup with both times
 function showRoundPopup(winner, t1, t2) {
   winnerTitle.textContent = `Round ${round} Results`;
   winnerDetails.innerHTML = `
@@ -143,7 +143,7 @@ function showRoundPopup(winner, t1, t2) {
   winnerPopup.classList.add("active");
 }
 
-// ==== SIGUIENTE RONDA ====
+// Go to next round or finish if last one
 function nextRound() {
   winnerPopup.classList.remove("active");
   round++;
@@ -152,11 +152,12 @@ function nextRound() {
     return;
   }
 
-  // Nuevo goal time y reinicio visual
+  // random next goal time (3–6s)
   goalTime = 3 + Math.floor(Math.random() * 4);
   goalValue.textContent = `${goalTime}s`;
   roundNumber.textContent = round;
 
+  // reset button state
   const span = pressBtn.querySelector("span");
   span.textContent = "";
   span.className = "";
@@ -167,7 +168,7 @@ function nextRound() {
   startNewRoundAnimation();
 }
 
-// ==== FINAL DEL JUEGO ====
+// Show final popup (or surrender)
 function showFinalPopup(reason) {
   finalPopup.classList.add("active");
   let winnerFinal;
@@ -183,7 +184,7 @@ function showFinalPopup(reason) {
   `;
 }
 
-// ==== REINICIAR PARTIDA ====
+// Reset state and UI to initial values
 function resetGame() {
   finalPopup.classList.remove("active");
   winnerPopup.classList.remove("active");
