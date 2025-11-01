@@ -1,78 +1,35 @@
-/* Fondo general */
+@import url("/css/base/_components.css");
+
+/* General background */
 body {
-  background: #f2e6d3 url("/assets/images/desert-bg2.jpg") repeat fixed;
+  background: #f2e6d3 url("/assets/images/desert-bg2.jpg") center/cover no-repeat;
   color: var(--text);
-  font-family: ui-monospace, Menlo, Courier, "Courier New", monospace;
+  font-family: var(--montfont);
   margin: 0;
 }
 
-/* Reutiliza el estilo tipo ventana */
-.window {
-  border: 3px solid var(--text);
-  background: var(--panel);
-  margin: 110px auto;
-  max-width: 720px;
-  padding: 20px;
-}
-
-/* Panel principal */
-.content.home {
-  border: 4px solid #3b2414;
-  outline: 6px solid #e6cc99;
-  background: var(--panel);
-  padding: 60px 50px;
-  text-align: center;
-}
-
-/* Título principal */
-.content.home h2 {
-  font-size: 36px;
-  letter-spacing: 2px;
-  color: #3b2414;
-  margin-bottom: 30px;
-}
-
-/* Botonera central */
-.duel-buttons {
+.app {
+  padding-top: calc(var(--bar-h) + env(safe-area-inset-top, 0px));
+  min-height: calc(100dvh - var(--bar-h));
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 18px;
+  align-items: center;   
+  justify-content: center;
+  padding-left: 16px;
+  padding-right: 16px;
+  box-sizing: border-box;
 }
 
-.duel-buttons .btn {
-  width: 100%;
-  max-width: 280px;
-  padding: 16px;
-  font-weight: bold;
-  border: 2px solid var(--text);
-  background: #7a4e2b;
-  color: var(--panel);
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.duel-buttons .btn:hover {
-  background: var(--bg);
-  color: var(--panel);
-}
-
-.duel-buttons .btn:active {
-  position: relative;
-  top: 1px;
-}
-
-/* Ajuste responsivo */
+/* Responsive */
 @media (max-width: 600px) {
-  .window {
+  .poster {
     margin: 90px 14px;
   }
 
-  .content.home {
+  .poster {
     padding: 40px 20px;
   }
 
-  .content.home h2 {
+  .poster h2 {
     font-size: 28px;
   }
 }

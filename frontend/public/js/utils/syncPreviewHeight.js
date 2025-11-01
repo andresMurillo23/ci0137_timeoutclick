@@ -1,21 +1,22 @@
 (function () {
+  // Adjust the avatar preview panel height to match the left column
   function syncPreviewHeight() {
     var left  = document.querySelector('.left-col');
     var prev  = document.querySelector('.preview');
     if (!left || !prev) return;
 
-    // Altura exacta de la columna izquierda (ACCOUNT + GAME STATS + separadores)
+    // Get computed height of the left column
     var h = left.offsetHeight;
 
-    // Fijar altura del marco derecho para que la foto termine en el mismo punto
+    // Apply same height to the right preview panel
     prev.style.height = h + 'px';
   }
 
-  // Ejecutar al cargar todo y al redimensionar
+  // Run on full load and when the window resizes
   window.addEventListener('load',  syncPreviewHeight);
   window.addEventListener('resize', syncPreviewHeight);
 
-  // Observa cambios de tamaño por contenido dinámico (opcional pero robusto)
+  // Also react to internal size changes of the left column (more reliable)
   var leftEl = document.querySelector('.left-col');
   if (leftEl && 'ResizeObserver' in window) {
     var ro = new ResizeObserver(syncPreviewHeight);

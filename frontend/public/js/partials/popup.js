@@ -1,73 +1,101 @@
-console.log("[popup] archivo cargado");
-
 document.addEventListener("DOMContentLoaded", () => {
-        console.log("[popup] DOM listo");
+  // Core elements
+  const overlay  = document.getElementById("confirmOverlay");
+  const dialog   = overlay?.querySelector(".dialog");
+  const who      = document.getElementById("who");
+  const whoWaiting = document.getElementById("whoWaiting");
 
-    const overlay = document.getElementById("confirmOverlay");
-    const dialog = overlay ? overlay.querySelector(".dialog") : null;
-    const openBtn = document.getElementById("deleteBtn");
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
-    const who = document.getElementById("who");
-    const username = document.getElementById("username");
+  // Panels (confirm vs waiting)
+  const panelConfirm = document.getElementById("panelConfirm");
+  const panelWaiting = document.getElementById("panelWaiting");
 
-    
-    console.table({
-        overlay: !!overlay,
-    dialog: !!dialog,
-    openBtn: !!openBtn,
-    noBtn: !!noBtn,
-    yesBtn: !!yesBtn,
-    who: !!who,
-    username: !!username,
-    });
+  // Buttons
+  const noBtn    = document.getElementById("noBtn");
+  const yesBtn   = document.getElementById("yesBtn");
+  const cancelWaitBtn = document.getElementById("cancelWaitBtn");
 
-    if (!overlay || !dialog) {
-        console.error("[popup] Falta el overlay o el dialog en el DOM.");
-    return;
+  // Local state
+  let lastTrigger = null;
+  let opponent = "";
+  let waitTimer = null;
+
+  if (!overlay || !dialog) return;
+
+  // Toggle between confirm and waiting panels
+  function setState(state) {
+    if (state === "confirm") {
+      panelConfirm.hidden = false;
+      panelWaiting.hidden = true;
+      dialog.focus();
+    } else if (state === "waiting") {
+      panelConfirm.hidden = true;
+      panelWaiting.hidden = false;
+      dialog.focus();
     }
+  }
 
-    function openModal() {
-        if (username && who) who.textContent = (username.textContent || "").trim();
+  // Open modal and populate opponent name
+  function openModal(fromBtn) {
+    lastTrigger = fromBtn || null;
+    const row = fromBtn?.closest(".row, .friend-card"); // support both lists
+    opponent = (row?.querySelector(".username, .user-name")?.textContent || "").trim();
+    who.textContent = opponent || "Player";
+    whoWaiting.textContent = opponent || "Player";
+
+    setState("confirm");
     overlay.classList.add("open");
     overlay.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
-        setTimeout(() => dialog.focus(), 0);
-    console.log("[popup] openModal()");
-    }
+    setTimeout(() => dialog.focus(), 0);
+  }
 
-    function closeModal() {
-        overlay.classList.remove("open");
+  // Close modal and cleanup timer/focus
+  function closeModal() {
+    overlay.classList.remove("open");
     overlay.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
-    openBtn?.focus();
-    console.log("[popup] closeModal()");
-    }
+    clearTimeout(waitTimer);
+    waitTimer = null;
+    lastTrigger?.focus(); // return focus to trigger
+  }
 
-    
-    openBtn?.addEventListener("click", openModal);
+  // Delegate clicks that should open the modal (challenge actions)
+  document.addEventListener("click", (e) => {
+    let btn =
+      e.target.closest(".list .row.available .action .btn") ||
+      e.target.closest(".friend-card.available .challenge-btn");
 
-   
-    document.addEventListener("click", (e) => {
-        if (e.target.closest && e.target.closest("#deleteBtn")) {
-        openModal();
-        }
-    });
+    if (!btn) return;
 
-    // Cerrar clic fuera
-    overlay.addEventListener("click", (e) => {
-        if (e.target === overlay) closeModal();
-    });
+    e.stopPropagation();
+    e.preventDefault();
+    openModal(btn);
+  });
 
-    // Botones NO/YES
-    noBtn?.addEventListener("click", closeModal);
-    yesBtn?.addEventListener("click", () => {
-        // TODO: logica real
-        closeModal();
-    });
+  // "NO" closes modal
+  noBtn?.addEventListener("click", closeModal);
 
-    
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && overlay.classList.contains("open")) closeModal();
-    });
+  // "YES" shows waiting and then navigates after a delay
+  yesBtn?.addEventListener("click", async () => {
+    setState("waiting");
+    // Simulate waiting for opponent; navigate to duel
+    waitTimer = setTimeout(() => {
+      window.location.assign('/pages/duel.html');
+    }, 4000);
+  });
+
+  // Cancel waiting returns to page
+  cancelWaitBtn?.addEventListener("click", () => {
+    closeModal();
+  });
+
+  // Click outside dialog closes modal
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeModal();
+  });
+
+  // ESC closes modal
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && overlay.classList.contains("open")) closeModal();
+  });
 });

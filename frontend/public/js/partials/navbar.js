@@ -1,36 +1,25 @@
-// Cargar automáticamente los estilos del navbar si no están presentes
-(function() {
-  var href = "/css/main.css";
-  var links = document.querySelectorAll('link[rel="stylesheet"]');
-  var found = false;
-  links.forEach(function(link) {
-    if (link.href.includes(href)) found = true;
-  });
-  if (!found) {
-    var styleLink = document.createElement("link");
-    styleLink.rel = "stylesheet";
-    styleLink.href = href;
-    document.head.appendChild(styleLink);
-  }
-})();
-
-var navbar = 
-`
+var navbar = `
 <!-- Encabezado común -->
 <header class="topbar" aria-label="Barra superior">
-    <div class="brand" role="banner">
-        <span>TIMEOUT CLICK</span>
-    </div>
-    <div class="context" id="page-context" aria-live="polite"></div>
-    <button class="btn logout" type="button" aria-label="Cerrar sesión">Log out</button>
+  <a class="brand" role="banner" aria-label="Ir al inicio"
+     href="/pages/homeLogged.html">
+    <span>TIMEOUT CLICK</span>
+  </a>
+  <div class="context" id="page-context" aria-live="polite"></div>
+  <button class="btn logout" type="button" aria-label="Cerrar sesión"
+    onclick="window.location.href='/pages/home.html'">Log out</button>
 </header>
 
 <!-- Pestañas comunes -->
 <nav class="tabs" aria-label="Navegación principal">
-    <a class="tab" href="#">start game</a>
-    <a class="tab" href="#">rankings</a>
-    <a class="tab" href="#">history</a>
-    <a href="/pages/addFriend.html" class="tab" href="#">friends</a>
-    <a class="tab is-active" href="#" aria-current="page">profile</a>
+  <a class="tab" data-section="home"    href="/pages/homeLogged.html">home</a>
+  <a class="tab" data-section="rankings" href="/pages/ranking.html">rankings</a>
+  <a class="tab" data-section="history"  href="/pages/history.html">history</a>
+  <a class="tab" data-section="friends"  href="/pages/friends.html">friends</a>
+  <a class="tab" data-section="profile"  href="/pages/profile.html">profile</a>
 </nav>`;
-document.write(navbar);
+
+document.addEventListener('DOMContentLoaded', () => {
+  const app = document.querySelector('.app') || document.body;
+  app.insertAdjacentHTML('afterbegin', navbar);
+});

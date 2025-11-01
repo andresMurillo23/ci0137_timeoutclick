@@ -1,0 +1,146 @@
+<script src="/js/partials/head.js"></script>
+<!-- Global navbar -->
+<script src="/js/partials/navbar.js"></script>
+
+<!-- Sets active tab in navbar -->
+<script>window.NAV_ACTIVE = "profile";</script>
+<script src="/js/utils/activeTab.js" defer></script>
+
+<!-- Page styles (scoped to profile/edit) -->
+<link rel="stylesheet" href="/css/pages/profile/btns.css">
+<link rel="stylesheet" href="/css/pages/profile/keys-values.css">
+<link rel="stylesheet" href="/css/pages/profile/main-style.css">
+<link rel="stylesheet" href="/css/pages/profile/panels.css">
+<link rel="stylesheet" href="/css/pages/profile/profileEdit.css">
+<link rel="stylesheet" href="/css/pages/profile/layout.css">
+</head>
+
+<body class="profile-edit">
+  <main class="page">
+    <h2 class="titles">EDIT PROFILE</h2>
+    <p class="subtitle">Update your account details & appearance</p>
+
+    <!-- Read-only quick stats -->
+    <section class="stats" aria-label="Quick stats (read-only)">
+      <div class="stat"><span class="k">rank</span><span class="v">Silver II</span></div>
+      <div class="stat"><span class="k">wins</span><span class="v">45</span></div>
+      <div class="stat"><span class="k">losses</span><span class="v">32</span></div>
+      <div class="stat">
+        <span class="k">win rate</span>
+        <div class="progress" style="--winrate:58%"><i></i></div>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <div class="left-col">
+        <!-- Account form panel -->
+        <section class="panel">
+          <div class="ph">ACCOUNT</div>
+          <div class="body">
+            <form id="profileEditForm" novalidate>
+              <div class="form-grid">
+                <div class="form-col">
+                  <div class="field">
+                    <label for="username" class="label">username</label>
+                    <input id="username" name="username" type="text" class="control" placeholder="exampleUser12" required>
+                    <p class="hint">3–20 characters, letters/numbers/_</p>
+                  </div>
+
+                  <div class="field">
+                    <label for="email" class="label">email</label>
+                    <input id="email" name="email" type="email" class="control" placeholder="email@example.com" required>
+                  </div>
+
+                  <div class="field">
+                    <label for="userId" class="label">user id</label>
+                    <input id="userId" name="userId" type="text" class="control" value="#A1F3-92D" readonly>
+                  </div>
+                </div>
+
+                <div class="form-col">
+                  <div class="field">
+                    <span class="label">member since</span>
+                    <input type="text" class="control" value="12/08/2025" readonly>
+                  </div>
+
+                  <div class="field">
+                    <span class="label">verification</span>
+                    <input type="text" class="control" value="Email verified" readonly>
+                  </div>
+
+                  <!-- Optional password change -->
+                  <div class="field group">
+                    <div class="group-two">
+                      <div>
+                        <label for="newPassword" class="label">new password</label>
+                        <input id="newPassword" name="newPassword" type="password" class="control" placeholder="••••••••">
+                      </div>
+                      <div>
+                        <label for="confirmPassword" class="label">confirm</label>
+                        <input id="confirmPassword" name="confirmPassword" type="password" class="control" placeholder="••••••••">
+                      </div>
+                    </div>
+                    <p class="hint">Leave blank if you don’t want to change it.</p>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <div class="dots" aria-hidden="true"></div>
+
+        <!-- Read-only game stats panel -->
+        <section class="panel">
+          <div class="ph">GAME STATS</div>
+          <div class="body">
+            <div class="kv-grid kv-grid--readonly">
+              <div class="kv">
+                <div class="label">wins / losses:</div><div class="value">45 / 32</div>
+                <div class="label">friends:</div><div class="value">27</div>
+              </div>
+              <div class="kv">
+                <div class="label">rank:</div><div class="value">Silver II</div>
+                <div class="label">win rate:</div><div class="value">58%</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Avatar editor (preview + file input) -->
+      <aside class="panel preview" aria-label="Avatar editor">
+        <div class="avatar-stack">
+          <figure class="avatar-frame">
+            <img id="avatarPreview" src="/assets/images/profile.jpg" alt="Current avatar">
+
+            <input id="avatarFile" name="avatarFile" type="file" accept="image/*" class="file" />
+            <label for="avatarFile" class="edit-trigger" aria-label="Change avatar">
+              <svg class="edit-icon" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/>
+              </svg>
+              <span class="visually-hidden">Edit avatar</span>
+            </label>
+          </figure>
+
+          <div class="uploader">
+            <p class="hint">PNG/JPG 512×512 recommended</p>
+            <span class="filename" id="avatarFilename">No file chosen</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Page actions -->
+      <div class="bottom">
+        <a class="btn-ghost left" href="/pages/profile.html">CANCEL</a>
+        <a class="btn right" id="saveBtn" href="/pages/profile.html" role="button">SAVE</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Helpers: live avatar preview + responsive layout sync -->
+  <script src="/js/utils/avatarPreview.js" defer></script>
+  <script src="/js/utils/syncPreviewHeight.js" defer></script>
+  <script src="/js/partials/footer.js"></script>
+</body>
+</html>

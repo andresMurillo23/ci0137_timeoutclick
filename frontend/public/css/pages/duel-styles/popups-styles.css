@@ -1,0 +1,84 @@
+/* Modal overlay */
+.modal-overlay{
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+/* Active state */
+.modal-overlay.active{
+  display: flex;
+}
+
+/* Modal content box */
+.modal-content{
+  position: relative;
+  z-index: 10001;
+  background: var(--panel);
+  padding: 2rem;
+  text-align: center;
+  border: 4px solid var(--black-bean);
+  border-radius: 20px;
+  box-shadow: 0 0 0 6px var(--line-strong);
+  font-family: var(--montfont);
+}
+
+/* Modal titles */
+#winnerTitle, #finalTitle{
+  font-family: "Rye", system-ui, sans-serif;
+  text-shadow: 3px 3px 0 #e6cc99, 4px 4px 4px rgba(0, 0, 0, .3);
+  letter-spacing: 1.5px;
+  color: var(--sienna);
+}
+
+/* Modal details text */
+#winnerDetails, #finalDetails{
+  color: var(--black-bean);
+}
+
+/* Action buttons container */
+.popup-actions{
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* Modal buttons base */
+.btn-confirm,
+.btn-cancel{
+  border-radius: 1rem;
+  padding: 0.6rem 1.5rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+/* Confirm button */
+.btn-confirm{
+  background: var(--brown);
+  color: var(--panel);
+}
+
+/* Confirm hover */
+.btn-confirm:hover{
+  background: var(--burnt-orange);
+  transform: scale(1.05);
+}
+
+/* Cancel button */
+.btn-cancel{
+  background: var(--black-bean);
+  color: var(--panel);
+}
+
+/* Cancel hover */
+.btn-cancel:hover{
+  transform: scale(1.05);
+  background-color: var(--licorice);
+}

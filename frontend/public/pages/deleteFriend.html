@@ -1,58 +1,100 @@
 <script src="/js/partials/head.js"></script>
 <script src="/js/partials/navbar.js"></script>
 
+<!-- Page styles -->
+<link rel="stylesheet" href="/css/pages/profile/btns.css">
+<link rel="stylesheet" href="/css/pages/profile/keys-values.css">
+<link rel="stylesheet" href="/css/pages/profile/main-style.css">
+<link rel="stylesheet" href="/css/pages/profile/panels.css">
+<link rel="stylesheet" href="/css/pages/profile/layout.css">
+<link rel="stylesheet" href="/css/pages/deleteProfile-style.css">
+<link rel="stylesheet" href="/css/pages/otherProfile-style.css">
 
-<!-- Agrega estilos especificos para esta pagina, en este caso, Other Profile -->
-<script src="/js/partials/popup.js" defer></script>
+<body class="other-profile">
+  <main class="page">
+    <h2 class="titles">PLAYER PROFILE</h2>
+    <p class="subtitle">Public information</p>
 
-<script src="/js/utils/addStylesheet.js"></script>
-<script>
-    addStylesheet("/css/pages/deleteProfile-style.css");
-    addStylesheet("/css/pages/otherProfile-style.css");
-</script>
-
-
-<!-- CONTENIDO -->
-<main class="content" id="main">
-    <section class="panel">
-        <div class="avatar">avatar</div>
-        <div class="fields">
-            <h2>Perfil</h2>
-
-            <div class="field">
-                <div class="label">Username:</div>
-                <div class="value" id="username">andresmimi</div>
-            </div>
-
-            <div class="field">
-                <div class="label">email:</div>
-                <div class="value">andresmimi@example.com</div>
-            </div>
-            <div class="field">
-               
-                <div class="value">friends</div>
-            </div>
-        </div>
+    <!-- Public summary chips -->
+    <section class="stats" aria-label="Public stats">
+      <div class="stat">
+        <span class="k">rank</span><span class="v" id="rank">Silver II</span>
+      </div>
+      <div class="stat">
+        <span class="k">matches</span><span class="v" id="matches">77</span>
+      </div>
+      <div class="stat">
+        <span class="k">win rate</span>
+        <div class="progress" style="--winrate:58%"><i></i></div>
+      </div>
     </section>
 
-    <div class="footer">
-        <button class="btn" type="button">BACK</button>
-        <button class="btn danger" type="button" id="deleteBtn">DELETE</button>
-    </div>
-</main>
+    <div class="op-wrap">
+      <!-- Public profile panel -->
+      <section class="panel">
+        <div class="ph">PLAYER</div>
+        <div class="body">
+          <div class="op-grid">
+            <figure class="op-avatar-frame" aria-label="Avatar">
+              <img src="/assets/images/profile.jpg" alt="Player avatar">
+            </figure>
 
-<div class="overlay" id="confirmOverlay" aria-hidden="true">
-    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" tabindex="-1">
-        <div class="dialog-body">
-            <h3 id="confirmTitle" class="dialog-title">
-                Are you sure you want<br />
-                to delete <span class="u-underline" id="who">andresmimi</span>?
-            </h3>
-            <div class="dialog-actions">
-                <button class="btn ghost" type="button" id="noBtn">NO</button>
-                <button class="btn primary" type="button" id="yesBtn">YES</button>
+            <div class="op-fields">
+              <div class="op-row">
+                <div class="label">username</div>
+                <div class="value" id="username">andrescmf1</div>
+              </div>
+
+              <div class="op-row">
+                <div class="label">about</div>
+                <div class="value" id="about">Competitive player. Western theme lover.</div>
+              </div>
+
+              <div class="op-row">
+                <div class="label">member since</div>
+                <div class="value" id="since">12/08/2025</div>
+              </div>
+
+              <div class="op-row">
+                <div class="label">mutual friends</div>
+                <div class="value" id="mutual">3</div>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-</div>
-<script src="/js/partials/footer.js"></script>
+      </section>
+
+      <!-- Actions: back and delete friend -->
+      <div class="op-actions">
+        <div class="bottom">
+          <a class="btn btn-ghost left" href="/pages/friends.html">BACK</a>
+        </div>
+        <button class="btn primary danger" type="button" id="deleteBtn">DELETE FRIEND</button>
+      </div>
+
+      <!-- Confirm removal modal -->
+      <div class="confirm-overlay" id="confirmOverlay" aria-hidden="true">
+        <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" tabindex="-1">
+          <div class="dialog-body">
+            <h3 id="confirmTitle" class="confirm-title">
+              CONFIRM REMOVAL OF FRIEND
+              <span class="u-underline" id="who">playerName</span>?
+            </h3>
+
+            <p class="confirm-text">Are you sure you want to delete this friend?</p>
+
+            <div class="confirm-actions">
+              <button class="btn btn--back" type="button" id="noBtn">NO</button>
+              <button class="btn btn--secondary" type="button" id="yesBtn">YES</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> <!-- /.op-wrap -->
+  </main>
+
+  <!-- Modal behavior + shared footer -->
+  <script src="/js/partials/popup-deleteFriend.js"></script>
+  <script src="/js/partials/footer.js"></script>
+</body>
+</html>

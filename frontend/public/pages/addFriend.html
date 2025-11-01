@@ -1,47 +1,80 @@
 <script src="/js/partials/head.js"></script>
 <script src="/js/partials/navbar.js"></script>
 
-<script src="/js/utils/addStylesheet.js"></script>
+<script>window.NAV_ACTIVE = "friends";</script>
+<script src="/js/utils/activeTab.js" defer></script>
 
-<script>
-  addStylesheet("/css/pages/add-friend.css");
-</script>
+<!-- Page styles -->
+<link rel="stylesheet" href="/css/pages/add-friend.css">
+<link rel="stylesheet" href="/css/pages/profile/btns.css">
 
-<!-- Contenido panel -->
-<main class="window" role="main" aria-labelledby="add-friend-title">
-  <div class="header-strip" aria-hidden="true"></div>
+<main class="friend-list" role="main">
   <section class="content">
-    <h2 id="add-friend-title">ADD A NEW FRIEND</h2>
 
-    <div class="tools">
-      <input class="search" type="text" placeholder="andresmini" aria-label="Search user">
-      <button class="icon-search" type="button" aria-label="Search"></button>
+    <!-- Page title + short context -->
+    <h2 class="titles--light">ADD A NEW FRIEND</h2>
+    <p class="subtitle">Find and connect with other players</p>
+
+    <div class="wrap">
+      <!-- Search bar: not wired yet (UI only) -->
+      <section class="panel">
+        <div class="search-bar">
+          <input class="search" type="text" placeholder="Type the name of the user you want to find" aria-label="Search user">
+          <button class="btn--primary-brown filter-btn" type="button" aria-label="Search">SEARCH</button>
+        </div>
+      </section>
+
+      <!-- Results grid (static examples for now) -->
+      <section class="panel">
+        <div class="friends-grid-container">
+          <div class="friends-grid">
+
+              <!-- Card 1: clicking the card opens public profile; button stops propagation -->
+              <div class="friend-card" onclick="if (event.target.closest('a')) return; location.href='/pages/otherProfile.html'">
+                <div class="user-avatar">A</div>
+                <span class="user-name">andrescmf1</span>
+                <a class="btn--secondary">ADD FRIEND</a>
+              </div>
+
+              <!-- Card 2 -->
+              <div class="friend-card" onclick="if (event.target.closest('a')) return; location.href='/pages/otherProfile.html'">
+                <div class="user-avatar">M</div>
+                <span class="user-name">maria89</span>
+                <a class="btn--secondary">ADD FRIEND</a>
+              </div>
+
+              <!-- Card 3 -->
+              <div class="friend-card" onclick="if (event.target.closest('a')) return; location.href='/pages/otherProfile.html'">
+                <div class="user-avatar">J</div>
+                <span class="user-name">juan_g</span>
+                <a class="btn--secondary">ADD FRIEND</a>
+              </div>
+
+              <!-- Card 4 -->
+              <div class="friend-card" onclick="if (event.target.closest('a')) return; location.href='/pages/otherProfile.html'">
+                <div class="user-avatar">C</div>
+                <span class="user-name">carlos99</span>
+                <a class="btn--secondary">ADD FRIEND</a>
+              </div>
+
+              <!-- Card 5 -->
+              <div class="friend-card" onclick="if (event.target.closest('a')) return; location.href='/pages/otherProfile.html'">
+                <div class="user-avatar">L</div>
+                <span class="user-name">luisa_k</span>
+                <a class="btn--secondary">ADD FRIEND</a>
+              </div>
+              
+        </div>
+      </section>
+
+      <!-- Back to previous page -->
+      <div class="bottom">
+        <button type="button" class="btn btn-ghost left" onclick="location.href='/pages/friends.html'">BACK</button>
+      </div>
     </div>
-
-    <ul class="friend-list">
-        <li class="friend-row">
-            <div class="avatar">avatar</div>
-            <span class="nick">andrescmf1</span>
-            <!--<button class="btn small" type="button">Add</button>-->
-            <a href="/pages/otherProfile.html" class="btn small" type="button">Add</a>
-        </li>
-
-      <li class="friend-row">
-        <div class="avatar">avatar</div>
-        <span class="nick">andrescmf1121</span>
-        <button class="btn small" type="button">Add</button>
-      </li>
-
-      <li class="friend-row">
-        <div class="avatar">avatar</div>
-        <span class="nick">andrescmfnosca</span>
-        <button class="btn small" type="button">Add</button>
-      </li>
-    </ul>
-    
-  
   </section>
-    <div class="footer">
-      <button class="btn" type="button">Back</button>
-    </div>
+  
+</main>
+
+<!-- Shared footer scripts -->
 <script src="/js/partials/footer.js"></script>

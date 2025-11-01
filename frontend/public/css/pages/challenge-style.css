@@ -1,112 +1,36 @@
-@import url('https://fonts.googleapis.com/css2?family=Rye&display=swap');
 
-/* Reset y variables */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
-
-:root {
-  --bar-h: 64px;
-}
-
-@media (max-width:520px) {
-  :root {
-    --bar-h: 72px;
-  }
-}
-
-:root {
-  --navbar-bg: #6b4423;
-  --navbar-border: #3b2414;
-  --panel: #f9f1e4;
-  --bg: #e6cc99;
-  --line-strong: #d9b77e;
-  --muted: #b2926d;
-  --text: #26170e;
-  --line: #8b5e34;
-  --ok: #2c9b4b;
-  /* verde estado OK */
-  --no: #c4493b;
-  /* rojo no disponible */
-}
-
-/* Fondo y tipografía */
 html,
 body {
-  height: 100%;
+  min-height: 100%; 
 }
-
-body {
-  background: #f2e6d3 url("/assets/images/desert-bg2.jpg") center/cover no-repeat;
-  color: var(--text);
-  font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-}
-
-/* Barra fija */
-.saloon {
+body::before{
+  content:"";
   position: fixed;
-  inset: 0 0 auto 0;
-  background: var(--navbar-bg);
-  color: var(--panel);
-  text-align: center;
-  padding: 16px;
-  border-bottom: 4px solid var(--navbar-border);
-  z-index: 1000;
+  inset: 0;             
+  background: var(--licorice) url("/assets/images/desert-bg2.jpg") center/cover no-repeat;
+  z-index: -1;            
 }
-
-.saloon h1 {
-  margin: 0;
-  letter-spacing: 3px;
-  font-size: 28px;
-  font-weight: 700;
+body {
+margin: 0;
+  color: #26170e;
+  font-family: var(--montfont);
 }
-
-@media (max-width:768px) {
-  .saloon {
-    padding: 12px
-  }
-
-  .saloon h1 {
-    font-size: 22px;
-    letter-spacing: 2px
-  }
-}
-
-@media (max-width:520px) {
-  .saloon h1 {
-    font-size: 18px
-  }
-}
-
-/* Contenedor */
 .app {
   padding-top: var(--bar-h);
   min-height: calc(100dvh - var(--bar-h));
+
+  /* Centered */
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-inline: 16px;
-}
 
-/* Poster */
-.poster {
-  width: 100%;
-  max-width: 720px;
-  background: var(--panel);
-  border: 4px solid var(--bg);
-  border-radius: 20px;
-  box-shadow: 0 0 0 6px var(--line-strong);
-  padding: 24px 20px 28px;
-}
-
-.poster h2 {
-  text-align: center;
-  font-size: 36px;
-  letter-spacing: 4px;
-  margin-bottom: 10px;
-  font-weight: 700;
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
 .divider {
@@ -117,7 +41,20 @@ body {
   opacity: .25;
 }
 
-/* ===== Lista (2 columnas flex) ===== */
+.poster {
+  max-width: 720px;
+  margin: calc(var(--bar-h) + 12px) auto 16px;
+  max-height: calc(100dvh - var(--bar-h) - 28px);
+  overflow: hidden;
+
+  /* Layout */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  padding: 20px 16px;
+}
+
 .list {
   width: 100%;
 }
@@ -146,28 +83,26 @@ body {
   font-size: 22px;
   font-weight: 700;
   letter-spacing: .3px;
+  color: var(--black-bean);
 }
 
 .username.dim {
-  color: #6d5a48;
+  color:var(--line);
   font-weight: 700;
 }
 
-/* Puntito de estado */
+/* Status dot */
 .status-dot {
   width: 12px;
   height: 12px;
-  border-radius: 50%;
-  border: 2px solid var(--navbar-border);
-  box-shadow: 0 1px 0 rgba(0, 0, 0, .08) inset;
 }
 
 .status-dot.ok {
-  background: var(--ok);
+  background: var(--available);
 }
 
 .status-dot.no {
-  background: var(--no);
+  background: var(--unavailable);
 }
 
 .action {
@@ -175,56 +110,47 @@ body {
   justify-content: center;
   align-items: center;
   flex: 0 0 280px;
-  /* ancho estable */
   max-width: 40%;
 }
 
-/* Botones */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 48px;
-  padding: 0 26px;
-  border: 2px solid var(--muted);
-  border-radius: 26px;
-  font-weight: 800;
-  font-size: 18px;
-  letter-spacing: .6px;
-  background: var(--line);
-  color: var(--panel);
-  cursor: pointer;
-  transition: transform .2s ease, background-color .2s ease;
-}
+/* Disabled gray button for unavailable users */
+.row.busy .btn-unavailable,
+.row.unavailable .btn-unavailable {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin: 18px auto;
+  padding: 15px 25px;
 
-.btn:hover {
-  transform: scale(1.05);
-  background-color: var(--navbar-border);
-}
-
-.btn:active {
-  transform: scale(1.03);
-}
-
-/* Botón gris deshabilitado para no disponibles */
-.row.busy .btn,
-.row.unavailable .btn {
+  border: 2px solid  #b9a895;
   background: #b9a895;
-  border-color: #b9a895;
   color: #3b2d22;
-  cursor: not-allowed;
-  pointer-events: none;
-  transform: none;
+
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 20px;
+
+  font-size: medium;
+
+  transition: transform .2s ease, background-color .2s ease;
+  will-change: transform;
+  transform-origin: center;
 }
 
-/* Accesibilidad */
-.btn:focus-visible {
-  outline: 3px solid #fff;
-  outline-offset: 2px;
-  box-shadow: 0 0 0 4px rgba(0, 0, 0, .25);
+.actions {
+  display: flex;
+ justify-content: center;
+  margin-top: 24px;
 }
 
-/* Responsivo */
+.actions .btn--back {
+  width: 180px;
+  border-radius: 14px;
+  font-weight: 600;
+}
+
+/* Responsive */
 @media (max-width:768px) {
   .poster {
     padding: 20px 16px 24px;
@@ -268,61 +194,33 @@ body {
   }
 }
 
-/* ===== Encabezado tipo Western (Rye) ===== */
-.poster h2 {
-  font-family: "Rye", cursive;
-  font-size: 44px;
-  color: #3b2414;
-  letter-spacing: 3px;
-  text-shadow: 3px 3px 0 #e6cc99, 4px 4px 4px rgba(0, 0, 0, .3);
-}
 
-/* ===== Botón más a la derecha ===== */
-.action {
-  /* empuja el botón al borde derecho manteniendo la columna estable */
-  flex: 0 0 320px;
-  /* antes 280px */
-  max-width: 42%;
-  justify-content: flex-end;
-  /* ya centrado hacia la derecha */
-  padding-right: 6px;
-  /* lo acerca un poco más al borde */
-}
-
-/* ===== Punto de estado (verde/amarillo/rojo) ===== */
+/* Status dot */
 .status-dot {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  border: 2px solid var(--navbar-border);
-  box-shadow: 0 1px 0 rgba(0, 0, 0, .08) inset;
 }
 
-/* Disponible */
+/* Available */
 .status-dot.ok,
 .status-dot.available {
-  background: #2c9b4b;
+  background: var(--available);
 }
 
-/* verde */
-
-/* Ocupado */
+/* Busy */
 .status-dot.busy {
-  background: #e3b341;
+  background: var(--busy);
 }
 
-/* amarillo */
-
-/* Inactivo / No disponible */
+/* Inactive / Unavailable */
 .status-dot.off,
 .status-dot.no,
 .row.unavailable .status-dot {
-  background: #c4493b;
+  background: var(--unavailable);
 }
 
-/* rojo */
-
-/* Botón gris DESHABILITADO para no disponibles u ocupados */
+/* Disabled gray button for unavailable or busy users */
 .row.busy .btn,
 .row.unavailable .btn {
   background: #b9a895;
@@ -333,7 +231,7 @@ body {
   transform: none;
 }
 
-/* ===== Responsivo: conserva el empuje a la derecha ===== */
+/* Responsive */
 @media (max-width:768px) {
   .action {
     flex-basis: 260px;
@@ -347,3 +245,84 @@ body {
     padding-right: 4px;
   }
 }
+
+/* Confirm Modal */
+
+/* Overlay */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .45);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.confirm-overlay.open {
+  display: flex;
+}
+
+/* Modal box */
+.dialog {
+  background: var(--panel);
+  border: 4px solid var(--black-bean);
+  box-shadow: 0 0 0 6px var(--line-strong);
+  border-radius: 22px;
+  width: min(450px, calc(100% - 32px));
+  padding: 26px;
+  text-align: center;
+  animation: popup-in .25s ease-out;
+}
+
+/* Titles and text */
+.confirm-title {
+  font-size: 26px;
+  color: var(--black-bean);
+  margin-bottom: 15px;
+}
+
+.confirm-text {
+  font-size: 17px;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+
+/* Buttons */
+.confirm-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* Modal animation */
+@keyframes popup-in {
+  from {
+    opacity: 0;
+    transform: scale(.9) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+/* Panels */
+.panel { display: block; }
+.panel[hidden] { display: none !important; }
+
+/* Loading */
+.loading {
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  margin: 8px 0 16px;
+}
+.spinner {
+  width: 36px; 
+  height: 36px; 
+  border-radius: 50%;
+  border: 3px solid var(--borders);
+  border-top-color: var(--brown);
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }

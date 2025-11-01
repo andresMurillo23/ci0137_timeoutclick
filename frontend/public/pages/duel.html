@@ -1,0 +1,101 @@
+<script src="/js/partials/head.js"></script>
+<script src="/js/partials/navbar.js"></script>
+
+<script>window.NAV_ACTIVE = "start";</script>
+<script src="/js/utils/activeTab.js" defer></script>
+
+<!-- Duel page styles -->
+<link rel="stylesheet" href="/css/pages/duel-styles/main-side.css">
+<link rel="stylesheet" href="/css/pages/duel-styles/click-btn.css">
+<link rel="stylesheet" href="/css/pages/duel-styles/popups-styles.css">
+<link rel="stylesheet" href="/css/pages/duel-styles/duel-side.css">
+<link rel="stylesheet" href="/css/pages/duel-styles/footer.css">
+
+<main class="duel-page">
+  <div class="principal">
+    <section class="duel-content">
+      <!-- Round + target time -->
+      <div class="round-goal-centered">
+        <div class="round-info">
+          <span class="round-label">ROUND</span>
+          <span class="round-number" id="roundNumber">1</span>
+        </div>
+        <div class="goal-info">
+          <span class="goal-label">GOAL TIME</span>
+          <span class="goal-value" id="goalValue">4s</span>
+        </div>
+      </div>
+
+      <!-- Scoreboard -->
+      <div class="score-board">
+        <span class="titles" id="player1">PLAYER541</span>
+        <span class="score" id="scoreValue">0 - 0</span>
+        <span class="titles" id="player2">PLAYER642</span>
+      </div>
+
+      <!-- Main click button + live time -->
+      <button class="press-button" id="pressButton"><span>CLICK</span></button>
+      <p class="press-time" id="pressTime"></p>
+    </section>
+
+    <!-- Right side: opponent, turn status, history, actions -->
+    <aside class="duel-side">
+      <div class="opponent-card">
+        <div class="avatar">
+          <img src="/assets/images/profile.jpg" alt="Opponent avatar">
+        </div>
+        <span class="opponent-label">OPPONENT:</span>
+        <span class="opponent-name" id="opponentName">PLAYER642</span>
+      </div>
+
+      <!-- Announced to screen readers when it changes -->
+      <div class="turn-status is-ready" id="turnStatus" role="status" aria-live="polite">
+        Your Turn!
+      </div>
+
+      <!-- Per-round log -->
+      <div class="history-section">
+        <h3 class="titles">History</h3>
+        <ul class="history-list" id="historyList">
+          <li class="history-empty" id="historyEmpty">No rounds yet.</li>
+        </ul>
+      </div>
+
+      <!-- Surrender action -->
+      <div class="side-actions">
+        <div class="side-divider" aria-hidden="true"></div>
+        <button class="btn btn--secondary btn--surrender" id="surrenderBtn">SURRENDER</button>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- Round result popup -->
+  <div class="modal-overlay" id="winnerPopup">
+    <div class="modal-content">
+      <h2 id="winnerTitle">Round Results</h2>
+      <p id="winnerDetails"></p>
+      <div class="popup-actions">
+        <button class="btn btn-cancel" id="surrenderPopupBtn">Surrender</button>
+        <button class="btn btn-confirm" id="nextRoundBtn">Next Round</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Final result popup (modal dialog) -->
+  <div class="modal-overlay" id="finalPopup">
+    <div class="modal-content" role="dialog" aria-labelledby="finalTitle" aria-modal="true">
+      <h2 id="finalTitle">Final Results</h2>
+      <p id="finalDetails"></p>
+      <div class="popup-actions">
+        <button type="button" class="btn btn-cancel" id="rematchBtn">Rematch</button>
+        <a href="/pages/homeLogged.html" class="btn btn-confirm" id="returnHomeBtn" role="button">
+          Return Home
+        </a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Duel flow logic: timings, rounds, popups -->
+<script src="/js/partials/duel-flow.js" defer></script>

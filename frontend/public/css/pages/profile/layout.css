@@ -1,0 +1,26 @@
+/* Profile page layout */
+.wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--preview-w);
+  grid-template-rows: auto auto;
+  gap: 20px;
+  align-items: start;
+}
+
+/* Main content column */
+.left-col {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+/* Preview sidebar */
+.preview {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+/* Bottom section (full width) */
+.bottom {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}

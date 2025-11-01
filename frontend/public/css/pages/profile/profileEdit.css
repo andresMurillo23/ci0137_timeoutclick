@@ -1,0 +1,211 @@
+/* Form layout */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 28px
+}
+
+/* Form column */
+.form-col {
+  display: grid;
+  gap: 16px
+}
+
+/* Form field */
+.field {
+  display: block
+}
+
+/* Field label */
+.field .label {
+  display: block;
+  color: var(--navbar-bg);
+  font-family: var(--montfont);
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+/* Input control */
+.control {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1.5px solid var(--borders);
+  background: var(--back-strong-stack);
+  color: var(--control-letters);
+  font-family: var(--montfont);
+  font-size: 14px;
+  outline: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5);
+}
+
+/* Focus state */
+.control:focus {
+  border-color: var(--line-strong);
+  box-shadow: 0 0 0 3px color-mix(in lch, var(--line-strong) 45%, transparent);
+}
+
+/* Readonly control */
+.control[readonly] {
+  background: var(--control-back);
+  color: var(--line);
+  cursor: default
+}
+
+/* Two-column group */
+.group .group-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px
+}
+
+/* Field hint */
+.hint {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--navbar-bg);
+}
+
+/* Avatar container */
+.avatar-stack {
+  width: 100%;
+  padding: 18px
+}
+
+/* Avatar frame */
+.avatar-frame {
+  aspect-ratio: 1/1;
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1.5px solid var(--borders);
+  background: var(--back-strong-stack);
+  margin: 0 0 14px 0;
+}
+
+/* Avatar image */
+.avatar-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block
+}
+
+/* File uploader */
+.uploader .file {
+  width: 100%;
+  border: 1.5px dashed var(--borders);
+  border-radius: 10px;
+  background: #fffdf7;
+  padding: 10px 12px;
+  font-family: var(--montfont);
+}
+
+/* Progress variable */
+.progress {
+  --pct: var(--winrate, 0%)
+}
+
+/* Progress fill */
+.progress>i {
+  width: clamp(0px, var(--pct), 100%)
+}
+
+/* Responsive */
+@media (max-width:780px) {
+  .form-grid {
+    grid-template-columns: 1fr
+  }
+
+  .group .group-two {
+    grid-template-columns: 1fr
+  }
+}
+
+.preview .file {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Avatar frame positioning */
+.avatar-frame {
+  position: relative
+}
+
+/* Edit button trigger */
+.edit-trigger {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: color-mix(in lch, var(--sienna) 88%, black 12%);
+  border: 2px solid color-mix(in lch, var(--sienna) 75%, black 25%);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, .18);
+  cursor: pointer;
+  user-select: none;
+  transition: transform .12s ease, filter .12s ease, background .12s ease;
+}
+
+.edit-trigger:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px)
+}
+
+/* Active state */
+.edit-trigger:active {
+  transform: translateY(0)
+}
+
+/* Focus visible state */
+.edit-trigger:focus-visible {
+  outline: 3px solid var(--line-strong);
+  outline-offset: 2px
+}
+
+/* Edit icon */
+.edit-icon {
+  fill: #fff
+}
+
+/* Screen reader only */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Filename display */
+.filename {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--montfont);
+  font-size: 13px;
+  color: #5a4533;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Page background */
+body.profile-edit {
+  background: var(--page-bg);
+}
+

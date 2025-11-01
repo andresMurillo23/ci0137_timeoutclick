@@ -1,118 +1,120 @@
 <script src="/js/partials/head.js"></script>
 <script src="/js/partials/navbar.js"></script>
 
-<script src="/js/utils/addStylesheet.js"></script>
-<script>
-  addStylesheet("/css/pages/history-style.css");
-</script>
+<script>window.NAV_ACTIVE = "history";</script>
+<script src="/js/utils/activeTab.js" defer></script>
 
-<!-- Fuentes específicas para esta página -->
-<link href="https://fonts.googleapis.com/css2?family=Rye&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
-  <main class="content history" role="main">
-    <h2>Battle History</h2>
-    <button id="toggle-theme" class="btn small" style="margin-top: 10px;">🌙 Dark Mode</button>
+<!-- Reports/tables stylesheet -->
+<link rel="stylesheet" href="/css/pages/reports.css">
 
-    <!-- Tarjeta de estadísticas -->
-    <div class="stats-card">
-      <div><span>🏆 Wins:</span> <strong>20</strong></div>
-      <div><span>💀 Losses:</span> <strong>20</strong></div>
-      <div><span>⚖️ Winrate:</span> <strong>0.5</strong></div>
-    </div>
+<main class="report">
+  <section class="content">
+    <!-- Title + context -->
+    <h2 class="titles--light">BATTLE HISTORY</h2>
+    <p class="subtitle">Your complete duel history in Timeout Click</p>
 
-    <!-- Filtros -->
-    <div class="filters">
-      <div class="filter-group">
-        <label for="type">Type:</label>
-        <select id="type">
-          <option>Wins</option>
-          <option>Losses</option>
-        </select>
+    <!-- Filters panel -->
+    <div class="report-filters">
+      <div class="filters-header">Filters</div>
+
+      <div class="filters-content">
+        <!-- Date range + type filter -->
+        <div class="date-range">
+          <div class="filter-controls">
+            <div class="date-input-group">
+              <label for="from-date">From Date</label>
+              <input type="date" id="from-date" value="2024-01-01">
+            </div>
+
+            <div class="date-input-group">
+              <label for="to-date">To Date</label>
+              <input type="date" id="to-date" value="2024-12-31">
+            </div>
+
+            <div class="filter-input-group">
+              <label for="filter-type">Type</label>
+              <select id="filter-type">
+                <option value="all" selected>All</option>
+                <option value="wins">Wins</option>
+                <option value="losses">Losses</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Apply filters -->
+        <button class="btn--filter">Apply</button>
       </div>
-      <div class="filter-group">
-        <label for="time">Time:</label>
-        <select id="time">
-          <option>All</option>
-          <option>Last Week</option>
-          <option>Last Month</option>
-        </select>
-      </div>
     </div>
 
-    <!-- Tabla -->
-    <div class="table-container">
-      <table class="history-table">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Opponent</th>
-            <th>Winner</th>
-            <th>Press Time</th>
-            <th>Goal Time</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>12/08/2025</td>
-            <td>andresmimi</td>
-            <td>andresmimi</td>
-            <td>3.98</td>
-            <td>4</td>
-          </tr>
-          <tr>
-            <td>15/08/2025</td>
-            <td>rolypoli</td>
-            <td>youruser</td>
-            <td>3.98</td>
-            <td>5</td>
-          </tr>
-          <tr>
-            <td>19/08/2025</td>
-            <td>isabel</td>
-            <td>isabel</td>
-            <td>3.70</td>
-            <td>4</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <!-- History table -->
+    <table class="table" aria-label="Battle History">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Opponent</th>
+          <th>Opponent Press time</th>
+          <th>My time</th>
+          <th>Goal Time</th>
+          <th>Winner</th>
+        </tr>
+      </thead>
 
-    <!-- Paginador -->
-    <div class="pager">
-      <button class="btn small" disabled>&lt;</button>
-      <span>Page <strong>1</strong> of 5</span>
-      <button class="btn small">&gt;</button>
-    </div>
-  </main>
+      <!-- Sample rows -->
+      <tbody>
+        <tr>
+          <td>12/08/2025</td>
+          <td>andresmimi</td>
+          <td>3.99</td>
+          <td>3.98</td>
+          <td>4</td>
+          <td>andresmimi</td>
+        </tr>
+        <tr>
+          <td>15/08/2025</td>
+          <td>rolypoli</td>
+          <td>2.98</td>
+          <td>3.98</td>
+          <td>5</td>
+          <td>youruser</td>
+        </tr>
+        <tr>
+          <td>19/08/2025</td>
+          <td>isabel</td>
+          <td>3.98</td>
+          <td>3.70</td>
+          <td>4</td>
+          <td>isabel</td>
+        </tr>
+      </tbody>
 
-  <!-- === Script para el modo oscuro === -->
-<script>
-  const toggleBtn = document.getElementById("toggle-theme");
+      <!-- Pager + page-size selector -->
+      <tfoot class="table-footer">
+        <tr>
+          <td colspan="6">
+            <div class="table-pager">
+              <div class="table-pager-navigation">
+                <button class="table-pager-btn" disabled>◀</button>
+                <div class="table-pager-info">Page <strong>1</strong> of <strong>3</strong></div>
+                <button class="table-pager-btn">▶</button>
+              </div>
 
-  // Recuperar preferencia guardada
-  if (localStorage.getItem("theme") === "dark") {
-    document.body.classList.add("dark-mode");
-    toggleBtn.textContent = "☀️ Light Mode";
-  }
+              <div class="table-pager-size">
+                <span class="table-pager-size-label">Show:</span>
+                <select class="table-pager-size-select">
+                  <option value="5">5</option>
+                  <option value="10" selected>10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </section>
+</main>
 
-  toggleBtn.addEventListener("click", () => {
-    document.body.classList.toggle("dark-mode");
-    const isDark = document.body.classList.contains("dark-mode");
-
-    // Guardar preferencia
-    localStorage.setItem("theme", isDark ? "dark" : "light");
-
-    // Cambiar texto del botón
-    toggleBtn.textContent = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
-  });
-
-  // Activar automáticamente si el sistema usa dark mode
-  if (!localStorage.getItem("theme")) {
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    if (prefersDark) {
-      document.body.classList.add("dark-mode");
-      toggleBtn.textContent = "☀️ Light Mode";
-    }
-  }
-</script>
-
+<!-- Shared footer -->
 <script src="/js/partials/footer.js"></script>

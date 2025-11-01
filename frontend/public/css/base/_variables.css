@@ -1,10 +1,10 @@
-/* VARIABLES GLOBALES */
+/* Global Variables */
 
-/* Importa fuentes */
+/* Import fonts */
 @import url('https://fonts.googleapis.com/css2?family=Rye&display=swap');
 
 :root {
-  /* Colores base */
+  /* Base colors */
   --bg: #3b2414;
   --panel: #f8ead6;
   --text: #26170e;
@@ -12,28 +12,39 @@
   --line: #7a4e2b;
   --line-strong: #e6cc99;
   --borders: #d9b77e;
-  --accent: #ffffff;
+  --background-brown:#3a2a1f;
+  --border-brown: #4f3826;
+
+  /* Stacks */
+  --stack-color: #f0d7a7;
+  --accent: #fff3db;
+  --winrate-brown: #2b1d14;
+  --background-strong: #fbefda;
+  --back-strong-stack: #fff7ea;
+  --control-back: #f7eddc;
+  --control-letters: #1e120b;
 
   /* Navbar */
   --navbar-bg: #754c29;
   --navbar-border: #3b2414;
 
-  /* Botones */
+  /* Buttons */
   --green-button: #096938;
   --green-hover: #051c0f;
 
-  /* Fondos */
+  /* Backgrounds */
   --bar-background: #fff1e8;
   --row-background: #f8ead6;
+  --even-row-background: #f2e2c5;
 
-  /* Tamaños navbar */
+  /* Navbar sizes */
   --topbar-height: 4rem;
   --tabs-height: 2.5rem;
   --navbar-height: 6.5rem;
   --navbar-height-tablet: 5.5rem;
   --navbar-height-mobile: 5rem;
 
-  /* Paleta extendida */
+  /* Extended palette */
   --sienna: #862906ff;
   --brown: #a04005ff;
   --burnt-orange: #b84f00ff;
@@ -45,4 +56,23 @@
   --sepia: #5a380bff;
   --black-bean: #411308ff;
   --licorice: #240B04;
+  --page-bg:
+    radial-gradient(1200px 60% at 50% -10%, rgba(255, 219, 165, .06), transparent 60%),
+    linear-gradient(#2b1a10, #1f140d) fixed;
+    
+  /* Fonts */
+  --montfont: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+  /* Heights */
+  --topbar-h: 64px;
+  --tabs-h: 0px;
+  --stack-gap: 24px;
+  --bar-h: calc(var(--topbar-h) + var(--tabs-h) + var(--stack-gap));
+
+  /* User states */
+  --available: #2c9b4b;
+  --busy: #e3b341;
+  --unavailable: #c4493b;
+
+  --background-brown-profiles: #1f140d;
 }

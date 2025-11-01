@@ -1,6 +1,6 @@
-/* COMPONENTES GLOBALES */
+/* Global Components */
 
-/* Botones base */
+/* Base buttons */
 .btn {
   background: transparent;
   color: var(--text);
@@ -22,7 +22,160 @@
   outline-offset: 2px;
 }
 
-/* Avatar genérico */
+.btn--primary-brown {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin: 18px auto;
+  padding: 15px 25px;
+
+  border: 2px solid var(--muted);
+  background: var(--black-bean);
+  color: var(--panel);
+
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 20px;
+
+  font-size: medium;
+
+  transition: transform .2s ease, background-color .2s ease;
+  will-change: transform;
+  transform-origin: center;
+}
+
+.btn--primary-brown:hover {
+  transform: scale(1.05);
+  background-color: var(--licorice);
+}
+
+.btn--primary-brown:active {
+  transform: scale(1.03);
+}
+
+.btn--secondary {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin: 18px auto;
+  padding: 15px 25px;
+
+  border: 2px solid var(--brown);
+  background: var(--brown);
+  color: var(--panel);
+
+  font-weight: bold;
+  letter-spacing: 1px;
+  font-size: medium;
+  line-height: 1.1;
+
+  border-radius: 20px;
+
+  transition: transform .2s ease, background-color .2s ease;
+  will-change: transform;
+  transform-origin: center;
+}
+
+.btn--secondary:hover {
+  transform: scale(1.05);
+  background-color: var(--licorice);
+}
+
+.btn--secondary:active {
+  transform: scale(1.03);
+}
+
+/* Back button variant */
+.btn--back {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin: 18px auto;
+  padding: 15px 25px;
+
+  border: 2px solid var(--black-bean);
+  background: var(--panel);
+  color: var(--black-bean);
+
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 20px;
+
+  font-size: medium;
+
+  transition: transform .2s ease, background-color .2s ease;
+  will-change: transform;
+  transform-origin: center;
+}
+
+.btn--back:hover {
+  transform: scale(1.05);
+  background-color: var(--line-strong);
+  color: var(--black-bean);
+}
+
+.btn--back:active {
+  transform: scale(1.03);
+}
+
+/* Card does not scroll, only defines layout */
+.poster{
+  width:100%;
+  max-width:720px;
+  background:var(--panel);
+  border:4px solid var(--black-bean);
+  border-radius:20px;
+  box-shadow:0 0 0 6px var(--line-strong);
+  padding:24px 20px 28px;
+  margin-top:calc(var(--topbar-height) + var(--tabs-height));
+  max-height:calc(100dvh - var(--topbar-height) - var(--tabs-height) - 150px);
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+/* Only this block scrolls */
+.poster__scroll{
+  min-height:0;
+  max-height:100%;
+  overflow:auto;
+  padding-right:10px;
+  scrollbar-gutter:stable;
+  
+  /* Firefox */
+  scrollbar-width:thin;
+  scrollbar-color:var(--line) transparent;
+}
+
+/* Chrome/Edge/Safari */
+.poster__scroll::-webkit-scrollbar{ width:8px; }
+.poster__scroll::-webkit-scrollbar-track{ background:transparent; }
+.poster__scroll::-webkit-scrollbar-thumb{
+  background:var(--line);
+  border-radius:999px;
+}
+
+/* Responsive */
+@media (max-width:768px){
+  .poster{ padding:20px 16px 24px; }
+}
+
+/* Global Input */
+
+input {
+  width: 100%;
+  height: 40px;
+  border: 2px solid var(--black-bean);
+  background: var(--bar-background);
+  padding: 8px;
+  font-size: 15px;
+  border-radius: 10px;
+  font-family: var(--montfont);
+}
+
+/* Generic avatar */
 .avatar {
   border: 1px solid var(--line);
   display: flex;
@@ -32,7 +185,7 @@
   color: var(--muted);
 }
 
-/* Enfocado */
+/* Focused */
 a:focus,
 button:focus,
 input:focus,
@@ -42,7 +195,7 @@ textarea:focus {
   outline-offset: 2px;
 }
 
-/* Títulos tipo “Challenge Player” */
+/* Hero titles */
 .titles {
   font-family: "Rye", cursive;
   text-align: center;
@@ -54,62 +207,115 @@ textarea:focus {
   text-shadow: 3px 3px 0 #e6cc99, 4px 4px 4px rgba(0, 0, 0, .3);
 }
 
-/* Responsive para títulos */
+/* Light title variant */
+.titles--light {
+  font-family: "Rye", cursive;
+  text-align: center;
+  font-size: 44px;
+  font-weight: 700;
+  color: var(--panel);
+  letter-spacing: 3px;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 0 var(--black-bean), 3px 3px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Responsive for titles */
 @media (max-width: 768px) {
-  .titles {
+  .titles,
+  .titles--light {
     font-size: 30px;
     letter-spacing: 3px;
   }
 }
 
 @media (max-width: 520px) {
-  .titles {
+  .titles,
+  .titles--light {
     font-size: 26px;
     letter-spacing: 2px;
   }
 }
 
-/* === TABLAS GLOBALES === */
-.table {
+
+/* No underline for anchor buttons */
+a.btn,
+a.btn-ghost {
+  text-decoration: none;
+}
+
+/* Sizes */
+.btn--sm {
+  padding: 8px 12px;
+  font-size: .9rem;
+  border-radius: 8px;
+}
+
+.btn--md {
+  padding: 10px 16px;
+}
+
+.btn--lg {
+  padding: 14px 22px;
+  font-size: 1rem;
+}
+
+/* Optional shadow */
+.btn--shadow {
+  box-shadow: 0 2px 0 rgba(0, 0, 0, .22);
+}
+
+/* Brand color variants */
+.btn.btn--sienna {
+  background: var(--sienna);
+  color: #fff;
+  border: 2px solid color-mix(in lch, var(--sienna) 85%, black 15%);
+}
+
+.btn.btn--coffee {
+  background: #3a2a1f;
+  color: #fde9c9;
+  border: 2px solid #2b1d14;
+}
+
+/* Utility classes */
+.u-justify-start {
+  justify-self: start;
+}
+
+.u-justify-end {
+  justify-self: end;
+}
+
+.u-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.u-block {
+  display: flex;
   width: 100%;
-  border-collapse: collapse;
-  border-radius: 12px;
+}
+
+/* Progress bar */
+.progress[data-base] {
+  --progress-bg: #2b1d14;
+  --progress-border: #4b2a1b;
+  --progress-fill: var(--sienna);
+  position: relative;
   overflow: hidden;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
-  background: var(--panel);
+  height: 12px;
+  background: var(--progress-bg);
+  border: 1px solid var(--progress-border);
+  border-radius: 999px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06);
 }
 
-.table thead {
-  background: #a04005ff;
-  color: #fff8ed;
-  font-weight: bold;
-  letter-spacing: 1px;
-  text-transform: uppercase;
+.progress[data-base]>i {
+  display: block;
+  height: 100%;
+  width: clamp(0px, var(--pct, 0%), 100%);
+  background: var(--progress-fill);
+  border-radius: inherit;
+  transition: width .35s ease;
 }
-
-.table th,
-.table td {
-  padding: 16px 18px;
-  text-align: center;
-}
-
-.table tbody tr {
-  background: #f8ead6;
-  color: #3b2414;
-  transition: 0.2s ease;
-}
-
-.table tbody tr:nth-child(even) {
-  background: #f2e2c5;
-}
-
-.table tbody tr:hover {
-  background: #e6cc99;
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.15);
-}
-
-.table td:first-child {
-  font-weight: 800;
-  font-size: 18px;
-}
-

@@ -1,39 +1,44 @@
 <script src="/js/partials/head.js"></script>
 
-<script src="/js/utils/addStylesheet.js"></script>
+<link rel="stylesheet" href="/css/pages/register-login.css">
 
-<!-- Agrega estilos específicos para esta página, en este caso, Add Friend -->
-<script>
-  addStylesheet("/css/pages/auth-style.css");
-</script>
+<header class="topbar">
+  <h1>TIMEOUT CLICK</h1>
+</header>
 
-  <header class="topbar">
-    <h1>TIMEOUT CLICK</h1>
-  </header>
+<main class="poster">
+  <h2 class="titles">LOGIN</h2>
+  <hr class="divider">
 
-  <main class="poster">
-    <h2>LOGIN</h2>
-    <hr class="divider">
-
+  <div class="poster__scroll">
+    <!-- Login form -->
     <form>
+      <!-- Email -->
       <div class="field">
         <label for="email">Email:</label>
         <input id="email" type="email" placeholder="EMAIL">
       </div>
 
+      <!-- Password + recovery link -->
       <div class="field">
         <label for="password">Password:</label>
         <input id="password" type="password" placeholder="PASSWORD">
-        <p class="hint"><a href="#">Forgot your password?</a></p>
-      </div>
-
-      <div class="actions">
-        <button type="submit" class="btn">LOGIN</button>
-        <button type="button" class="btn back" onclick="history.back()">BACK</button>
+        <p class="hint"><a href="/pages/recovery.html">Forgot your password?</a></p>
       </div>
     </form>
+  </div>
 
-    <p class="signup">Sign up?</p>
-  </main>
+  <!-- Page actions -->
+  <div class="actions">
+    <button type="button" class="btn btn--back" onclick="history.back()">BACK</button>
+    <button type="button" class="btn btn--secondary" onclick="location.href='/pages/homeLogged.html'">LOGIN</button>
+  </div>
 
+  <!-- Link to registration -->
+  <p class="signup">
+    <a href="/pages/register.html">Sign up?</a>
+  </p>
+</main>
+
+<!-- Shared footer -->
 <script src="/js/partials/footer.js"></script>

@@ -1,0 +1,127 @@
+@import url("/css/base/_components.css");
+
+/* Reset and variables */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Visible height of fixed bar */
+:root {
+  --bar-h: 64px;
+}
+
+@media (max-width: 520px) {
+  :root {
+    --bar-h: 72px;
+  }
+}
+
+/* Background and typography */
+html,
+body {
+  min-height: 100%; 
+}
+body::before{
+  content:"";
+  position: fixed;
+  inset: 0;             
+  background: var(--licorice) url("/assets/images/desert-bg2.jpg") center/cover no-repeat;
+  z-index: -1;            
+}
+body {
+margin: 0;
+  color: #26170e;
+  font-family: var(--montfont);
+}
+
+/* Page container */
+.app {
+  padding-top: var(--bar-h);
+  min-height: calc(100dvh - var(--bar-h));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.divider {
+  border: 0;
+  height: 4px;
+  background: var(--navbar-border);
+  margin: 12px 0 18px;
+  opacity: .25;
+}
+
+.poster {
+  max-width: 720px;
+  margin: calc(var(--bar-h) + 12px) auto 16px;
+  max-height: calc(100dvh - var(--bar-h) - 28px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 16px;
+}
+
+.instructions {
+  min-height: 120px;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.step {
+  display: none;
+  animation: fade .4s ease-in-out;
+}
+.step.active { display: block; }
+
+.nav-steps {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.step-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--black-bean);
+  color: var(--panel);
+  border: 2px solid var(--muted);
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform .1s;
+}
+
+.step-btn:hover {
+  transform: scale(1.1);
+  background: var(--licorice);
+}
+
+.counter {
+  font-weight: bold;
+  color: var(--black-bean);
+}
+
+/* Add bottom padding to scroll area */
+.poster__scroll{
+  padding-bottom: 24px;
+}
+
+.step-btn{
+  outline-offset: 0;
+}
+.step-btn:focus{
+  outline: none;
+  box-shadow: 0 0 0 3px var(--line-strong);
+}
+
+@keyframes fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

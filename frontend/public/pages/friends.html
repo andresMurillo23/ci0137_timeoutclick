@@ -1,89 +1,103 @@
 <script src="/js/partials/head.js"></script>
 <script src="/js/partials/navbar.js"></script>
 
-<script src="/js/utils/addStylesheet.js"></script>
+<script>window.NAV_ACTIVE = "friends";</script>
+<script src="/js/utils/activeTab.js" defer></script>
 
-<!-- Agrega estilos específicos para esta página, en este caso, Friends List -->
-<script>
-  addStylesheet("/css/pages/friends-style.css");
-</script>
+<!-- Friends page styles -->
+<link rel="stylesheet" href="/css/pages/friends-style.css">
 
-<!-- Contenido panel -->
-<main class="window" role="main" aria-labelledby="friends-title">
-  <div class="header-strip" aria-hidden="true"></div>
+<main class="friend-list" role="main">
   <section class="content">
-    <div class="header-section">
-      <h2 id="friends-title">Friends list</h2>
-      
-      <div class="tools">
-        <input class="search" type="text" placeholder="Search Friends" aria-label="Search friends">
-        <button class="icon-search" type="button" aria-label="Search"></button>
-        <button class="btn add-btn" type="button">ADD FRIENDS</button>
-      </div>
-    </div>
+    <h2 class="titles--light">FRIENDS LIST</h2>
+    <p class="subtitle">Connect and challenge your friends</p>
 
-    <!-- Grid de amigos -->
-    <div class="friends-grid">
-      <!-- Tarjeta de amigo 1 -->
-      <div class="friend-card">
-        <div class="avatar-large">Avatar</div>
-        <div class="friend-info">
-          <div class="info-row">
-            <span class="label">Nombre</span>
-          </div>
-          <div class="info-row">
-            <span class="value">No.victorias</span>
+    <div class="wrap">
+      <!-- Search + quick actions -->
+      <section class="panel">
+        <div class="search-bar">
+          <input class="search" type="text" placeholder="Type the username of your friend" aria-label="Search friends">
+          <a class="btn--primary-brown" type="button" aria-label="Search">SEARCH</a>
+          <a class="btn--primary-brown" href="/pages/invitations.html">PENDING INVITATIONS</a>
+          <a class="btn--secondary" href="/pages/addFriend.html">ADD A FRIEND</a>
+        </div>
+      </section>
+
+      <!-- Friends grid -->
+      <section class="panel">
+        <div class="friends-grid-container">
+          <div class="friends-grid">
+            <!-- Friend card: online/available -->
+            <div class="friend-card available" onclick="if (event.target.closest('a')) return; location.href='/pages/deleteFriend.html'">
+              <span class="status-dot on" aria-hidden="true"></span>
+              <div class="user-avatar">A</div>
+              <span class="user-name">andresmimi</span>
+              <a class="btn--secondary challenge-btn">CHALLENGE</a>
+            </div>
+
+            <!-- Friend card: busy -->
+            <div class="friend-card busy" onclick="if (event.target.closest('a')) return; location.href='/pages/deleteFriend.html'">
+              <span class="status-dot busy" aria-hidden="true"></span>
+              <div class="user-avatar">R</div>
+              <span class="user-name">rolipoli</span>
+              <a class="btn--secondary challenge-btn">CHALLENGE</a>
+            </div>
+
+            <!-- Friend card: available -->
+            <div class="friend-card available" onclick="if (event.target.closest('a')) return; location.href='/pages/deleteFriend.html'">
+              <span class="status-dot on" aria-hidden="true"></span>
+              <div class="user-avatar">I</div>
+              <span class="user-name">isabel</span>
+              <a class="btn--secondary challenge-btn">CHALLENGE</a>
+            </div>
+
+            <!-- Friend card: offline -->
+            <div class="friend-card unavailable" onclick="if (event.target.closest('a')) return; location.href='/pages/deleteFriend.html'">
+              <span class="status-dot off" aria-hidden="true"></span>
+              <div class="user-avatar">T</div>
+              <span class="user-name">tatsparamo</span>
+              <a class="btn--secondary challenge-btn">CHALLENGE</a>
+            </div>
           </div>
         </div>
-        <button class="btn-action" type="button">Desafiar</button>
-      </div>
-
-      <!-- Tarjeta de amigo 2 -->
-      <div class="friend-card">
-        <div class="avatar-large">Avatar</div>
-        <div class="friend-info">
-          <div class="info-row">
-            <span class="label">Nombre</span>
-          </div>
-          <div class="info-row">
-            <span class="value">No.victorias</span>
-          </div>
-        </div>
-        <button class="btn-action" type="button">Desafiar</button>
-      </div>
-
-      <!-- Tarjeta de amigo 3 -->
-      <div class="friend-card">
-        <div class="avatar-large">Avatar</div>
-        <div class="friend-info">
-          <div class="info-row">
-            <span class="label">Nombre</span>
-          </div>
-          <div class="info-row">
-            <span class="value">No.victorias</span>
-          </div>
-        </div>
-        <button class="btn-action" type="button">Desafiar</button>
-      </div>
-
-      <!-- Tarjeta de amigo 4 -->
-      <div class="friend-card">
-        <div class="avatar-large">Avatar</div>
-        <div class="friend-info">
-          <div class="info-row">
-            <span class="label">Nombre</span>
-          </div>
-          <div class="info-row">
-            <span class="value">No.victorias</span>
-          </div>
-        </div>
-        <button class="btn-action" type="button">Desafiar</button>
-      </div>
-    </div>
-
-    <div class="footer">
-      <button class="btn" type="button">Back</button>
+      </section>
     </div>
   </section>
-  
+</main>
+
+<!-- Challenge modal (confirm -> waiting) -->
+<div id="confirmOverlay" class="confirm-overlay" aria-hidden="true">
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" tabindex="-1">
+
+    <!-- Confirm view -->
+    <div class="panel panel-confirm" id="panelConfirm">
+      <h3 id="confirmTitle" class="confirm-title">CONFIRM CHALLENGE</h3>
+      <p class="confirm-text">
+        Do you want to challenge <strong id="who">Player</strong>?
+      </p>
+      <div class="confirm-actions">
+        <button type="button" id="noBtn" class="btn btn--back">NO</button>
+        <button type="button" id="yesBtn" class="btn btn--secondary">YES</button>
+      </div>
+    </div>
+
+    <!-- Waiting view -->
+    <div class="panel panel-waiting" id="panelWaiting" aria-live="polite" hidden>
+      <h3 class="confirm-title">WAITING FOR PLAYER…</h3>
+      <div class="loading">
+        <div class="spinner" aria-hidden="true"></div>
+        <p class="confirm-text">
+          Waiting for <strong id="whoWaiting">Player</strong> to accept…
+        </p>
+      </div>
+      <div class="confirm-actions">
+        <button type="button" id="cancelWaitBtn" class="btn btn--back">CANCEL</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal logic + shared footer -->
+<script src="/js/partials/popup.js"></script>
 <script src="/js/partials/footer.js"></script>

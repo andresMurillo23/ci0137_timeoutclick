@@ -1,0 +1,88 @@
+/* Reset */
+html,
+body {
+  height: 100%
+}
+
+/* Main container */
+.app {
+  padding-top: var(--bar-h);
+  min-height: calc(100dvh - var(--bar-h));
+  display: block;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+/* Page background */
+body {
+  margin: 0;
+  background: var(--background-brown-profiles);
+  color: var(--text);
+  font-family: var(--montfont);
+}
+
+/* Hero title */
+.titles {
+  margin-top: 40px;
+  font-family: "Rye", system-ui, sans-serif;
+  color: #fae9c9;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, .35);
+  letter-spacing: 1.5px;
+  font-size: 45px;
+}
+
+/* Content container */
+.container {
+  width: 90%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 50px 0;
+  font-family: var(--montfont);
+}
+
+/* Section box */
+.box {
+  margin-bottom: 40px;
+}
+
+/* Section heading */
+.box h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: var(--panel);
+}
+
+/* Link list */
+ul {
+  list-style: none;
+  padding-left: 25px;
+}
+
+/* List item */
+ul li {
+  width: 100%;
+  padding: 4px 0;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.3s ease;
+  font-family: var(--montfont);
+}
+
+/* Hover state */
+ul li:hover {
+  border-bottom: 2px solid var(--tangerine);
+}
+
+/* Link styling */
+ul li a {
+  text-decoration: none;
+  font-size: 1.3rem;
+  color: var(--accent);
+  display: block; 
+  transition: color 0.3s ease;
+}
+
+/* Link hover color */
+ul li:hover a {
+  color: var(--tangerine);
+}

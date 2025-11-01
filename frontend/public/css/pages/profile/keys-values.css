@@ -1,0 +1,35 @@
+/* Key-value grid layout */
+.kv-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 28px
+}
+
+/* Individual key-value pair */
+.kv {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  column-gap: 12px;
+  row-gap: 12px
+}
+
+/* Key label */
+.label {
+  color: var(--line);
+  font-family: var(--montfont)
+}
+
+/* Value field */
+.value {
+  color: var(--winrate-brown);
+  font-weight: 800;
+  font-family: var(--montfont)
+}
+
+/* Divider */
+.dots {
+  border-bottom: 1px dashed var(--line-strong);
+  opacity: .85;
+  height: 1em;
+  margin: 10px 0 14px
+}

@@ -1,0 +1,21 @@
+/* Footer container */
+.duel-footer {
+  display: flex;
+  justify-content: center; 
+  align-items: center;  
+}
+
+/* Secondary button */
+.btn--secondary {
+  padding: 0.8rem 2rem;
+  font-weight: 700;
+  margin-left: 1rem;
+  transition: 0.2s ease;
+}
+
+/* Hover state */
+.btn--secondary:hover {
+  transform: scale(1.05);
+  background: var(--burnt-orange);
+}
+

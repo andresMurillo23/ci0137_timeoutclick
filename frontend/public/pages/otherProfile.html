@@ -1,32 +1,78 @@
 <script src="/js/partials/head.js"></script>
 <script src="/js/partials/navbar.js"></script>
 
-<script src="/js/utils/addStylesheet.js"></script>
-<script>
-  addStylesheet("/css/pages/otherProfile-style.css");
-</script>
+<!-- Page styles -->
+<link rel="stylesheet" href="/css/pages/profile/btns.css">
+<link rel="stylesheet" href="/css/pages/profile/keys-values.css">
+<link rel="stylesheet" href="/css/pages/profile/main-style.css">
+<link rel="stylesheet" href="/css/pages/profile/panels.css">
+<link rel="stylesheet" href="/css/pages/profile/layout.css">
+<link rel="stylesheet" href="/css/pages/otherProfile-style.css">
+</head>
 
-<main class="content" id="main">
-  <section class="panel" aria-labelledby="panel-title">
-    <div class="avatar" aria-label="Avatar">avatar</div>
-      <div class="fields">
-        <h2 id="panel-title" style="margin:0 0 8px 0">Perfil</h2>
-          <div class="field">
-            <div class="label">username:</div>
-            <div class="value" id="username">andrescmf1</div>
-          </div>
-      <div class="field">
-        <div class="label">email:</div>
-        <div class="value" id="email">andrescmf1@example.com</div>
+<body class="other-profile">
+  <main class="page">
+    <h2 class="titles">PLAYER PROFILE</h2>
+    <p class="subtitle">Public information</p>
+
+    <!-- Public quick stats -->
+    <section class="stats" aria-label="Public stats">
+      <div class="stat">
+        <span class="k">rank</span><span class="v" id="rank">Silver II</span>
       </div>
-     
-    </div>
-  </section>
-  <div class="footer">
-      <!--<button class="btn" type="button">Back</button>-->
-      <a href="/pages/addFriend.html" class="btn" type="button">Back</a>
-      <button class="btn" type="button">Add</button>
-  </div>
-</main>
+      <div class="stat">
+        <span class="k">matches</span><span class="v" id="matches">77</span>
+      </div>
+      <div class="stat">
+        <span class="k">win rate</span>
+        <div class="progress" style="--winrate:58%"><i></i></div>
+      </div>
+    </section>
 
-<script src="/js/partials/footer.js"></script>
+    <div class="op-wrap">
+      <!-- Public profile panel -->
+      <section class="panel">
+        <div class="ph">PLAYER</div>
+        <div class="body">
+          <div class="op-grid">
+            <figure class="op-avatar-frame" aria-label="Avatar">
+              <img src="/assets/images/profile.jpg" alt="Player avatar">
+            </figure>
+
+            <div class="op-fields">
+              <div class="op-row">
+                <div class="label">username</div>
+                <div class="value" id="username">andrescmf1</div>
+              </div>
+
+              <div class="op-row">
+                <div class="label">about</div>
+                <div class="value" id="about">Competitive player. Western theme lover.</div>
+              </div>
+
+              <div class="op-row">
+                <div class="label">member since</div>
+                <div class="value" id="since">12/08/2025</div>
+              </div>
+
+              <div class="op-row">
+                <div class="label">mutual friends</div>
+                <div class="value" id="mutual">3</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Actions -->
+      <div class="bottom">
+        <a class="btn-ghost left" href="/pages/addFriend.html">BACK</a>
+        <button class="btn right" type="button" id="addBtn">ADD FRIEND</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared footer -->
+  <script src="/js/partials/footer.js"></script>
+</body>
+</html>
