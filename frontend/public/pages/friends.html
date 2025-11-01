@@ -2,6 +2,9 @@
 <script src="/js/partials/navbar.js"></script>
 <script src="/js/utils/activeTab.js"></script>
 
+<script>window.NAV_ACTIVE = "friends";</script>
+<script src="/js/utils/activeTab.js" defer></script>
+
 <!-- Friends page styles -->
 <link rel="stylesheet" href="/css/pages/friends-style.css">
 
@@ -15,7 +18,8 @@
       <section class="panel">
         <div class="search-bar">
           <input class="search" type="text" placeholder="Type the username of your friend" aria-label="Search friends">
-          <button class="btn--primary-brown" type="button" aria-label="Search">SEARCH</button>
+          <a class="btn--primary-brown" type="button" aria-label="Search">SEARCH</a>
+          <a class="btn--primary-brown" href="/pages/invitations.html">PENDING INVITATIONS</a>
           <a class="btn--secondary" href="/pages/addFriend.html">ADD A FRIEND</a>
         </div>
       </section>
@@ -25,35 +29,35 @@
         <div class="friends-grid-container">
           <div class="friends-grid">
             <!-- Friend card: online/available -->
-            <div class="friend-card available" onclick="if (event.target.closest('button')) return; location.href='/pages/deleteFriend.html'">
+            <div class="friend-card available" onclick="if (event.target.closest('a')) return; location.href='/pages/deleteFriend.html'">
               <span class="status-dot on" aria-hidden="true"></span>
               <div class="user-avatar">A</div>
               <span class="user-name">andresmimi</span>
-              <button class="btn--secondary challenge-btn">CHALLENGE</button>
+              <a class="btn--secondary challenge-btn">CHALLENGE</a>
             </div>
 
             <!-- Friend card: busy -->
-            <div class="friend-card busy" onclick="if (event.target.closest('button')) return; location.href='/pages/deleteFriend.html'">
+            <div class="friend-card busy" onclick="if (event.target.closest('a')) return; location.href='/pages/deleteFriend.html'">
               <span class="status-dot busy" aria-hidden="true"></span>
               <div class="user-avatar">R</div>
               <span class="user-name">rolipoli</span>
-              <button class="btn--secondary challenge-btn">CHALLENGE</button>
+              <a class="btn--secondary challenge-btn">CHALLENGE</a>
             </div>
 
             <!-- Friend card: available -->
-            <div class="friend-card available" onclick="if (event.target.closest('button')) return; location.href='/pages/deleteFriend.html'">
+            <div class="friend-card available" onclick="if (event.target.closest('a')) return; location.href='/pages/deleteFriend.html'">
               <span class="status-dot on" aria-hidden="true"></span>
               <div class="user-avatar">I</div>
               <span class="user-name">isabel</span>
-              <button class="btn--secondary challenge-btn">CHALLENGE</button>
+              <a class="btn--secondary challenge-btn">CHALLENGE</a>
             </div>
 
             <!-- Friend card: offline -->
-            <div class="friend-card unavailable" onclick="if (event.target.closest('button')) return; location.href='/pages/deleteFriend.html'">
+            <div class="friend-card unavailable" onclick="if (event.target.closest('a')) return; location.href='/pages/deleteFriend.html'">
               <span class="status-dot off" aria-hidden="true"></span>
               <div class="user-avatar">T</div>
               <span class="user-name">tatsparamo</span>
-              <button class="btn--secondary challenge-btn">CHALLENGE</button>
+              <a class="btn--secondary challenge-btn">CHALLENGE</a>
             </div>
           </div>
         </div>

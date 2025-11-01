@@ -1,0 +1,124 @@
+<script src="/js/partials/head.js"></script>
+<script src="/js/partials/navbar.js"></script>
+<script src="/js/utils/activeTab.js"></script>
+
+<script>window.NAV_ACTIVE = "friends";</script>
+<script src="/js/utils/activeTab.js" defer></script>
+
+<!-- Page styles -->
+<link rel="stylesheet" href="/css/pages/invitations-style.css">
+<link rel="stylesheet" href="/css/pages/profile/btns.css">
+
+<main class="friend-list" role="main">
+  <section class="content">
+    <h2 class="titles--light">PENDING INVITATIONS</h2>
+    <p class="subtitle">See who wants to play with you and manage sent invites</p>
+
+    <div class="wrap">
+      <!-- Search + quick actions -->
+      <section class="panel">
+        <div class="search-bar">
+          <input class="search" type="text" placeholder="Type the username" aria-label="Search invitations">
+          <button class="btn--primary-brown" type="button" aria-label="Search">SEARCH</button>
+          <div class="tab-bar">
+            <button class="btn--secondary" role="tab" aria-selected="true" data-target="receivedPanel">RECEIVED</button>
+            <button class="btn--secondary" role="tab" aria-selected="false" data-target="sentPanel">SENT</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Invitations panels -->
+      <section class="panel">
+        <div id="receivedPanel" class="invitations-grid-container">
+          <div class="invitations-grid">
+            <!-- Received invitation -->
+            <div class="invitation-card">
+              <span class="status-dot on" aria-hidden="true"></span>
+              <div class="user-avatar">A</div>
+              <div class="invitation-info">
+                <div class="user-name">andresmimi</div>
+                <div class="invitation-meta">Sent 2 min ago</div>
+              </div>
+              <div class="invitation-actions">
+                <button class="btn btn--secondary" type="button" aria-label="Accept invitation">ACCEPT</button>
+                <button class="btn btn--back" type="button" aria-label="Decline invitation">DECLINE</button>
+              </div>
+            </div>
+
+            <!-- Another received -->
+            <div class="invitation-card">
+              <span class="status-dot busy" aria-hidden="true"></span>
+              <div class="user-avatar">R</div>
+              <div class="invitation-info">
+                <div class="user-name">rolipoli</div>
+                <div class="invitation-meta">Sent 1h ago</div>
+              </div>
+              <div class="invitation-actions">
+                <button class="btn btn--secondary" type="button" aria-label="Accept invitation">ACCEPT</button>
+                <button class="btn btn--back" type="button" aria-label="Decline invitation">DECLINE</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="sentPanel" class="invitations-grid-container" hidden>
+          <div class="invitations-grid">
+            <!-- Sent invitation (can cancel) -->
+            <div class="invitation-card">
+              <span class="status-dot off" aria-hidden="true"></span>
+              <div class="user-avatar">I</div>
+              <div class="invitation-info">
+                <div class="user-name">isabel</div>
+                <div class="invitation-meta">Pending • Sent 10 min ago</div>
+              </div>
+              <div class="invitation-actions">
+                <button class="btn--primary-brown" type="button" aria-label="Cancel invitation">CANCEL</button>
+              </div>
+            </div>
+
+            <!-- Sent accepted (example, disabled cancel) -->
+            <div class="invitation-card">
+              <span class="status-dot on" aria-hidden="true"></span>
+              <div class="user-avatar">T</div>
+              <div class="invitation-info">
+                <div class="user-name">tatsparamo</div>
+                <div class="invitation-meta">Accepted • 3h ago</div>
+              </div>
+              <div class="invitation-actions">
+                <button class="btn--primary-brown" type="button" aria-label="Cancel invitation" disabled>—</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <!-- Back to previous page -->
+      <div class="bottom">
+        <button type="button" class="btn btn-ghost left" onclick="location.href='/pages/friends.html'">BACK</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- shared footer -->
+<script src="/js/partials/footer.js"></script>
+
+<script>
+  // Simple tab switcher: toggles panels and aria-selected
+  (function(){
+    const tabs = Array.from(document.querySelectorAll('.tab-bar button[role="tab"]'));
+    function activate(tab) {
+      tabs.forEach(t => {
+        const panelId = t.getAttribute('data-target');
+        const panel = document.getElementById(panelId);
+        const selected = t === tab;
+        t.setAttribute('aria-selected', selected ? 'true' : 'false');
+        if (panel) panel.hidden = !selected;
+      });
+    }
+    tabs.forEach(t => t.addEventListener('click', () => activate(t)));
+    // ensure initial active
+    const initial = document.querySelector('.tab[aria-selected="true"]');
+    if (initial) activate(initial);
+  })();
+</script>

@@ -79,7 +79,6 @@ body {
   padding: 12px 24px;
   font-size: 14px;
   white-space: nowrap;
-  text-decoration: none;
 }
 
 .search-bar .btn--secondary {
@@ -280,94 +279,89 @@ input:focus {
   }
 }
 
-/* CONFIRM MODAL  */
-
-/* Overlay */
-.confirm-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, .45);
-  display: none; /* hidden by default */
-  justify-content: center;
+.tab-bar {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
   align-items: center;
-  z-index: 2000;
 }
 
-.confirm-overlay.open {
-  display: flex;
+.tab-bar button[aria-selected="true"] {
+  background: var(--brown);
+  color: white;
+  border-color: var(--brown);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
-/* Modal box */
-.dialog {
-  background: var(--panel);
-  border: 4px solid var(--black-bean);
-  box-shadow: 0 0 0 6px var(--line-strong);
-  border-radius: 22px;
-  width: min(450px, calc(100% - 32px));
-  padding: 26px;
-  text-align: center;
-  animation: popup-in .25s ease-out;
-  overflow: visible !important;
+/* Invitations grid reuse structure from friends */
+.invitations-grid-container {
+  padding: 16px;
 }
 
-.dialog .panel {
-  background: none;
-  box-shadow: none;
-  border-radius: 0;
-  border: none;
-  padding: 0;
-  overflow: visible;
-}
-
-/* Titles and text */
-.confirm-title {
-  font-size: 26px;
-  color: var(--black-bean);
-  margin-bottom: 15px;
-}
-
-.confirm-text {
-  font-size: 17px;
-  color: var(--text);
-  margin-bottom: 20px;
-}
-
-/* Botones */
-.confirm-actions {
-  display: flex;
-  justify-content: center;
+.invitations-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
   gap: 12px;
 }
 
-/* Modal: animation */
-@keyframes popup-in {
-  from {
-    opacity: 0;
-    transform: scale(.9) translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+/* Card based on .friend-card */
+.invitation-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--borders);
+  border-radius: 8px;
+  background: var(--panel);
 }
-/* Panels (two views) */
-.panel { display: block; }
-.panel[hidden] { display: none !important; }
 
-/* Loading */
-.loading {
-  display: grid;
-  place-items: center;
-  gap: 10px;
-  margin: 8px 0 16px;
+.invitation-card:hover {
+  background: var(--bar-background);
 }
-.spinner {
-  width: 36px; 
-  height: 36px; 
-  border-radius: 50%;
-  border: 3px solid var(--borders);
-  border-top-color: var(--brown);
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
 
+.invitation-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.invitation-meta {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* Actions to the right */
+.invitation-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Small adjustments for buttons used here */
+.invitation-actions .btn,
+.invitation-actions .btn--secondary,
+.invitation-actions .btn--back,
+.invitation-actions .btn--primary-brown {
+  padding: 8px 14px;
+  font-size: 13px;
+  border-radius: 18px;
+}
+
+/* Disabled/accepted state */
+.invitation-card[aria-disabled="true"] .invitation-actions button {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Status dots reuse colors */
+.status-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
+.status-dot.on { background: var(--available); }
+.status-dot.busy { background: var(--busy); }
+.status-dot.off { background: var(--unavailable); }
+
+/* Responsive tweaks */
+@media (max-width: 520px) {
+  .tab-bar { width: 100%; justify-content: space-between; }
+  .invitation-actions { gap: 6px; }
+  .invitation-meta { font-size: 12px; }
+}
