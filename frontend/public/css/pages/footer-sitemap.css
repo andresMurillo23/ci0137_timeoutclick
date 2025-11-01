@@ -4,8 +4,7 @@
   right: 0;
   bottom: 0;
   font-family: var(--montfont);  
-  background-color: var(--bg);  
-  border-top: 3px solid var(--navbar-border);
+  background-color: #341D15;
   color: var(--panel);
   height: 60px; 
   padding: 10px 0;
@@ -34,7 +33,7 @@
 }
 
 body {
- padding-bottom: 60px;  /* muy importante */
+ padding-bottom: 60px;
 }
 main {
   flex: 1;
