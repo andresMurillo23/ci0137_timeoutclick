@@ -118,7 +118,7 @@
     }
     tabs.forEach(t => t.addEventListener('click', () => activate(t)));
     // ensure initial active
-    const initial = document.querySelector('.tab[aria-selected="true"]');
+    const initial = document.querySelector('.tab-bar button[aria-selected="true"]');
     if (initial) activate(initial);
   })();
 </script>
