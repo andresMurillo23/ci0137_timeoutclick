@@ -1,30 +1,27 @@
-// Elementos del DOM
+// DOM elements
 const surrenderBtn = document.getElementById('surrenderBtn');
 const surrenderModal = document.getElementById('surrenderModal');
 const cancelBtn = document.getElementById('cancelBtn');
 const confirmBtn = document.getElementById('confirmBtn');
 
-// Abrir modal
+// Open modal
 surrenderBtn.addEventListener('click', () => {
   surrenderModal.classList.add('active');
   surrenderModal.setAttribute('aria-hidden', 'false');
 });
 
-// Cerrar modal (cancelar)
+// Close modal
 cancelBtn.addEventListener('click', () => {
   surrenderModal.classList.remove('active');
   surrenderModal.setAttribute('aria-hidden', 'true');
 });
 
-// Confirmar rendición
+// Confirm surrender
 confirmBtn.addEventListener('click', () => {
-
- // TODO: Lógica para manejar la rendición del jugador
-
   window.location.href = '/pages/home.html';
 });
 
-// Cerrar modal al hacer click fuera
+// Close modal when clicking outside the dialog
 surrenderModal.addEventListener('click', (e) => {
   if (e.target === surrenderModal) {
     surrenderModal.classList.remove('active');
@@ -32,7 +29,7 @@ surrenderModal.addEventListener('click', (e) => {
   }
 });
 
-// Cerrar modal con tecla ESC
+// Close modal with ESC key
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && surrenderModal.classList.contains('active')) {
     surrenderModal.classList.remove('active');

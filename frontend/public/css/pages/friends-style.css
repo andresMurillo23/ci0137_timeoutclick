@@ -114,7 +114,7 @@ body {
 }
 
 .friend-card:hover {
-  background: var(--bar-background);
+  background: var(--stack-color);
 }
 
 /* Status dots */

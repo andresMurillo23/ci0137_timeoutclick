@@ -1,5 +1,7 @@
 <script src="/js/partials/head.js"></script>
 <script src="/js/partials/navbar.js"></script>
+
+<script>window.NAV_ACTIVE = "home";</script>
 <script src="/js/utils/activeTab.js"></script>
 
 <!-- Page styles -->
@@ -8,7 +10,7 @@
 <main class="container">
   <h2 class="titles">SITE MAP</h2>
 
-  <!-- Public (not logged in) -->
+  <!-- Public -->
   <section class="box">
     <h2>1. Init</h2>
     <ul>
@@ -20,7 +22,7 @@
     </ul>
   </section>
 
-  <!-- Home (after login) -->
+  <!-- Home  -->
   <section class="box">
     <h2>2. Home</h2>
     <ul>
@@ -29,7 +31,6 @@
       <li><a href="/pages/history.html">2.3 History</a></li>
       <li><a href="/pages/friends.html">2.4 Friends</a></li>
       <li><a href="/pages/profile.html">2.5 Profile</a></li>
-      <!-- Sends user back to public home (logout) -->
       <li><a href="/pages/home.html">2.6 Log out</a></li>
     </ul>
   </section>
@@ -49,7 +50,8 @@
     <h2>4. Friends</h2>
     <ul>
       <li><a href="/pages/friends.html">4.1 Friends List</a></li>
-      <li><a href="/pages/addFriend.html">4.2 Add Friend</a></li>
+      <li><a href="/pages/addFriend.html">4.2 Pending Invitations</a></li>
+      <li><a href="/pages/addFriend.html">4.3 Add Friend</a></li>
     </ul>
   </section>
 

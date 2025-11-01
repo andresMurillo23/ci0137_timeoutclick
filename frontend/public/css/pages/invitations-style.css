@@ -316,7 +316,7 @@ input:focus {
 }
 
 .invitation-card:hover {
-  background: var(--bar-background);
+  background: var(--stack-color);
 }
 
 .invitation-info {
