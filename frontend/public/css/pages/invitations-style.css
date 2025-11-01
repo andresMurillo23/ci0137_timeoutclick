@@ -35,7 +35,7 @@ body {
   gap: 18px;
 }
 
-/* ===== Search Panel ===== */
+/* Search Panel */
 .panel {
   background: var(--panel);
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
@@ -85,7 +85,7 @@ body {
   text-decoration: none;
 }
 
-/* ===== Friends Grid ===== */
+/* Friends Grid */
 .friends-grid-container {
   padding: 16px;
 }
@@ -196,7 +196,7 @@ input:focus {
   outline-offset: 2px;
 }
 
-/* ===== Invitations Switch Tabs ===== */
+/* Invitations Switch Tabs */
 
 .invitations-tabs {
   position: relative;
@@ -275,7 +275,7 @@ input:focus {
   }
 }
 
-/* ===== Invitations Grid ===== */
+/* Invitations Grid */
 .invitations-grid-container {
   padding: 16px;
 }
@@ -335,7 +335,7 @@ input:focus {
   border-radius: 18px;
 }
 
-/* ===== Responsive ===== */
+/* Responsive */
 @media (max-width: 768px) {
   .content h2,
   .titles--light {
