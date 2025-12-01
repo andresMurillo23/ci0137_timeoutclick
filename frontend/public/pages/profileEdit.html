@@ -138,6 +138,7 @@
     </div>
   </main>
 
+
   <!-- Helpers: live avatar preview + responsive layout sync -->
   <script src="/js/utils/avatarPreview.js" defer></script>
   <script src="/js/utils/syncPreviewHeight.js" defer></script>
@@ -146,8 +147,20 @@
   <!-- Required utilities -->
   <script src="/js/utils/api-client.js"></script>
   <script src="/js/utils/auth-manager.js"></script>
+  <script>
+    window.api = new ApiClient();
+    window.auth = new AuthManager();
+    window.auth.initialize();
+  </script>
 
   <!-- Profile edit page logic -->
   <script src="/js/pages/profileEdit.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const profileEditPage = new ProfileEditPage();
+      profileEditPage.init();
+    });
+  </script>
 </body>
 </html>
+

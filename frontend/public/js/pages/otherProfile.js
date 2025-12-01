@@ -3,9 +3,8 @@
  * Connects to GET /api/users/:id
  */
 
-// Use global instances from window
-const apiClient = window.apiClient || window.api;
-const authManager = window.authManager;
+const apiClient = window.api;
+const authManager = window.auth;
 
 class OtherProfilePage {
   constructor() {
@@ -14,20 +13,15 @@ class OtherProfilePage {
     this.currentUser = null;
   }
 
-  /**
-   * Initialize the other profile page
-   */
   async init() {
     try {
-      // Check authentication
       if (!authManager.isAuthenticated()) {
         window.location.href = '/pages/login.html';
         return;
       }
 
-      // Get user ID from URL parameters
       const urlParams = new URLSearchParams(window.location.search);
-      this.viewedUserId = urlParams.get('id');
+      this.viewedUserId = urlParams.get('userId') || urlParams.get('id');
 
       if (!this.viewedUserId) {
         this.showError('No user ID provided');
@@ -37,13 +31,9 @@ class OtherProfilePage {
         return;
       }
 
-      // Load current user (for friend status checks later)
       await this.loadCurrentUser();
-
-      // Load viewed user data
       await this.loadUserProfile();
 
-      // Render the UI
       this.renderProfile();
       this.attachEventListeners();
 
@@ -53,24 +43,22 @@ class OtherProfilePage {
     }
   }
 
-  /**
-   * Load current user data
-   */
   async loadCurrentUser() {
     try {
-      const response = await apiClient.get('/auth/me');
+      const response = await apiClient.getCurrentUser();
       
       if (response.success) {
         this.currentUser = response.user;
+      } else if (response.user) {
+        this.currentUser = response.user;
+      } else {
+        this.currentUser = response;
       }
     } catch (error) {
       console.error('Load current user error:', error);
     }
   }
 
-  /**
-   * Load viewed user profile
-   */
   async loadUserProfile() {
     try {
       const response = await apiClient.get(`/users/${this.viewedUserId}`);

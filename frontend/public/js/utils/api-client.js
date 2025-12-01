@@ -171,26 +171,24 @@ class ApiClient {
     return this.request(`/users/search?q=${encodeURIComponent(query)}`);
   }
 
-  // Friends methods
   async getFriends() {
     return this.request('/friends');
   }
 
-  async sendFriendRequest(targetUserId) {
-    return this.request('/friends/request', {
+  async sendFriendRequest(receiverId) {
+    return this.request('/friends/invite', {
       method: 'POST',
-      body: JSON.stringify({ targetUserId })
+      body: JSON.stringify({ receiverId })
     });
   }
 
   async getInvitations() {
-    return this.request('/friends/invitations');
+    return this.request('/friends/invitations/received');
   }
 
   async respondToInvitation(invitationId, action) {
-    return this.request(`/friends/invitations/${invitationId}`, {
-      method: 'PUT',
-      body: JSON.stringify({ action })
+    return this.request(`/friends/invitations/${invitationId}/${action}`, {
+      method: 'PUT'
     });
   }
 

@@ -76,5 +76,13 @@
   
 </main>
 
-<!-- Shared footer scripts -->
 <script src="/js/partials/footer.js"></script>
+<script src="/js/utils/api-client.js"></script>
+<script src="/js/utils/auth-manager.js"></script>
+<script>
+  window.api = new ApiClient();
+  window.auth = new AuthManager();
+  window.auth.initialize();
+</script>
+<script src="/js/pages/addFriend.js"></script>
+

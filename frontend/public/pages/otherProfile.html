@@ -78,8 +78,12 @@
   <!-- Required utilities -->
   <script src="/js/utils/api-client.js"></script>
   <script src="/js/utils/auth-manager.js"></script>
+  <script>
+    window.api = new ApiClient();
+    window.auth = new AuthManager();
+    window.auth.initialize();
+  </script>
 
-  <!-- Other profile page logic -->
   <script src="/js/pages/otherProfile.js" defer></script>
 </body>
 </html>

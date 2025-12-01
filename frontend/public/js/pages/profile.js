@@ -14,18 +14,15 @@ class ProfilePage {
    */
   async init() {
     try {
-      // Check authentication
-      if (!window.authManager || !window.authManager.isAuthenticated()) {
+      if (!window.auth || !window.auth.isAuthenticated()) {
         console.log('[PROFILE] Not authenticated, redirecting to login');
         window.location.href = '/pages/login.html';
         return;
       }
 
-      // Load current user data
       await this.loadUserData();
       await this.loadUserStats();
 
-      // Render the UI
       this.renderProfile();
       this.renderStats();
       this.attachEventListeners();
@@ -38,17 +35,16 @@ class ProfilePage {
     }
   }
 
-  /**
-   * Load current user data
-   */
   async loadUserData() {
     try {
-      const response = await window.apiClient.get('/auth/me');
+      const response = await window.api.getCurrentUser();
       
       if (response.success) {
         this.currentUser = response.user;
+      } else if (response.user) {
+        this.currentUser = response.user;
       } else {
-        throw new Error('Failed to load user data');
+        this.currentUser = response;
       }
     } catch (error) {
       console.error('[PROFILE] Error loading user data:', error);
@@ -56,17 +52,14 @@ class ProfilePage {
     }
   }
 
-  /**
-   * Load user statistics
-   */
   async loadUserStats() {
     try {
-      const response = await window.apiClient.get(`/users/${this.currentUser.id}/stats`);
+      const userId = this.currentUser.id || this.currentUser._id;
+      const response = await window.api.get(`/users/${userId}/stats`);
       
       if (response.success) {
         this.stats = response.stats;
       } else {
-        // If no stats yet, use defaults
         this.stats = {
           totalGames: 0,
           wins: 0,
@@ -79,7 +72,6 @@ class ProfilePage {
       }
     } catch (error) {
       console.error('Load user stats error:', error);
-      // Use default stats if request fails
       this.stats = {
         totalGames: 0,
         wins: 0,

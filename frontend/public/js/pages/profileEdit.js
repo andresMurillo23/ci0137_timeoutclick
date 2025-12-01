@@ -15,18 +15,15 @@ class ProfileEditPage {
    */
   async init() {
     try {
-      // Check authentication
-      if (!window.authManager || !window.authManager.isAuthenticated()) {
+      if (!window.auth || !window.auth.isAuthenticated()) {
         console.log('[PROFILE-EDIT] Not authenticated, redirecting to login');
         window.location.href = '/pages/login.html';
         return;
       }
 
-      // Load current user data
       await this.loadUserData();
       await this.loadUserStats();
 
-      // Pre-fill form with current data
       this.populateForm();
       this.renderStats();
       this.attachEventListeners();
@@ -37,33 +34,29 @@ class ProfileEditPage {
     }
   }
 
-  /**
-   * Load current user data
-   */
   async loadUserData() {
     try {
-      const response = await window.apiClient.get('/auth/me');
+      const response = await window.api.getCurrentUser();
       
       if (response.success) {
         this.currentUser = response.user;
+      } else if (response.user) {
+        this.currentUser = response.user;
       } else {
-        throw new Error('Failed to load user data');
+        this.currentUser = response;
       }
     } catch (error) {
-      console.error('Load user data error:', error);
+      console.error('[PROFILE-EDIT] Error loading user data:', error);
       throw error;
     }
   }
 
-  /**
-   * Load user statistics
-   */
   async loadUserStats() {
     try {
-      const response = await window.apiClient.get(`/users/${this.currentUser.id}/stats`);
+      const userId = this.currentUser.id || this.currentUser._id;
+      const response = await window.api.get(`/users/${userId}/stats`);
       
       if (response.success && response.stats) {
-        // Map backend stats to expected format
         this.stats = {
           wins: response.stats.gamesWon || 0,
           losses: (response.stats.gamesPlayed || 0) - (response.stats.gamesWon || 0),
