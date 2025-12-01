@@ -12,6 +12,13 @@ const server = createServer(app);
 
 connectDB();
 
+// Initialize Socket.IO with session support
+const { initializeSocket } = require('./socket');
+const io = initializeSocket(server, sessionConfig);
+
+// Make io accessible to other modules
+app.set('socketio', io);
+
 app.use(cors({
   origin: `http://localhost:${process.env.FRONTEND_PORT || 8080}`,
   credentials: true
@@ -34,4 +41,5 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Backend server running on port ${PORT}`);
   console.log(`Health check available at http://localhost:${PORT}/api/health`);
+  console.log(`Socket.IO enabled for real-time gaming`);
 });
