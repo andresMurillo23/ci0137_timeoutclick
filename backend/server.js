@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const connectDB = require('./config/database');
 const sessionConfig = require('./config/session');
+const routes = require('./routes');
 
 const app = express();
 const server = createServer(app);
@@ -20,13 +21,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(sessionConfig);
 
-app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    message: 'TimeoutClick Backend Server is running',
-    session: req.session.id ? 'Active' : 'None'
-  });
-});
+app.use('/api', routes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
