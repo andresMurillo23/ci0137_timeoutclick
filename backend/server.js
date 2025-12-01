@@ -25,10 +25,10 @@ app.use('/api', routes);
 
 app.use('/uploads', express.static('uploads'));
 
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
-});
+const { errorHandler, notFound } = require('./middleware/errorHandler');
+
+app.use(notFound);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
