@@ -47,13 +47,39 @@ const getUserProfile = async (req, res) => {
 const updateProfile = async (req, res) => {
   try {
     const userId = req.session.userId;
-    const { firstName, lastName, dateOfBirth, country } = req.body;
+    const { username, email, firstName, lastName, dateOfBirth, country } = req.body;
 
     const user = await User.findById(userId);
     if (!user || user.status !== 'active') {
       return res.status(404).json({ error: 'User not found' });
     }
 
+    // Check if username is being changed and if it's already taken
+    if (username && username !== user.username) {
+      const existingUser = await User.findOne({ 
+        username: username.toLowerCase(),
+        _id: { $ne: userId }
+      });
+      if (existingUser) {
+        return res.status(400).json({ error: 'Username already taken' });
+      }
+      user.username = username.toLowerCase().trim();
+    }
+
+    // Check if email is being changed and if it's already taken
+    if (email && email !== user.email) {
+      const existingEmail = await User.findOne({ 
+        email: email.toLowerCase(),
+        _id: { $ne: userId }
+      });
+      if (existingEmail) {
+        return res.status(400).json({ error: 'Email already taken' });
+      }
+      user.email = email.toLowerCase().trim();
+      user.isEmailVerified = false; // Reset verification if email changes
+    }
+
+    // Update profile fields
     if (firstName !== undefined) user.profile.firstName = firstName.trim();
     if (lastName !== undefined) user.profile.lastName = lastName.trim();
     if (dateOfBirth !== undefined) user.profile.dateOfBirth = dateOfBirth ? new Date(dateOfBirth) : null;
@@ -64,7 +90,14 @@ const updateProfile = async (req, res) => {
     res.json({
       success: true,
       message: 'Profile updated successfully',
-      profile: user.profile
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+        profile: user.profile,
+        isEmailVerified: user.isEmailVerified
+      }
     });
 
   } catch (error) {

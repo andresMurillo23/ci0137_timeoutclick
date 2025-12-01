@@ -297,34 +297,68 @@ class ProfileEditPage {
         submitBtn.textContent = 'SAVING...';
       }
 
-      // Get form data (only include fields that have values)
-      const formData = {
-        username: document.getElementById('username').value,
-        email: document.getElementById('email').value
-      };
+      // Get form data (only include fields that have values or changes)
+      const formData = {};
       
-      // Add optional fields only if they have values
-      const firstName = document.getElementById('firstName')?.value;
-      const lastName = document.getElementById('lastName')?.value;
-      const dateOfBirth = document.getElementById('dob')?.value;
-      const country = document.getElementById('country')?.value;
+      // Add username and email if they changed
+      const username = document.getElementById('username').value.trim();
+      const email = document.getElementById('email').value.trim();
       
-      if (firstName) formData.firstName = firstName;
-      if (lastName) formData.lastName = lastName;
-      if (dateOfBirth) formData.dateOfBirth = dateOfBirth;
-      if (country) formData.country = country;
+      // Compare with current user data
+      const currentUsername = this.currentUser?.username || '';
+      const currentEmail = this.currentUser?.email || '';
+      
+      if (username && username !== currentUsername) {
+        formData.username = username;
+      }
+      
+      if (email && email !== currentEmail) {
+        formData.email = email;
+      }
+      
+      // Add optional profile fields if they have values and changed
+      const firstName = document.getElementById('firstName')?.value?.trim();
+      const lastName = document.getElementById('lastName')?.value?.trim();
+      const dateOfBirth = document.getElementById('dob')?.value?.trim();
+      const country = document.getElementById('country')?.value?.trim();
+      
+      const currentFirstName = this.currentUser?.profile?.firstName || '';
+      const currentLastName = this.currentUser?.profile?.lastName || '';
+      const currentDOB = this.currentUser?.profile?.dateOfBirth ? new Date(this.currentUser.profile.dateOfBirth).toISOString().split('T')[0] : '';
+      const currentCountry = this.currentUser?.profile?.country || '';
+      
+      if (firstName && firstName !== currentFirstName) formData.firstName = firstName;
+      if (lastName && lastName !== currentLastName) formData.lastName = lastName;
+      if (dateOfBirth && dateOfBirth !== currentDOB) formData.dateOfBirth = dateOfBirth;
+      if (country && country !== currentCountry) formData.country = country;
 
-      // Add password if changing
+      // Handle password change separately
       const currentPassword = document.getElementById('currentPassword')?.value;
       const newPassword = document.getElementById('newPassword')?.value;
       const confirmPassword = document.getElementById('confirmPassword')?.value;
 
+      let passwordChanged = false;
       if (currentPassword && newPassword) {
         if (newPassword !== confirmPassword) {
           throw new Error('New passwords do not match');
         }
-        formData.currentPassword = currentPassword;
-        formData.newPassword = newPassword;
+        if (newPassword.length < 6) {
+          throw new Error('Password must be at least 6 characters');
+        }
+        
+        // Change password via separate endpoint
+        console.log('[PROFILE-EDIT] Changing password...');
+        const passwordResponse = await window.api.put('/users/password', {
+          currentPassword,
+          newPassword,
+          confirmPassword
+        });
+        
+        if (!passwordResponse.success) {
+          throw new Error(passwordResponse.error || 'Failed to change password');
+        }
+        console.log('[PROFILE-EDIT] Password changed successfully');
+        passwordChanged = true;
       }
 
       // Upload avatar first if selected
@@ -336,15 +370,13 @@ class ProfileEditPage {
         avatarUploaded = true;
       }
 
-      // Check if there are profile changes (not just avatar)
-      const hasProfileChanges = formData.firstName || formData.lastName || 
-                                formData.dateOfBirth || formData.country || 
-                                formData.currentPassword;
+      // Check if there are profile changes (username, email, or other profile fields)
+      const hasProfileChanges = Object.keys(formData).length > 0;
 
-      // Update profile only if there are changes beyond just the avatar
+      // Update profile only if there are changes
       if (hasProfileChanges) {
         console.log('[PROFILE-EDIT] Updating profile data...', formData);
-        const response = await window.apiClient.put('/users/profile', formData);
+        const response = await window.api.put('/users/profile', formData);
 
         if (!response.success) {
           throw new Error(response.error || 'Failed to update profile');
@@ -353,12 +385,15 @@ class ProfileEditPage {
       }
 
       // Show success message
-      if (avatarUploaded && hasProfileChanges) {
-        this.showSuccess('Avatar and profile updated successfully!');
-      } else if (avatarUploaded) {
-        this.showSuccess('Avatar updated successfully!');
-      } else if (hasProfileChanges) {
-        this.showSuccess('Profile updated successfully!');
+      const changes = [];
+      if (avatarUploaded) changes.push('avatar');
+      if (hasProfileChanges) changes.push('profile');
+      if (passwordChanged) changes.push('password');
+      
+      if (changes.length > 0) {
+        this.showSuccess(`Updated: ${changes.join(', ')}`);
+      } else {
+        this.showSuccess('No changes to save');
       }
       
       // Redirect to profile page after 1.5 seconds
@@ -387,7 +422,7 @@ class ProfileEditPage {
       formData.append('avatar', this.selectedAvatarFile);
 
       console.log('[PROFILE-EDIT] Sending POST request to /users/avatar');
-      const response = await window.apiClient.post('/users/avatar', formData);
+      const response = await window.api.post('/users/avatar', formData);
 
       console.log('[PROFILE-EDIT] Avatar upload response:', response);
 
@@ -398,7 +433,6 @@ class ProfileEditPage {
       return response;
     } catch (error) {
       console.error('[PROFILE-EDIT] Avatar upload error:', error);
-      console.error('Upload avatar error:', error);
       throw error;
     }
   }

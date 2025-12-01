@@ -44,11 +44,16 @@ const validateLogin = (req, res, next) => {
  */
 const validateProfileUpdate = (req, res, next) => {
   const schema = Joi.object({
-    firstName: Joi.string().max(50).allow(''),
-    lastName: Joi.string().max(50).allow(''),
-    dateOfBirth: Joi.date().allow(null),
-    country: Joi.string().max(50).allow('')
-  });
+    username: Joi.string().alphanum().min(3).max(20).optional(),
+    email: Joi.string().email().optional(),
+    firstName: Joi.string().max(50).allow('', null).optional(),
+    lastName: Joi.string().max(50).allow('', null).optional(),
+    dateOfBirth: Joi.alternatives().try(
+      Joi.date(),
+      Joi.string().allow('', null)
+    ).optional(),
+    country: Joi.string().max(50).allow('', null).optional()
+  }).unknown(true);
 
   const { error } = schema.validate(req.body);
   if (error) {
