@@ -39,7 +39,8 @@ class ApiClient {
       
       if (!response.ok) {
         const error = await response.json().catch(() => ({ message: 'Network error' }));
-        throw new Error(error.message || `HTTP ${response.status}`);
+        console.error('API Error Response:', error);
+        throw new Error(error.error || error.message || `HTTP ${response.status}`);
       }
 
       const contentType = response.headers.get('content-type');

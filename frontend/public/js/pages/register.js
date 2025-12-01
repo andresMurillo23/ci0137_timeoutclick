@@ -43,7 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const userData = {
         username,
         email,
-        password
+        password,
+        confirmPassword
       };
       
       await window.auth.register(userData);
