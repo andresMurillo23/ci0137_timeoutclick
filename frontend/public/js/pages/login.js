@@ -14,10 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const email = document.getElementById('email').value;
+    const identifier = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    if (!email || !password) {
+    if (!identifier || !password) {
       showError('Please fill in all fields');
       return;
     }
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     hideError();
 
     try {
-      await window.auth.login(email, password);
+      await window.auth.login(identifier, password);
       // Auth manager will redirect automatically
     } catch (error) {
       showError(error.message || 'Login failed. Please try again.');

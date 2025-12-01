@@ -6,16 +6,19 @@ const MongoStore = require('connect-mongo');
  * Supports both local MongoDB and Atlas
  */
 const createSessionConfig = () => {
+  const isDev = process.env.NODE_ENV !== 'production';
+  
   const config = {
     secret: process.env.SESSION_SECRET || 'development-secret',
     resave: false,
     saveUninitialized: false,
     name: process.env.SESSION_NAME || 'sessionId',
     cookie: {
-      secure: process.env.NODE_ENV === 'production',
+      secure: false, // Always false for local development
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+      sameSite: 'lax',
+      path: '/'
     }
   };
 

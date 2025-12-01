@@ -8,6 +8,12 @@ const { hashPassword, comparePassword, generateToken } = require('../utils/bcryp
 
 /**
  * Register new user
+ * @route POST /api/auth/register
+ * @param {string} username - Unique username (3-20 characters)
+ * @param {string} email - Valid email address
+ * @param {string} password - Password (minimum 6 characters)
+ * @param {string} confirmPassword - Password confirmation
+ * @returns {object} User data and authentication token
  */
 const register = async (req, res) => {
   try {
@@ -48,9 +54,13 @@ const register = async (req, res) => {
 
     await user.save();
 
+    // Generate simple session token
+    const sessionToken = Buffer.from(user._id.toString()).toString('base64');
+
     res.status(201).json({
       success: true,
       message: 'User registered successfully. Please verify your email.',
+      token: sessionToken,
       user: {
         id: user._id,
         username: user.username,
@@ -67,6 +77,10 @@ const register = async (req, res) => {
 
 /**
  * Login user
+ * @route POST /api/auth/login
+ * @param {string} identifier - Username or email
+ * @param {string} password - User password
+ * @returns {object} User data and authentication token
  */
 const login = async (req, res) => {
   try {
@@ -87,8 +101,9 @@ const login = async (req, res) => {
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
-
+    
     const isPasswordValid = await comparePassword(password, user.password);
+    
     if (!isPasswordValid) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
@@ -96,12 +111,13 @@ const login = async (req, res) => {
     user.lastActive = new Date();
     await user.save();
 
-    req.session.userId = user._id;
-    req.session.username = user.username;
+    // Generate session token
+    const sessionToken = Buffer.from(user._id.toString()).toString('base64');
 
     res.json({
       success: true,
       message: 'Login successful',
+      token: sessionToken,
       user: {
         id: user._id,
         username: user.username,
@@ -123,30 +139,26 @@ const login = async (req, res) => {
  * Logout user
  */
 const logout = (req, res) => {
-  req.session.destroy((error) => {
-    if (error) {
-      console.error('Logout error:', error);
-      return res.status(500).json({ error: 'Logout failed' });
-    }
-    
-    res.clearCookie('sessionId');
-    res.json({
-      success: true,
-      message: 'Logout successful'
-    });
+  // With token-based auth, logout is handled client-side by removing token from sessionStorage
+  res.json({
+    success: true,
+    message: 'Logout successful'
   });
 };
 
 /**
- * Get current user session info
+ * Get current authenticated user information
+ * @route GET /api/auth/me
+ * @requires Authentication token
+ * @returns {object} Current user data
  */
 const getCurrentUser = async (req, res) => {
   try {
-    if (!req.session.userId) {
+    if (!req.userId) {
       return res.status(401).json({ error: 'Not authenticated' });
     }
 
-    const user = await User.findById(req.session.userId);
+    const user = await User.findById(req.userId);
     if (!user || user.status !== 'active') {
       req.session.destroy();
       return res.status(401).json({ error: 'User not found' });

@@ -24,63 +24,119 @@ class AuthManager {
     });
   }
 
-  // Initialize auth state
+  /**
+   * Initialize authentication state
+   * Checks sessionStorage for existing token and user data
+   * Validates token with backend in background
+   */
   async initialize() {
-    try {
-      const user = await window.api.getCurrentUser();
-      this.currentUser = user;
-      this.isLoggedIn = true;
-      this.notifyAuthChange();
-      return user;
-    } catch (error) {
-      console.log('User not authenticated');
-      this.currentUser = null;
-      this.isLoggedIn = false;
-      this.notifyAuthChange();
-      return null;
+    const token = sessionStorage.getItem('authToken');
+    const storedUser = sessionStorage.getItem('currentUser');
+    const storedIsLoggedIn = sessionStorage.getItem('isLoggedIn');
+    
+    if (token && storedUser && storedIsLoggedIn === 'true') {
+      try {
+        this.currentUser = JSON.parse(storedUser);
+        this.isLoggedIn = true;
+        this.notifyAuthChange();
+        
+        // Verify token validity in background
+        window.api.getCurrentUser()
+          .then(response => {
+            this.currentUser = response.user || response;
+            sessionStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+          })
+          .catch(() => {
+            this.logout();
+          });
+        
+        return this.currentUser;
+      } catch (e) {
+        sessionStorage.clear();
+      }
     }
+    
+    this.currentUser = null;
+    this.isLoggedIn = false;
+    sessionStorage.clear();
+    this.notifyAuthChange();
+    return null;
   }
 
-  // Login
-  async login(email, password) {
+  /**
+   * Authenticate user with credentials
+   * @param {string} identifier - Username or email
+   * @param {string} password - User password
+   * @returns {Promise<object>} Login response with user data and token
+   */
+  async login(identifier, password) {
     try {
-      const response = await window.api.login(email, password);
-      this.currentUser = response.user;
-      this.isLoggedIn = true;
-      this.notifyAuthChange();
-      return response;
+      const response = await window.api.login(identifier, password);
+      
+      if (response.success && response.user && response.token) {
+        this.currentUser = response.user;
+        this.isLoggedIn = true;
+        
+        sessionStorage.setItem('authToken', response.token);
+        sessionStorage.setItem('currentUser', JSON.stringify(response.user));
+        sessionStorage.setItem('isLoggedIn', 'true');
+        
+        this.notifyAuthChange();
+        return response;
+      } else {
+        throw new Error('Invalid login response');
+      }
     } catch (error) {
       console.error('Login failed:', error);
       throw error;
     }
   }
 
-  // Register
+  /**
+   * Register new user
+   * @param {object} userData - User registration data
+   * @param {string} userData.username - Username
+   * @param {string} userData.email - Email address
+   * @param {string} userData.password - Password
+   * @returns {Promise<object>} Registration response with user data and token
+   */
   async register(userData) {
     try {
       const response = await window.api.register(userData);
-      this.currentUser = response.user;
-      this.isLoggedIn = true;
-      this.notifyAuthChange();
-      return response;
+      
+      if (response.success && response.user && response.token) {
+        this.currentUser = response.user;
+        this.isLoggedIn = true;
+        
+        sessionStorage.setItem('authToken', response.token);
+        sessionStorage.setItem('currentUser', JSON.stringify(response.user));
+        sessionStorage.setItem('isLoggedIn', 'true');
+        
+        this.notifyAuthChange();
+        return response;
+      } else {
+        throw new Error('Invalid registration response');
+      }
     } catch (error) {
       console.error('Registration failed:', error);
       throw error;
     }
   }
 
-  // Logout
+  /**
+   * Logout current user
+   * Clears session storage and notifies listeners
+   */
   async logout() {
     try {
       await window.api.logout();
-      this.currentUser = null;
-      this.isLoggedIn = false;
-      this.notifyAuthChange();
     } catch (error) {
       console.error('Logout error:', error);
-      // Clear local state even if server request fails
+    } finally {
+      // Always clear local state
       this.currentUser = null;
       this.isLoggedIn = false;
+      sessionStorage.clear();
       this.notifyAuthChange();
     }
   }

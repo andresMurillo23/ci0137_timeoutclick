@@ -5,18 +5,32 @@
 
 class ApiClient {
   constructor() {
-    this.baseUrl = '/api';
+    // TEMPORAL: Conectar DIRECTAMENTE al backend sin proxy para debugging
+    this.baseUrl = 'http://localhost:3000/api';
     this.defaultHeaders = {
       'Content-Type': 'application/json',
       'Accept': 'application/json'
     };
   }
 
+  /**
+   * Make HTTP request to backend API
+   * Automatically includes authentication token if available
+   * @param {string} endpoint - API endpoint path
+   * @param {object} options - Fetch options
+   * @returns {Promise<object|string>} Response data
+   */
   async request(endpoint, options = {}) {
     const url = `${this.baseUrl}${endpoint}`;
+    const token = sessionStorage.getItem('authToken');
+    
     const config = {
-      credentials: 'include', // Include session cookies
-      headers: { ...this.defaultHeaders, ...options.headers },
+      credentials: 'include',
+      headers: { 
+        ...this.defaultHeaders,
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+        ...options.headers 
+      },
       ...options
     };
 
@@ -29,29 +43,35 @@ class ApiClient {
       }
 
       const contentType = response.headers.get('content-type');
+      
       if (contentType && contentType.includes('application/json')) {
         return await response.json();
       }
       
       return await response.text();
     } catch (error) {
-      console.error('API Request failed:', error);
+      console.error('API request failed:', error);
       throw error;
     }
   }
 
   // Auth methods
-  async login(email, password) {
+  async login(identifier, password) {
     return this.request('/auth/login', {
       method: 'POST',
-      body: JSON.stringify({ email, password })
+      body: JSON.stringify({ identifier, password })
     });
   }
 
   async register(userData) {
+    // Add confirmPassword for backend validation
+    const dataWithConfirm = {
+      ...userData,
+      confirmPassword: userData.password
+    };
     return this.request('/auth/register', {
       method: 'POST',
-      body: JSON.stringify(userData)
+      body: JSON.stringify(dataWithConfirm)
     });
   }
 

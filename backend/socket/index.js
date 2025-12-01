@@ -6,9 +6,8 @@ const GameSocketHandler = require('./gameSocket');
  */
 
 class SocketManager {
-  constructor(io, sessionMiddleware) {
+  constructor(io) {
     this.io = io;
-    this.sessionMiddleware = sessionMiddleware;
     this.gameHandler = new GameSocketHandler(io);
     this.connectedUsers = new Map();
     this.initialize();
@@ -18,19 +17,28 @@ class SocketManager {
    * Initialize Socket.IO middleware and events
    */
   initialize() {
-    this.io.use((socket, next) => {
-      this.sessionMiddleware(socket.request, {}, next);
-    });
-
+    // Authenticate Socket.IO connections using token
     this.io.use(async (socket, next) => {
       try {
-        const session = socket.request.session;
-        if (!session || !session.userId) {
+        const token = socket.handshake.auth.token;
+        
+        if (!token) {
           return next(new Error('Authentication required'));
         }
         
-        socket.userId = session.userId;
-        socket.username = session.username;
+        // Decode token (base64 encoded user ID)
+        const userId = Buffer.from(token, 'base64').toString('utf8');
+        
+        // Get user from database to verify and get username
+        const User = require('../models/User');
+        const user = await User.findById(userId);
+        
+        if (!user || user.status !== 'active') {
+          return next(new Error('Invalid user'));
+        }
+        
+        socket.userId = user._id.toString();
+        socket.username = user.username;
         next();
       } catch (error) {
         next(new Error('Authentication failed'));
@@ -205,21 +213,21 @@ class SocketManager {
 }
 
 /**
- * Initialize Socket.IO with Express session
+ * Initialize Socket.IO without session middleware (using token auth)
  */
-const initializeSocket = (server, sessionMiddleware) => {
+const initializeSocket = (server) => {
   const { Server } = require('socket.io');
   
   const io = new Server(server, {
     cors: {
-      origin: `http://localhost:${process.env.FRONTEND_PORT || 8080}`,
+      origin: `http://localhost:${process.env.FRONTEND_PORT || 5000}`,
       credentials: true
     },
     pingTimeout: 60000,
     pingInterval: 25000
   });
 
-  const socketManager = new SocketManager(io, sessionMiddleware);
+  const socketManager = new SocketManager(io);
   socketManager.startCleanupTask();
 
   return { io, socketManager };

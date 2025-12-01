@@ -36,9 +36,15 @@ class GameManager {
         });
       }
 
+      // Get auth token from sessionStorage
+      const token = sessionStorage.getItem('authToken');
+      
       this.socket = window.io({
         autoConnect: true,
-        withCredentials: true
+        withCredentials: true,
+        auth: {
+          token: token
+        }
       });
 
       this.setupSocketHandlers();

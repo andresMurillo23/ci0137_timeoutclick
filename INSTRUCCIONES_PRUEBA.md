@@ -1,58 +1,76 @@
-# 🧪 Instrucciones para Probar el Sistema TimeoutClick
+# Testing Instructions - TimeoutClick System
 
-## 🚀 Iniciar los Servidores
+## Start the Servers
 
-### Terminal 1 - Backend:
+### Opción 1 - Script Automático (Recomendado):
 ```bash
-cd "e:\UCR\Semestre VIII\Web\rolo\ci0137_timeoutclick\backend"
+start.bat
+```
+
+### Opción 2 - Manual:
+
+**Terminal 1 - Backend:**
+```bash
+cd backend
 node server.js
 ```
 
-### Terminal 2 - Frontend:
+**Terminal 2 - Frontend:**
 ```bash
-cd "e:\UCR\Semestre VIII\Web\rolo\ci0137_timeoutclick\frontend"
-npm start
+cd frontend
+node server.js
 ```
 
-## 🔐 Estado de la Base de Datos
+## Database Status
 
-**IMPORTANTE**: El sistema está funcionando **SIN MongoDB** conectada por ahora.
+**MONGODB CONNECTED**: System running with local MongoDB.
 
-- ✅ **Funciona perfectamente** para desarrollo y pruebas
-- ⚠️ **Los datos se guardan en memoria** (se pierden al reiniciar el servidor)
-- 🔄 **Cada reinicio del backend** borra todos los usuarios registrados
+- Data persists in MongoDB
+- Test user already created
+- SIMPLIFIED authentication system: Now uses tokens in sessionStorage (no cookies)
 
-## 👥 Cómo Probar el Sistema
+## Recent Changes - Simplified Authentication
 
-### Paso 1: Acceder al Sistema
-1. Abrir navegador en: `http://localhost:5000`
-2. Ir a Register: `http://localhost:5000/pages/register.html`
+**NEW AUTHENTICATION SYSTEM**:
+- Cookies removed: Now uses Authorization header with token
+- SessionStorage: Token saved in browser sessionStorage
+- Simpler: Only bcrypt for passwords + token in sessionStorage
+- No session dependencies: No more express-session or MongoStore
 
-### Paso 2: Crear Usuarios de Prueba
-Registra al menos 2 usuarios para poder jugar:
+## Test Credentials
 
-**Usuario 1:**
-- Username: `player1`
-- Email: `player1@test.com`
-- Password: `123456`
+**Usuario Existente:**
+- Username/Email: `testuser` o `test@timeoutclick.com`
+- Password: `test123`
 
-**Usuario 2:**
-- Username: `player2`  
-- Email: `player2@test.com`
-- Password: `123456`
+## How to Test the System
 
-### Paso 3: Hacer Login y Jugar
-1. Hacer login con uno de los usuarios
-2. **PROBLEMA ACTUAL**: El sistema de amigos requiere que agregues amigos primero
-3. **SOLUCIÓN TEMPORAL**: Necesitamos implementar la página de "Add Friends"
+### Step 1: Acceder al Login
+1. Abrir navegador en: `http://localhost:5000/pages/login.html`
+2. Hacer login con las credenciales de arriba: `testuser` / `test123`
+3. **NOTA**: Abre las DevTools (F12) y ve a la pestaña "Application" > "Session Storage" para ver el token guardado
 
-## 🔧 Próximos Pasos Inmediatos
+### Step 2: Verificar que Funciona
+Después de hacer login deberías:
+- ✅ Ver el token en sessionStorage (key: `authToken`)
+- ✅ Ser redirigido a `homeLogged.html`
+- ✅ El botón NO debe quedarse pegado en "LOGGING IN..."
+
+### Step 3: (Opcional) Registrar Más Usuarios
+Si deseas crear más usuarios:
+- Ve a: `http://localhost:5000/pages/register.html`
+- Username: tu elección (3-20 caracteres)
+- Email: tu elección (formato válido)
+- Password: mínimo 6 caracteres
+- **IMPORTANTE**: El registro también te dará un token automáticamente
+
+## Immediate Next Steps
 
 1. **Implementar página de agregar amigos** para poder desafiar usuarios
 2. **Opcional**: Conectar MongoDB local para persistir datos
 3. **Probar el juego** en tiempo real entre dos usuarios
 
-## 🎮 URLs del Sistema
+## System URLs
 
 - **Home**: http://localhost:5000
 - **Register**: http://localhost:5000/pages/register.html  
@@ -60,8 +78,68 @@ Registra al menos 2 usuarios para poder jugar:
 - **Home Logged**: http://localhost:5000/pages/homeLogged.html
 - **Add Friend**: http://localhost:5000/pages/addFriend.html (por implementar)
 
-## 🐛 Limitaciones Actuales
+## Debugging - Detailed Logs Enabled
 
-- **Sin base de datos**: Datos en memoria únicamente
-- **Sin sistema de amigos funcional**: Falta página para agregar amigos
-- **Quick Match no implementado**: Solo desafíos entre amigos
+**IMPORTANTE**: Ahora hay logs MUY DETALLADOS en consola. Abre DevTools (F12) ANTES de hacer login.
+
+### Qué deberías ver en la consola al hacer login:
+
+**FRONTEND (Consola del navegador):**
+```
+🔵 [AUTH-MANAGER] Iniciando login para: testuser
+🌐 [API-CLIENT] Request a /auth/login, token: NO TOKEN
+🌐 [API-CLIENT] Headers: {Content-Type: 'application/json', ...}
+🔵 [AUTH-MANAGER] Respuesta recibida: {success: true, token: '...', user: {...}}
+🔵 [AUTH-MANAGER] Token recibido: [el token]
+🔵 [AUTH-MANAGER] User recibido: {username: 'testuser', ...}
+✅ [AUTH-MANAGER] Token guardado en sessionStorage: [el token]
+✅ [AUTH-MANAGER] Login completado exitosamente
+```
+
+**BACKEND (Terminal donde corre el backend):**
+```
+🔑 [LOGIN] Intentando login...
+🔑 [LOGIN] Identifier: testuser
+🔑 [LOGIN] Usuario encontrado: testuser
+🔑 [LOGIN] Password válido: true
+✅ [LOGIN] Token generado: [token]...
+✅ [LOGIN] UserId: [id]
+✅ [LOGIN] Enviando respuesta: {success: true, ...}
+```
+
+### Si ves el 401 en /api/auth/me:
+
+Busca estos logs en la consola:
+```
+🔄 [AUTH-MANAGER] Inicializando estado de autenticación...
+🔄 [AUTH-MANAGER] Token en storage: [token]...
+🌐 [API-CLIENT] Request a /auth/me, token: [token]...
+🔒 [AUTH-MIDDLEWARE] Verificando autenticación
+🔒 [AUTH-MIDDLEWARE] Authorization header: Bearer [token]
+```
+
+**COPIA Y PEGA TODO LO QUE VES EN LA CONSOLA** si sigue fallando
+
+---
+
+## ✅ SERVIDORES CORRIENDO
+
+- ✅ Backend: http://localhost:3000 (verificado con logs de prueba)
+- ✅ Frontend: http://localhost:5000
+
+**El backend SÍ responde** - lo probamos y devuelve el token correctamente.
+
+**Ahora prueba de nuevo el login** en: http://localhost:5000/pages/login.html
+
+Deberías ver MUCHOS MÁS logs en la consola del navegador incluyendo:
+- `🌐 [API-CLIENT] Haciendo fetch a: /api/auth/login`
+- `🌐 [API-CLIENT] Response recibido: 200 OK`
+- `✅ [API-CLIENT] JSON parseado: {success: true, token: '...', user: {...}}`
+
+Si no ves esos logs o si dice error, copia TODO y pégalo aquí.
+
+## Current Limitations
+
+- **Database**: MongoDB working correctly
+- **Friends system**: Missing page to add friends
+- **Quick Match**: Not implemented - only challenges between friends

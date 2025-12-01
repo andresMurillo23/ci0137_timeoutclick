@@ -4,7 +4,6 @@ const { createServer } = require('http');
 require('dotenv').config();
 
 const connectDB = require('./config/database');
-const sessionConfig = require('./config/session');
 const routes = require('./routes');
 
 const app = express();
@@ -12,21 +11,20 @@ const server = createServer(app);
 
 connectDB();
 
-// Initialize Socket.IO with session support
+// Initialize Socket.IO (no session middleware needed)
 const { initializeSocket } = require('./socket');
-const io = initializeSocket(server, sessionConfig);
+const io = initializeSocket(server);
 
 // Make io accessible to other modules
 app.set('socketio', io);
 
 app.use(cors({
-  origin: `http://localhost:${process.env.FRONTEND_PORT || 8080}`,
+  origin: `http://localhost:${process.env.FRONTEND_PORT || 5000}`,
   credentials: true
 }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(sessionConfig);
 
 app.use('/api', routes);
 
