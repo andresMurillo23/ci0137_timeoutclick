@@ -3,10 +3,6 @@
  * Connects to PUT /api/users/profile and POST /api/users/avatar
  */
 
-// Use global instances from window
-const apiClient = window.apiClient || window.api;
-const authManager = window.authManager;
-
 class ProfileEditPage {
   constructor() {
     this.currentUser = null;
@@ -20,7 +16,8 @@ class ProfileEditPage {
   async init() {
     try {
       // Check authentication
-      if (!authManager.isAuthenticated()) {
+      if (!window.authManager || !window.authManager.isAuthenticated()) {
+        console.log('[PROFILE-EDIT] Not authenticated, redirecting to login');
         window.location.href = '/pages/login.html';
         return;
       }
@@ -45,7 +42,7 @@ class ProfileEditPage {
    */
   async loadUserData() {
     try {
-      const response = await apiClient.get('/auth/me');
+      const response = await window.apiClient.get('/auth/me');
       
       if (response.success) {
         this.currentUser = response.user;
@@ -63,25 +60,35 @@ class ProfileEditPage {
    */
   async loadUserStats() {
     try {
-      const response = await apiClient.get(`/users/${this.currentUser.id}/stats`);
+      const response = await window.apiClient.get(`/users/${this.currentUser.id}/stats`);
       
-      if (response.success) {
-        this.stats = response.stats;
-      } else {
+      if (response.success && response.stats) {
+        // Map backend stats to expected format
         this.stats = {
-          wins: 0,
-          losses: 0,
-          winRate: 0
+          wins: response.stats.gamesWon || 0,
+          losses: (response.stats.gamesPlayed || 0) - (response.stats.gamesWon || 0),
+          winRate: response.stats.winRate || 0,
+          friendsCount: this.currentUser.friendsCount || 0
         };
+      } else {
+        this.stats = this.getDefaultStats();
       }
     } catch (error) {
-      console.error('Load user stats error:', error);
-      this.stats = {
-        wins: 0,
-        losses: 0,
-        winRate: 0
-      };
+      console.warn('[PROFILE-EDIT] Could not load stats, using defaults:', error.message);
+      this.stats = this.getDefaultStats();
     }
+  }
+
+  /**
+   * Get default stats when loading fails
+   */
+  getDefaultStats() {
+    return {
+      wins: 0,
+      losses: 0,
+      winRate: 0,
+      friendsCount: 0
+    };
   }
 
   /**
@@ -91,6 +98,24 @@ class ProfileEditPage {
     // Account fields
     document.getElementById('username').value = this.currentUser.username || '';
     document.getElementById('email').value = this.currentUser.email || '';
+    
+    // User ID (readonly)
+    const userIdField = document.getElementById('userId');
+    if (userIdField && this.currentUser.id) {
+      userIdField.value = this.formatUserId(this.currentUser.id);
+    }
+    
+    // Member since (readonly)
+    const memberSinceField = document.getElementById('memberSince');
+    if (memberSinceField && this.currentUser.createdAt) {
+      memberSinceField.value = this.formatDate(this.currentUser.createdAt);
+    }
+    
+    // Email verification status (readonly)
+    const verificationField = document.getElementById('verification');
+    if (verificationField) {
+      verificationField.value = this.currentUser.emailVerified ? 'Email verified' : 'Not verified';
+    }
 
     // Personal info fields (if exists)
     if (this.currentUser.profile) {
@@ -110,7 +135,7 @@ class ProfileEditPage {
     // Update avatar preview
     const avatarImg = document.getElementById('avatarPreview');
     if (avatarImg) {
-      avatarImg.src = this.currentUser.avatar || '/assets/images/default-avatar.png';
+      avatarImg.src = this.getAvatarUrl(this.currentUser.avatar);
     }
   }
 
@@ -147,6 +172,28 @@ class ProfileEditPage {
         winRateProgress.style.width = `${winRatePercent}%`;
       }
     }
+    
+    // Fill GAME STATS panel
+    const winsLossesEl = document.getElementById('winsLosses');
+    if (winsLossesEl) {
+      winsLossesEl.textContent = `${this.stats.wins} / ${this.stats.losses}`;
+    }
+    
+    const friendsCountEl = document.getElementById('friendsCount');
+    if (friendsCountEl) {
+      friendsCountEl.textContent = this.stats.friendsCount || 0;
+    }
+    
+    const rankEl = document.getElementById('rank');
+    if (rankEl) {
+      rankEl.textContent = this.calculateRank();
+    }
+    
+    const winRateEl = document.getElementById('winRate');
+    if (winRateEl) {
+      const winRatePercent = Math.round(this.stats.winRate * 100);
+      winRateEl.textContent = `${winRatePercent}%`;
+    }
   }
 
   /**
@@ -156,20 +203,25 @@ class ProfileEditPage {
     // Form submission
     const form = document.getElementById('profileEditForm');
     if (form) {
-      form.addEventListener('submit', (e) => this.handleFormSubmit(e));
+      form.addEventListener('submit', (e) => {
+        console.log('[PROFILE-EDIT] Form submitted');
+        this.handleFormSubmit(e);
+      });
     }
 
     // Avatar upload
-    const avatarInput = document.getElementById('avatarUpload');
+    const avatarInput = document.getElementById('avatarFile');
     if (avatarInput) {
       avatarInput.addEventListener('change', (e) => this.handleAvatarSelect(e));
     }
 
-    // Cancel button
-    const cancelBtn = document.querySelector('.btn-cancel');
-    if (cancelBtn) {
-      cancelBtn.addEventListener('click', () => {
-        window.location.href = '/pages/profile.html';
+    // Update filename display when file is selected
+    if (avatarInput) {
+      avatarInput.addEventListener('change', (e) => {
+        const filenameSpan = document.getElementById('avatarFilename');
+        if (filenameSpan && e.target.files[0]) {
+          filenameSpan.textContent = e.target.files[0].name;
+        }
       });
     }
 
@@ -197,13 +249,18 @@ class ProfileEditPage {
   handleAvatarSelect(event) {
     const file = event.target.files[0];
     
-    if (!file) return;
+    if (!file) {
+      this.selectedAvatarFile = null;
+      return;
+    }
 
     // Validate file type
-    const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
     if (!validTypes.includes(file.type)) {
       this.showError('Please select a valid image file (JPEG, PNG, or GIF)');
       event.target.value = '';
+      const filenameSpan = document.getElementById('avatarFilename');
+      if (filenameSpan) filenameSpan.textContent = 'No file chosen';
       return;
     }
 
@@ -212,10 +269,13 @@ class ProfileEditPage {
     if (file.size > maxSize) {
       this.showError('Image file size must be less than 5MB');
       event.target.value = '';
+      const filenameSpan = document.getElementById('avatarFilename');
+      if (filenameSpan) filenameSpan.textContent = 'No file chosen';
       return;
     }
 
     this.selectedAvatarFile = file;
+    console.log('[PROFILE-EDIT] Avatar file selected:', file.name, file.type, file.size);
 
     // Preview the selected image
     const reader = new FileReader();
@@ -223,6 +283,7 @@ class ProfileEditPage {
       const preview = document.getElementById('avatarPreview');
       if (preview) {
         preview.src = e.target.result;
+        console.log('[PROFILE-EDIT] Avatar preview updated');
       }
     };
     reader.readAsDataURL(file);
@@ -234,22 +295,31 @@ class ProfileEditPage {
   async handleFormSubmit(event) {
     event.preventDefault();
 
-    const submitBtn = event.target.querySelector('.btn-save');
-    const originalBtnText = submitBtn.textContent;
+    const submitBtn = document.getElementById('saveBtn');
+    const originalBtnText = submitBtn ? submitBtn.textContent : 'SAVE';
 
     try {
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'SAVING...';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'SAVING...';
+      }
 
-      // Get form data
+      // Get form data (only include fields that have values)
       const formData = {
         username: document.getElementById('username').value,
-        email: document.getElementById('email').value,
-        firstName: document.getElementById('firstName')?.value || '',
-        lastName: document.getElementById('lastName')?.value || '',
-        dateOfBirth: document.getElementById('dob')?.value || '',
-        country: document.getElementById('country')?.value || ''
+        email: document.getElementById('email').value
       };
+      
+      // Add optional fields only if they have values
+      const firstName = document.getElementById('firstName')?.value;
+      const lastName = document.getElementById('lastName')?.value;
+      const dateOfBirth = document.getElementById('dob')?.value;
+      const country = document.getElementById('country')?.value;
+      
+      if (firstName) formData.firstName = firstName;
+      if (lastName) formData.lastName = lastName;
+      if (dateOfBirth) formData.dateOfBirth = dateOfBirth;
+      if (country) formData.country = country;
 
       // Add password if changing
       const currentPassword = document.getElementById('currentPassword')?.value;
@@ -264,30 +334,52 @@ class ProfileEditPage {
         formData.newPassword = newPassword;
       }
 
-      // Update profile
-      const response = await apiClient.put('/users/profile', formData);
-
-      if (!response.success) {
-        throw new Error(response.error || 'Failed to update profile');
-      }
-
-      // Upload avatar if selected
+      // Upload avatar first if selected
+      let avatarUploaded = false;
       if (this.selectedAvatarFile) {
+        console.log('[PROFILE-EDIT] Uploading avatar...');
         await this.uploadAvatar();
+        console.log('[PROFILE-EDIT] Avatar uploaded successfully');
+        avatarUploaded = true;
       }
 
-      this.showSuccess('Profile updated successfully!');
+      // Check if there are profile changes (not just avatar)
+      const hasProfileChanges = formData.firstName || formData.lastName || 
+                                formData.dateOfBirth || formData.country || 
+                                formData.currentPassword;
+
+      // Update profile only if there are changes beyond just the avatar
+      if (hasProfileChanges) {
+        console.log('[PROFILE-EDIT] Updating profile data...', formData);
+        const response = await window.apiClient.put('/users/profile', formData);
+
+        if (!response.success) {
+          throw new Error(response.error || 'Failed to update profile');
+        }
+        console.log('[PROFILE-EDIT] Profile updated successfully');
+      }
+
+      // Show success message
+      if (avatarUploaded && hasProfileChanges) {
+        this.showSuccess('Avatar and profile updated successfully!');
+      } else if (avatarUploaded) {
+        this.showSuccess('Avatar updated successfully!');
+      } else if (hasProfileChanges) {
+        this.showSuccess('Profile updated successfully!');
+      }
       
-      // Redirect to profile page after 1 second
+      // Redirect to profile page after 1.5 seconds
       setTimeout(() => {
         window.location.href = '/pages/profile.html';
-      }, 1000);
+      }, 1500);
 
     } catch (error) {
-      console.error('Form submit error:', error);
+      console.error('[PROFILE-EDIT] Form submit error:', error);
       this.showError(error.message || 'Failed to update profile');
-      submitBtn.disabled = false;
-      submitBtn.textContent = originalBtnText;
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+      }
     }
   }
 
@@ -296,24 +388,35 @@ class ProfileEditPage {
    */
   async uploadAvatar() {
     try {
+      console.log('[PROFILE-EDIT] Uploading avatar:', this.selectedAvatarFile.name);
+      
       const formData = new FormData();
       formData.append('avatar', this.selectedAvatarFile);
 
-      const response = await apiClient.post('/users/avatar', formData, {
-        headers: {
-          // Let browser set Content-Type for multipart/form-data
-        }
-      });
+      console.log('[PROFILE-EDIT] Sending POST request to /users/avatar');
+      const response = await window.apiClient.post('/users/avatar', formData);
+
+      console.log('[PROFILE-EDIT] Avatar upload response:', response);
 
       if (!response.success) {
-        throw new Error('Failed to upload avatar');
+        throw new Error(response.error || 'Failed to upload avatar');
       }
 
       return response;
     } catch (error) {
+      console.error('[PROFILE-EDIT] Avatar upload error:', error);
       console.error('Upload avatar error:', error);
       throw error;
     }
+  }
+
+  /**
+   * Get full avatar URL from relative path
+   */
+  getAvatarUrl(avatarPath) {
+    if (!avatarPath) return '/assets/images/profile.jpg';
+    if (avatarPath.startsWith('http')) return avatarPath;
+    return `http://localhost:3000/uploads/${avatarPath}`;
   }
 
   /**
@@ -328,6 +431,28 @@ class ProfileEditPage {
     if (wins >= 10) return 'Silver';
     if (wins >= 1) return 'Bronze';
     return 'Unranked';
+  }
+
+  /**
+   * Format user ID for display
+   */
+  formatUserId(id) {
+    if (!id) return 'N/A';
+    const shortId = id.substring(0, 8).toUpperCase();
+    return `#${shortId.substring(0, 4)}-${shortId.substring(4)}`;
+  }
+
+  /**
+   * Format date for display
+   */
+  formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      month: '2-digit', 
+      day: '2-digit', 
+      year: 'numeric' 
+    });
   }
 
   /**
@@ -374,7 +499,12 @@ class ProfileEditPage {
 }
 
 // Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  // Wait for authManager to initialize if not already done
+  if (window.authManager && !window.authManager.isLoggedIn) {
+    await window.authManager.initialize();
+  }
+  
   const profileEditPage = new ProfileEditPage();
   profileEditPage.init();
 });

@@ -128,7 +128,7 @@ class ProfilePage {
     // Update avatar (right side panel)
     const avatarImg = document.querySelector('.preview img');
     if (avatarImg) {
-      avatarImg.src = this.currentUser.avatar || '/assets/images/profile.jpg';
+      avatarImg.src = this.getAvatarUrl(this.currentUser.avatar);
       avatarImg.alt = `${this.currentUser.username}'s avatar`;
     }
 
@@ -247,6 +247,16 @@ class ProfilePage {
   handleDeleteAccount() {
     // Redirect to delete profile page
     window.location.href = '/pages/deleteProfile.html';
+  }
+
+  /**
+   * Get full avatar URL from relative path
+   */
+  getAvatarUrl(avatarPath) {
+    if (!avatarPath) return '/assets/images/profile.jpg';
+    if (avatarPath.startsWith('http')) return avatarPath;
+    // Avatar paths from backend are like 'avatars/avatar_xxx.png'
+    return `http://localhost:3000/uploads/${avatarPath}`;
   }
 
   /**

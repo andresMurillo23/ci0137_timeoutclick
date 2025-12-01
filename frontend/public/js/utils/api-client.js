@@ -24,13 +24,34 @@ class ApiClient {
     const url = `${this.baseUrl}${endpoint}`;
     const token = sessionStorage.getItem('authToken');
     
+    // Check if body is FormData - if so, don't set Content-Type
+    const isFormData = options.body instanceof FormData;
+    
+    // Build headers
+    const headers = {};
+    
+    // Only add default Content-Type if NOT FormData
+    if (!isFormData) {
+      Object.assign(headers, this.defaultHeaders);
+    }
+    
+    // Always add auth token if available
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    // Add any additional headers (but skip Content-Type for FormData)
+    if (options.headers) {
+      Object.keys(options.headers).forEach(key => {
+        if (!(isFormData && key === 'Content-Type')) {
+          headers[key] = options.headers[key];
+        }
+      });
+    }
+    
     const config = {
       credentials: 'include',
-      headers: { 
-        ...this.defaultHeaders,
-        ...(token && { 'Authorization': `Bearer ${token}` }),
-        ...options.headers 
-      },
+      headers,
       ...options
     };
 
@@ -78,7 +99,6 @@ class ApiClient {
     return this.request(endpoint, {
       method: 'POST',
       body: isFormData ? data : JSON.stringify(data),
-      headers: isFormData ? {} : undefined,
       ...options
     });
   }

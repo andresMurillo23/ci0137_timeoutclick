@@ -31,7 +31,8 @@ const avatarStorage = multer.diskStorage({
     cb(null, avatarsPath);
   },
   filename: (req, file, cb) => {
-    const userId = req.session.userId;
+    // userId is set by requireAuth middleware in req.session.userId
+    const userId = req.session?.userId || 'unknown';
     const extension = path.extname(file.originalname).toLowerCase();
     const filename = `avatar_${userId}_${Date.now()}${extension}`;
     cb(null, filename);

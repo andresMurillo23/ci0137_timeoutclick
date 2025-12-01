@@ -64,7 +64,7 @@ router.put('/settings', requireAuth, validateSettingsUpdate, updateSettings);
  * @desc    Upload user avatar
  * @access  Private
  */
-router.post('/avatar', validateUserAuth, handleAvatarUpload, uploadAvatar);
+router.post('/avatar', requireAuth, handleAvatarUpload, uploadAvatar);
 
 /**
  * @route   PUT /api/users/password

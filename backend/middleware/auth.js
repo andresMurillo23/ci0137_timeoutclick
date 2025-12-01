@@ -17,6 +17,13 @@ const requireAuth = (req, res, next) => {
     const token = authHeader.substring(7);
     const userId = Buffer.from(token, 'base64').toString('utf8');
     req.userId = userId;
+    
+    // Also set in session for compatibility with controllers expecting req.session.userId
+    if (!req.session) {
+      req.session = {};
+    }
+    req.session.userId = userId;
+    
     return next();
   } catch (error) {
     return res.status(401).json({ error: 'Invalid token' });
