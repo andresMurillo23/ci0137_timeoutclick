@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { requireAuth, optionalAuth } = require('../middleware/auth');
+const { validateRegistration, validateLogin } = require('../middleware/validation');
 const {
   register,
   login,
@@ -21,14 +22,14 @@ const {
  * @desc    Register new user
  * @access  Public
  */
-router.post('/register', register);
+router.post('/register', validateRegistration, register);
 
 /**
  * @route   POST /api/auth/login
  * @desc    Login user and create session
  * @access  Public
  */
-router.post('/login', login);
+router.post('/login', validateLogin, login);
 
 /**
  * @route   POST /api/auth/logout

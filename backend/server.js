@@ -23,6 +23,8 @@ app.use(sessionConfig);
 
 app.use('/api', routes);
 
+app.use('/uploads', express.static('uploads'));
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Something went wrong!' });
