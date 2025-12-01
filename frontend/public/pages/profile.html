@@ -19,12 +19,12 @@
 
   <!-- Quick stats strip -->
   <div class="stats" aria-label="Quick stats">
-    <div class="stat"><span class="k">RANK</span><span class="v">Silver II</span></div>
-    <div class="stat"><span class="k">WINS</span><span class="v">45</span></div>
-    <div class="stat"><span class="k">LOSSES</span><span class="v">32</span></div>
+    <div class="stat"><span class="k">RANK</span><span class="v">...</span></div>
+    <div class="stat"><span class="k">WINS</span><span class="v">...</span></div>
+    <div class="stat"><span class="k">LOSSES</span><span class="v">...</span></div>
     <div class="stat">
       <div class="k">WIN RATE</div>
-      <div class="progress" aria-label="Win rate"><i style="width:58%"></i></div>
+      <div class="progress" aria-label="Win rate"><i style="width:0%"></i></div>
     </div>
   </div>
 
@@ -36,13 +36,13 @@
         <div class="body">
           <div class="kv-grid">
             <div class="kv">
-              <div class="label">Username:</div><div class="value">exampleUser12</div>
-              <div class="label">Email:</div>   <div class="value">email@example.com</div>
-              <div class="label">User ID:</div> <div class="value">#A1F3-92D</div>
+              <div class="label">Username:</div><div class="value">...</div>
+              <div class="label">Email:</div>   <div class="value">...</div>
+              <div class="label">User ID:</div> <div class="value">...</div>
             </div>
             <div class="kv">
-              <div class="label">Member Since:</div> <div class="value">12/08/2025</div>
-              <div class="label">Verification:</div> <div class="value">Verified</div>
+              <div class="label">Member Since:</div> <div class="value">...</div>
+              <div class="label">Verification:</div> <div class="value">...</div>
               <div class="label">Password:</div>     <div class="value">•••••••••••</div>
             </div>
           </div>
@@ -57,12 +57,12 @@
         <div class="body">
           <div class="kv-grid">
             <div class="kv">
-              <div class="label">Wins / Losses:</div>  <div class="value">45 / 32</div>
-              <div class="label">Friends:</div>        <div class="value">27</div>
+              <div class="label">Wins / Losses:</div>  <div class="value">...</div>
+              <div class="label">Friends:</div>        <div class="value">...</div>
             </div>
             <div class="kv">
-              <div class="label">Rank:</div>           <div class="value">Silver II</div>
-              <div class="label">Win Rate:</div>       <div class="value">58%</div>
+              <div class="label">Rank:</div>           <div class="value">...</div>
+              <div class="label">Win Rate:</div>       <div class="value">...</div>
             </div>
           </div>
         </div>
@@ -71,7 +71,7 @@
 
     <!-- Avatar / preview side panel -->
     <aside class="panel preview" aria-label="User panel / avatar">
-      <img src="/assets/images/profile.jpg" alt="User avatar">
+      <img src="/assets/images/profile.jpg" alt="Loading..." id="profileAvatar">
     </aside>
 
     <!-- Primary action -->
@@ -81,6 +81,13 @@
   </div>
 </main>
 
+<!-- Required utilities (load first) -->
+<script src="/js/utils/api-client.js"></script>
+<script src="/js/utils/auth-manager.js"></script>
+
 <!-- Layout sync + footer -->
 <script src="/js/utils/syncPreviewHeight.js" defer></script>
 <script src="/js/partials/footer.js"></script>
+
+<!-- Profile page logic (load last) -->
+<script src="/js/pages/profile.js"></script>

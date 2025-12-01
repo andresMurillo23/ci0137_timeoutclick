@@ -171,11 +171,15 @@ const getCurrentUser = async (req, res) => {
         username: user.username,
         email: user.email,
         avatar: user.avatar,
+        emailVerified: user.isEmailVerified,
         isEmailVerified: user.isEmailVerified,
         gameStats: user.gameStats,
         winRate: user.winRate,
         settings: user.settings,
-        profile: user.profile
+        profile: user.profile,
+        createdAt: user.createdAt,
+        lastActive: user.lastActive,
+        friendsCount: 0
       }
     });
 

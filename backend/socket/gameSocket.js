@@ -163,6 +163,11 @@ class GameSocketHandler {
         message: 'Game started! Click STOP when you think you\'ve reached the goal time!'
       });
 
+      // Emit goal time separately for frontend compatibility
+      this.io.to(`game_${gameId}`).emit('goal_time_set', {
+        goalTime: game.goalTime
+      });
+
     } catch (error) {
       console.error('Start gameplay error:', error);
     }
@@ -213,6 +218,14 @@ class GameSocketHandler {
       await game.save();
 
       socket.emit('click_registered', {
+        playerId: userId,
+        clickTime: timeDifference,
+        goalTime: game.goalTime,
+        difference: Math.abs(timeDifference - game.goalTime)
+      });
+
+      // Emit player_clicked event for frontend compatibility
+      this.io.to(`game_${gameId}`).emit('player_clicked', {
         playerId: userId,
         clickTime: timeDifference,
         goalTime: game.goalTime,

@@ -24,6 +24,11 @@ class AuthManager {
     });
   }
 
+  // Check if user is authenticated
+  isAuthenticated() {
+    return this.isLoggedIn && !!this.currentUser && !!sessionStorage.getItem('authToken');
+  }
+
   /**
    * Initialize authentication state
    * Checks sessionStorage for existing token and user data
@@ -179,6 +184,7 @@ class AuthManager {
 
 // Global auth manager instance
 window.auth = new AuthManager();
+window.authManager = window.auth; // Alias for compatibility
 
 // Initialize auth on page load
 document.addEventListener('DOMContentLoaded', () => {

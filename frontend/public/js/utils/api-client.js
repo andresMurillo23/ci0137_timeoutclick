@@ -56,6 +56,55 @@ class ApiClient {
     }
   }
 
+  /**
+   * Generic GET request
+   * @param {string} endpoint - API endpoint
+   * @returns {Promise<object>} Response data
+   */
+  async get(endpoint) {
+    return this.request(endpoint, { method: 'GET' });
+  }
+
+  /**
+   * Generic POST request
+   * @param {string} endpoint - API endpoint
+   * @param {object|FormData} data - Request body
+   * @param {object} options - Additional options
+   * @returns {Promise<object>} Response data
+   */
+  async post(endpoint, data, options = {}) {
+    const isFormData = data instanceof FormData;
+    
+    return this.request(endpoint, {
+      method: 'POST',
+      body: isFormData ? data : JSON.stringify(data),
+      headers: isFormData ? {} : undefined,
+      ...options
+    });
+  }
+
+  /**
+   * Generic PUT request
+   * @param {string} endpoint - API endpoint
+   * @param {object} data - Request body
+   * @returns {Promise<object>} Response data
+   */
+  async put(endpoint, data) {
+    return this.request(endpoint, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    });
+  }
+
+  /**
+   * Generic DELETE request
+   * @param {string} endpoint - API endpoint
+   * @returns {Promise<object>} Response data
+   */
+  async delete(endpoint) {
+    return this.request(endpoint, { method: 'DELETE' });
+  }
+
   // Auth methods
   async login(identifier, password) {
     return this.request('/auth/login', {
@@ -167,5 +216,15 @@ class ApiClient {
   }
 }
 
-// Global API instance
-window.api = new ApiClient();
+// Create singleton instance
+const apiClient = new ApiClient();
+
+// Export for both ES6 modules and regular scripts
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { apiClient, ApiClient };
+}
+
+// Global instances for backward compatibility and ES6 imports
+window.api = apiClient;
+window.apiClient = apiClient;
+window.ApiClient = ApiClient;
