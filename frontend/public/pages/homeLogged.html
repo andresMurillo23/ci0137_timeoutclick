@@ -1,5 +1,7 @@
 <script src="/js/partials/head.js"></script>
 <script src="/js/partials/navbar.js"></script>
+<script src="/js/utils/api-client.js"></script>
+<script src="/js/utils/auth-manager.js"></script>
 
 <script>window.NAV_ACTIVE = "home";</script>
 <script src="/js/utils/activeTab.js" defer></script>
@@ -7,6 +9,7 @@
 <!-- Page styles -->
 <link rel="stylesheet" href="/css/pages/home-logged-style.css">
 <link rel="stylesheet" href="/css/pages/footer-sitemap.css">
+<link rel="stylesheet" href="/css/components/modals.css">
 
 <main class="poster">
   <h2 class="titles">FIND DUELS</h2>
@@ -15,15 +18,25 @@
     <!-- Main actions for logged users -->
     <section class="content home">
       <div class="duel-buttons">
-        <!-- Go to matchmaking -->
-        <button type="button" class="btn btn--secondary"
-                onclick="window.location.href='/pages/challenge.html'">FIND MATCH</button>
+        <!-- Challenge friends -->
+        <button type="button" class="btn btn--secondary" id="challengeFriendsBtn">CHALLENGE FRIENDS</button>
+        <!-- Quick match -->
+        <button type="button" class="btn btn--secondary" id="quickMatchBtn">QUICK MATCH</button>
         <!-- Read how to play -->
         <button type="button" class="btn btn--primary-brown"
                 onclick="window.location.href='/pages/instructions.html'">INSTRUCTIONS</button>
         <!-- Public leaderboard -->
         <button type="button" class="btn btn--primary-brown"
                 onclick="window.location.href='/pages/bestPlayers.html'">BEST PLAYERS</button>
+      </div>
+      
+      <!-- Friends list for challenges -->
+      <div id="friendsListModal" class="modal" style="display: none;">
+        <div class="modal-content">
+          <h3>Challenge a Friend</h3>
+          <div id="friendsList"></div>
+          <button type="button" class="btn btn--cancel" onclick="closeFriendsModal()">Cancel</button>
+        </div>
       </div>
     </section>
   </div>
@@ -38,3 +51,4 @@
 
 <!-- Shared footer scripts -->
 <script src="/js/partials/footer.js"></script>
+<script src="/js/pages/homeLogged.js"></script>

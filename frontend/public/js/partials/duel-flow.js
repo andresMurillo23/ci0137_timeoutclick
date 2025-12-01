@@ -5,6 +5,9 @@ const historyList = document.getElementById("historyList");
 const scoreValue = document.getElementById("scoreValue");
 const roundNumber = document.getElementById("roundNumber");
 const goalValue = document.getElementById("goalValue");
+const opponentName = document.getElementById("opponentName");
+const player1Name = document.getElementById("player1");
+const player2Name = document.getElementById("player2");
 
 // Popups
 const winnerPopup = document.getElementById("winnerPopup");
@@ -19,36 +22,136 @@ const rematchBtn = document.getElementById("rematchBtn");
 const returnHomeBtn = document.getElementById("returnHomeBtn");
 const surrenderBtn = document.getElementById("surrenderBtn");
 
-// State
-let round = 1;
-const totalRounds = 3;
-let score1 = 0;
-let score2 = 0;
-let goalTime = 4;
-let isCounting = false;
+// Game state
+let currentGame = null;
+let currentUser = null;
+let opponent = null;
+let gameStartTime = null;
+let goalTime = null;
+let isGameActive = false;
+let hasClicked = false;
+let gameHistory = [];
 
-// Main events
-surrenderBtn.addEventListener("click", () => showFinalPopup("Surrender"));
-nextRoundBtn.addEventListener("click", nextRound);
-rematchBtn.addEventListener("click", resetGame);
-returnHomeBtn.addEventListener("click", () => (window.location.href = "/"));
-surrenderPopupBtn.addEventListener("click", () => showFinalPopup("Surrender"));
-window.addEventListener("load", startNewRoundAnimation);
+// Initialize game page
+document.addEventListener('DOMContentLoaded', async () => {
+  // Check authentication
+  if (!window.auth.requireAuth()) return;
+  
+  currentUser = window.auth.getCurrentUser();
+  
+  // Get game ID from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const gameId = urlParams.get('gameId');
+  
+  if (!gameId) {
+    alert('No game specified');
+    window.location.href = '/pages/homeLogged.html';
+    return;
+  }
 
-// Start-of-round animation then countdown
-function startNewRoundAnimation() {
-  const span = pressBtn.querySelector("span");
-  span.textContent = "";
-  span.className = "";
-  pressBtn.disabled = true;
-  pressTimeDisplay.textContent = "";
+  try {
+    // Connect to game server
+    await window.gameManager.connect();
+    
+    // Join the specific game
+    currentGame = await window.gameManager.joinGame(gameId);
+    
+    setupGameUI();
+    setupGameHandlers();
+    
+    console.log('Game initialized:', currentGame);
+    
+  } catch (error) {
+    console.error('Failed to initialize game:', error);
+    alert('Failed to connect to game. Please try again.');
+    window.location.href = '/pages/homeLogged.html';
+  }
+});
 
-  // brief highlight on goal time
-  goalValue.classList.add("goal-highlight");
-  setTimeout(() => {
-    goalValue.classList.remove("goal-highlight");
-    startCountdown();
-  }, 1200);
+// Setup game UI with player info
+function setupGameUI() {
+  if (!currentGame || !currentUser) return;
+  
+  // Find opponent
+  opponent = currentGame.players.find(p => p._id !== currentUser._id);
+  
+  // Update player names
+  player1Name.textContent = currentUser.username || 'You';
+  player2Name.textContent = opponent ? opponent.username : 'Waiting...';
+  opponentName.textContent = opponent ? opponent.username : 'Waiting for opponent...';
+  
+  // Update game status
+  updateGameStatus('Waiting for opponent...');
+}
+
+// Setup Socket.IO game event handlers
+function setupGameHandlers() {
+  // Game start event
+  window.gameManager.on('gameStart', (data) => {
+    console.log('Game starting...', data);
+    isGameActive = true;
+    hasClicked = false;
+    gameStartTime = Date.now();
+    
+    updateGameStatus('Game starting...');
+    startCountdownAnimation();
+  });
+
+  // Goal time set
+  window.gameManager.on('goalTimeSet', (data) => {
+    console.log('Goal time set:', data.goalTime);
+    goalTime = data.goalTime;
+    goalValue.textContent = `${goalTime}s`;
+    
+    // Highlight goal time
+    goalValue.classList.add("goal-highlight");
+    setTimeout(() => {
+      goalValue.classList.remove("goal-highlight");
+    }, 1000);
+    
+    updateGameStatus('Click STOP as close to the goal time as possible!');
+    enableClickButton();
+  });
+
+  // Player click event
+  window.gameManager.on('playerClick', (data) => {
+    console.log('Player clicked:', data);
+    
+    const isCurrentUser = data.playerId === currentUser._id;
+    const playerName = isCurrentUser ? 'You' : opponent?.username || 'Opponent';
+    const clickTime = (data.clickTime / 1000).toFixed(3);
+    
+    addToHistory(`${playerName} clicked at ${clickTime}s`);
+    
+    if (isCurrentUser) {
+      pressTimeDisplay.textContent = `Your time: ${clickTime}s`;
+    }
+  });
+
+  // Game finished
+  window.gameManager.on('gameEnd', (data) => {
+    console.log('Game finished:', data);
+    isGameActive = false;
+    pressBtn.disabled = true;
+    
+    showGameResults(data);
+  });
+
+  // Opponent disconnected
+  window.gameManager.on('opponentDisconnected', (data) => {
+    console.log('Opponent disconnected:', data);
+    updateGameStatus('Opponent disconnected. You win by default!');
+    
+    setTimeout(() => {
+      showFinalPopup('Opponent Disconnected', 'You win by forfeit!');
+    }, 2000);
+  });
+
+  // Game error
+  window.gameManager.on('error', (data) => {
+    console.error('Game error:', data);
+    alert(`Game error: ${data.message}`);
+  });
 }
 
 // 3-2-1-CLICK countdown

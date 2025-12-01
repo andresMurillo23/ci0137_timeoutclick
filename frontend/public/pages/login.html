@@ -1,6 +1,9 @@
 <script src="/js/partials/head.js"></script>
+<script src="/js/utils/api-client.js"></script>
+<script src="/js/utils/auth-manager.js"></script>
 
 <link rel="stylesheet" href="/css/pages/register-login.css">
+<link rel="stylesheet" href="/css/components/modals.css">
 
 <header class="topbar">
   <h1>TIMEOUT CLICK</h1>
@@ -12,26 +15,29 @@
 
   <div class="poster__scroll">
     <!-- Login form -->
-    <form>
+    <form id="loginForm">
       <!-- Email -->
       <div class="field">
         <label for="email">Email:</label>
-        <input id="email" type="email" placeholder="EMAIL">
+        <input id="email" type="email" placeholder="EMAIL" required>
       </div>
 
       <!-- Password + recovery link -->
       <div class="field">
         <label for="password">Password:</label>
-        <input id="password" type="password" placeholder="PASSWORD">
+        <input id="password" type="password" placeholder="PASSWORD" required>
         <p class="hint"><a href="/pages/recovery.html">Forgot your password?</a></p>
       </div>
+      
+      <!-- Error message -->
+      <div id="errorMessage" class="error-message" style="display: none; color: #ff4444; margin: 10px 0; text-align: center;"></div>
     </form>
   </div>
 
   <!-- Page actions -->
   <div class="actions">
     <button type="button" class="btn btn--back" onclick="history.back()">BACK</button>
-    <button type="button" class="btn btn--secondary" onclick="location.href='/pages/homeLogged.html'">LOGIN</button>
+    <button type="submit" form="loginForm" class="btn btn--secondary" id="loginBtn">LOGIN</button>
   </div>
 
   <!-- Link to registration -->
@@ -42,3 +48,4 @@
 
 <!-- Shared footer -->
 <script src="/js/partials/footer.js"></script>
+<script src="/js/pages/login.js"></script>
