@@ -22,16 +22,32 @@ document.addEventListener('DOMContentLoaded', async () => {
       friendsGrid.innerHTML = '<p style="text-align: center; padding: 20px;">Loading friends...</p>';
       
       const response = await window.api.getFriends();
-      allFriends = response.friends || response;
       
+      // Handle different response structures
+      let friends = [];
+      if (Array.isArray(response)) {
+        friends = response;
+      } else if (response && Array.isArray(response.friends)) {
+        friends = response.friends;
+      } else if (response && response.data && Array.isArray(response.data)) {
+        friends = response.data;
+      }
+      
+      allFriends = friends;
       displayFriends(allFriends);
     } catch (error) {
-      console.error('Failed to load friends:', error);
-      friendsGrid.innerHTML = '<p style="text-align: center; padding: 20px; color: #ff4444;">Failed to load friends</p>';
+      console.error('Failed to load friends list:', error);
+      friendsGrid.innerHTML = '<p style="text-align: center; padding: 20px; color: #ff4444;">Failed to load friends list</p>';
     }
   }
 
   function displayFriends(friends) {
+    if (!Array.isArray(friends)) {
+      console.error('displayFriends received non-array:', friends);
+      friendsGrid.innerHTML = '<p style="text-align: center; padding: 20px; color: #ff4444;">Error loading friends</p>';
+      return;
+    }
+    
     if (!friends || friends.length === 0) {
       friendsGrid.innerHTML = '<p style="text-align: center; padding: 20px;">No friends yet. <a href="/pages/addFriend.html">Add some friends</a>!</p>';
       return;
@@ -59,7 +75,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       btn.textContent = 'CHALLENGE';
       btn.onclick = (e) => {
         e.stopPropagation();
-        showChallengeModal(friend);
+        // Redirect to challenge page
+        window.location.href = '/pages/challenge.html';
       };
       
       card.onclick = () => {

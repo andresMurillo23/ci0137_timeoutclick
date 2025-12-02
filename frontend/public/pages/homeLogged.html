@@ -18,25 +18,15 @@
     <!-- Main actions for logged users -->
     <section class="content home">
       <div class="duel-buttons">
-        <!-- Challenge friends -->
-        <button type="button" class="btn btn--secondary" id="challengeFriendsBtn">CHALLENGE FRIENDS</button>
-        <!-- Quick match -->
-        <button type="button" class="btn btn--secondary" id="quickMatchBtn">QUICK MATCH</button>
+        <!-- Challenge -->
+        <button type="button" class="btn btn--secondary"
+                onclick="window.location.href='/pages/challenge.html'">CHALLENGE</button>
         <!-- Read how to play -->
         <button type="button" class="btn btn--primary-brown"
                 onclick="window.location.href='/pages/instructions.html'">INSTRUCTIONS</button>
         <!-- Public leaderboard -->
         <button type="button" class="btn btn--primary-brown"
                 onclick="window.location.href='/pages/bestPlayers.html'">BEST PLAYERS</button>
-      </div>
-      
-      <!-- Friends list for challenges -->
-      <div id="friendsListModal" class="modal" style="display: none;">
-        <div class="modal-content">
-          <h3>Challenge a Friend</h3>
-          <div id="friendsList"></div>
-          <button type="button" class="btn btn--cancel" onclick="closeFriendsModal()">Cancel</button>
-        </div>
       </div>
     </section>
   </div>
