@@ -529,9 +529,12 @@ class GameSocketHandler {
       this.io.to(`game_${gameId}`).emit('round_finished', roundFinishedData);
 
       // Check if game is complete (best of 3)
+      console.log(`[GAME] Checking if game should finish - currentRound: ${game.currentRound}/${game.totalRounds}, P1 Score: ${game.player1Score}, P2 Score: ${game.player2Score}`);
       if (game.currentRound >= game.totalRounds || game.player1Score >= 2 || game.player2Score >= 2) {
+        console.log(`[GAME] *** GAME COMPLETE! Calling finishGame() ***`);
         await this.finishGame(gameId, game);
       } else {
+        console.log(`[GAME] Game continues - preparing next round`);
         // Start next round
         game.currentRound += 1;
         game.player1Time = null;
@@ -562,29 +565,52 @@ class GameSocketHandler {
    */
   async finishGame(gameId, gameData = null) {
     try {
+      console.log(`[GAME] ======= FINISHING GAME ${gameId} =======`);
       const game = gameData || await Game.findById(gameId).populate('player1 player2');
+      console.log(`[GAME] Game loaded, status: ${game?.status}`);
       const gameSession = await GameSession.findOne({ gameId });
+      console.log(`[GAME] GameSession loaded, state: ${gameSession?.gameState}`);
 
-      if (!game || !gameSession) return;
+      if (!game || !gameSession) {
+        console.log(`[GAME] ERROR: Game or session not found!`);
+        return;
+      }
 
+      console.log(`[GAME] Scores - P1: ${game.player1Score}, P2: ${game.player2Score}`);
+      console.log(`[GAME] Rounds array length: ${game.rounds?.length || 0}`);
+      
       // Determine overall winner based on best of 3
       let overallWinner = null;
       if (game.player1Score > game.player2Score) {
         overallWinner = game.player1;
+        console.log(`[GAME] Overall winner: Player 1 (${game.player1.username})`);
       } else if (game.player2Score > game.player1Score) {
         overallWinner = game.player2;
+        console.log(`[GAME] Overall winner: Player 2 (${game.player2.username})`);
+      } else {
+        console.log(`[GAME] Game tied!`);
       }
 
       game.winner = overallWinner;
       game.status = 'finished';
       game.gameEndedAt = new Date();
+      console.log(`[GAME] Setting game status to 'finished'`);
+
+      game.winner = overallWinner;
+      game.status = 'finished';
+      game.gameEndedAt = new Date();
+      console.log(`[GAME] Setting game status to 'finished'`);
 
       gameSession.gameState = 'finished';
 
+      console.log(`[GAME] Saving game and session...`);
       await game.save();
       await gameSession.save();
+      console.log(`[GAME] Game and session saved successfully!`);
 
+      console.log(`[GAME] Updating player stats...`);
       await this.updatePlayerStats(game);
+      console.log(`[GAME] Player stats updated!`);
 
       const gameResult = {
         gameId: gameId,
@@ -608,14 +634,21 @@ class GameSocketHandler {
         duration: game.gameEndedAt - game.gameStartedAt
       };
 
+      console.log(`[GAME] Emitting game_finished event...`);
+      console.log(`[GAME] Game result:`, JSON.stringify(gameResult, null, 2));
       this.io.to(`game_${gameId}`).emit('game_finished', gameResult);
+      console.log(`[GAME] game_finished emitted successfully!`);
 
       setTimeout(() => {
+        console.log(`[GAME] Cleaning up game ${gameId} after 15 seconds`);
         this.cleanupGame(gameId);
       }, 15000);
+      
+      console.log(`[GAME] ======= GAME FINISH COMPLETE =======`);
 
     } catch (error) {
-      console.error('Finish game error:', error);
+      console.error('[GAME] Finish game error:', error);
+      console.error('[GAME] Error stack:', error.stack);
     }
   }
 

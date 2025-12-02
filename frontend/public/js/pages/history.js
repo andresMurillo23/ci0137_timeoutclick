@@ -32,14 +32,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Loading history...</td></tr>';
       
-      const response = await window.api.get('/games/history?limit=1000');
+      console.log('[HISTORY] Fetching game history...');
+      const response = await window.api.get('/games/history?limit=10000');
+      console.log('[HISTORY] Response:', response);
+      
       const games = response.games || [];
+      console.log('[HISTORY] Total games found:', games.length);
       
       // Extract all rounds from all games
       allRounds = [];
       const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+      console.log('[HISTORY] Current user:', currentUser);
       
       games.forEach(game => {
+        console.log('[HISTORY] Processing game:', game.id, 'Rounds:', game.rounds?.length || 0);
+        
         // Check if game has rounds array
         if (game.rounds && game.rounds.length > 0) {
           game.rounds.forEach(round => {
@@ -64,9 +71,20 @@ document.addEventListener('DOMContentLoaded', async () => {
               winner: winner,
               isWin: winner === 'You'
             });
+            
+            console.log('[HISTORY] Added round:', {
+              opponent: opponent.username,
+              myTime: myTime,
+              opponentTime: opponentTime,
+              winner: winner
+            });
           });
+        } else {
+          console.log('[HISTORY] Game has no rounds:', game.id);
         }
       });
+      
+      console.log('[HISTORY] Total rounds extracted:', allRounds.length);
       
       // Sort by date descending
       allRounds.sort((a, b) => new Date(b.date) - new Date(a.date));
