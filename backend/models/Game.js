@@ -18,7 +18,7 @@ const gameSchema = new mongoose.Schema({
   goalTime: {
     type: Number,
     required: true,
-    min: 1000,
+    min: 5000,
     max: 10000
   },
   player1Time: {
@@ -130,10 +130,10 @@ gameSchema.index({ status: 1, createdAt: -1 });
 gameSchema.index({ gameType: 1, status: 1 });
 
 /**
- * Generate random goal time between 1-10 seconds
+ * Generate random goal time between 5-10 seconds
  */
 gameSchema.statics.generateGoalTime = function() {
-  return Math.floor(Math.random() * 9000) + 1000;
+  return Math.floor(Math.random() * 5000) + 5000; // 5000-10000ms (5-10 seconds)
 };
 
 /**

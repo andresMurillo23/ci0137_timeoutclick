@@ -51,7 +51,9 @@ const createChallenge = async (req, res) => {
       player2: opponentId,
       goalTime: goalTime,
       gameType: gameType,
-      status: 'waiting'
+      status: 'waiting',
+      totalRounds: 3,
+      currentRound: 1
     });
 
     await game.save();
@@ -412,7 +414,47 @@ const getLeaderboard = async (req, res) => {
 };
 
 /**
- * Clean up old waiting games for user
+ * Force end a game (when player closes window)
+ */
+const forceEndGame = async (req, res) => {
+  try {
+    const { gameId } = req.params;
+    const userId = req.session.userId;
+
+    console.log(`[GAME] Force ending game ${gameId} by user ${userId}`);
+
+    const game = await Game.findById(gameId);
+    if (!game) {
+      return res.status(404).json({ error: 'Game not found' });
+    }
+
+    // Check if user is part of the game
+    const isPlayer = game.player1.toString() === userId || game.player2.toString() === userId;
+    if (!isPlayer) {
+      return res.status(403).json({ error: 'Not authorized' });
+    }
+
+    // Only cancel if not finished
+    if (game.status !== 'finished' && game.status !== 'cancelled') {
+      game.status = 'cancelled';
+      game.gameEndedAt = new Date();
+      game.cancelReason = 'player_left';
+      await game.save();
+      console.log(`[GAME] Game ${gameId} force cancelled`);
+    }
+
+    // Cleanup session
+    await GameSession.findOneAndDelete({ gameId: gameId });
+
+    res.json({ success: true, message: 'Game ended' });
+  } catch (error) {
+    console.error('Force end game error:', error);
+    res.status(500).json({ error: 'Failed to end game' });
+  }
+};
+
+/**
+ * Clean up waiting games for a user
  */
 const cleanupWaitingGames = async (req, res) => {
   try {
@@ -550,6 +592,7 @@ module.exports = {
   getGameDetails,
   getActiveGame,
   cancelGame,
+  forceEndGame,
   cleanupWaitingGames,
   forceCleanupActiveGames,
   getUserGamesStatus,

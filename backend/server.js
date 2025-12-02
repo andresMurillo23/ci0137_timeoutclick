@@ -36,8 +36,29 @@ app.use(notFound);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
+server.listen(PORT, async () => {
   console.log(`Backend server running on port ${PORT}`);
   console.log(`Health check available at http://localhost:${PORT}/api/health`);
   console.log(`Socket.IO enabled for real-time gaming`);
+  
+  // Clean up all active/starting games on server restart
+  try {
+    const Game = require('./models/Game');
+    const GameSession = require('./models/GameSession');
+    
+    const result = await Game.updateMany(
+      { status: { $in: ['waiting', 'starting', 'active'] } },
+      { 
+        status: 'cancelled',
+        gameEndedAt: new Date(),
+        cancelReason: 'server_restart'
+      }
+    );
+    
+    await GameSession.deleteMany({});
+    
+    console.log(`[SERVER] Cleaned up ${result.modifiedCount} active games from previous session`);
+  } catch (error) {
+    console.error('[SERVER] Error cleaning up games:', error);
+  }
 });

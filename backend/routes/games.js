@@ -7,6 +7,7 @@ const {
   getGameDetails,
   getActiveGame,
   cancelGame,
+  forceEndGame,
   cleanupWaitingGames,
   forceCleanupActiveGames,
   getUserGamesStatus,
@@ -39,6 +40,13 @@ router.post('/cleanup', requireAuth, cleanupWaitingGames);
  * @access  Private
  */
 router.post('/force-cleanup', requireAuth, forceCleanupActiveGames);
+
+/**
+ * @route   POST /api/games/:gameId/force-end
+ * @desc    Force end a game (when player closes window)
+ * @access  Private
+ */
+router.post('/:gameId/force-end', requireAuth, forceEndGame);
 
 /**
  * @route   GET /api/games/debug-status

@@ -138,10 +138,17 @@ class GameSocketHandler {
    */
   async startGameCountdown(gameId) {
     try {
+      console.log(`[GAME] ======= Starting countdown for game ${gameId} =======`);
       const game = await Game.findById(gameId);
       const gameSession = await GameSession.findOne({ gameId });
 
-      if (!game || !gameSession) return;
+      if (!game || !gameSession) {
+        console.error(`[GAME] Cannot start countdown - game or session not found`);
+        return;
+      }
+
+      console.log(`[GAME] Current goal time: ${game.goalTime}ms (${game.goalTime/1000}s)`);
+      console.log(`[GAME] Countdown duration: ${game.settings.countdownTime}ms`);
 
       game.status = 'starting';
       gameSession.gameState = 'countdown';
@@ -150,12 +157,14 @@ class GameSocketHandler {
       await game.save();
       await gameSession.save();
 
+      console.log(`[GAME] Emitting game_countdown_start to room game_${gameId}`);
       this.io.to(`game_${gameId}`).emit('game_countdown_start', {
         countdownTime: game.settings.countdownTime,
         goalTime: game.goalTime,
         startTime: gameSession.countdownStartedAt
       });
 
+      console.log(`[GAME] Countdown will last ${game.settings.countdownTime}ms, then start gameplay`);
       setTimeout(async () => {
         await this.startGameplay(gameId);
       }, game.settings.countdownTime);
@@ -170,10 +179,17 @@ class GameSocketHandler {
    */
   async startGameplay(gameId) {
     try {
+      console.log(`[GAME] ======= Starting gameplay for game ${gameId} =======`);
       const game = await Game.findById(gameId);
       const gameSession = await GameSession.findOne({ gameId });
 
-      if (!game || !gameSession) return;
+      if (!game || !gameSession) {
+        console.error(`[GAME] Cannot start gameplay - game or session not found`);
+        return;
+      }
+
+      console.log(`[GAME] Goal time for this round: ${game.goalTime}ms (${game.goalTime/1000}s)`);
+      console.log(`[GAME] Round: ${game.currentRound}/${game.totalRounds}`);
 
       game.status = 'active';
       game.gameStartedAt = new Date();
@@ -183,6 +199,8 @@ class GameSocketHandler {
       await game.save();
       await gameSession.save();
 
+      console.log(`[GAME] Emitting game_start to room game_${gameId}`);
+      console.log(`[GAME] Players should now be able to click!`);
       this.io.to(`game_${gameId}`).emit('game_start', {
         gameStartTime: gameSession.gameStartedAt,
         goalTime: game.goalTime,
@@ -267,7 +285,7 @@ class GameSocketHandler {
       }
 
       if (game.isComplete()) {
-        await this.finishGame(gameId);
+        await this.finishRound(gameId);
       }
 
     } catch (error) {
@@ -277,17 +295,131 @@ class GameSocketHandler {
   }
 
   /**
-   * Finish the game and determine winner
+   * Finish a round and determine round winner
    */
-  async finishGame(gameId) {
+  async finishRound(gameId) {
     try {
       const game = await Game.findById(gameId).populate('player1 player2');
       const gameSession = await GameSession.findOne({ gameId });
 
       if (!game || !gameSession) return;
 
-      const winner = game.calculateWinner();
-      game.winner = winner;
+      // Determine round winner
+      const roundWinner = game.calculateWinner();
+      
+      // Save round results
+      const roundData = {
+        roundNumber: game.currentRound,
+        goalTime: game.goalTime,
+        player1Time: game.player1Time,
+        player2Time: game.player2Time,
+        winner: roundWinner,
+        completedAt: new Date()
+      };
+      
+      game.rounds.push(roundData);
+      
+      // Update scores
+      if (roundWinner) {
+        if (roundWinner.toString() === game.player1.toString()) {
+          game.player1Score += 1;
+        } else {
+          game.player2Score += 1;
+        }
+      }
+
+      const player1Diff = game.player1Time ? Math.abs(game.player1Time - game.goalTime) : null;
+      const player2Diff = game.player2Time ? Math.abs(game.player2Time - game.goalTime) : null;
+
+      // Emit round results
+      this.io.to(`game_${gameId}`).emit('round_finished', {
+        round: game.currentRound,
+        goalTime: game.goalTime,
+        player1: {
+          id: game.player1._id,
+          username: game.player1.username,
+          time: game.player1Time,
+          difference: player1Diff
+        },
+        player2: {
+          id: game.player2._id,
+          username: game.player2.username,
+          time: game.player2Time,
+          difference: player2Diff
+        },
+        roundWinner: roundWinner ? {
+          id: roundWinner._id,
+          username: roundWinner.username
+        } : null,
+        scores: {
+          player1: game.player1Score,
+          player2: game.player2Score
+        }
+      });
+
+      // Check if game is complete (best of 3)
+      if (game.currentRound >= game.totalRounds || game.player1Score >= 2 || game.player2Score >= 2) {
+        await this.finishGame(gameId, game);
+      } else {
+        // Start next round
+        game.currentRound += 1;
+        game.player1Time = null;
+        game.player2Time = null;
+        game.player1ClickTime = null;
+        game.player2ClickTime = null;
+        game.goalTime = Game.generateGoalTime(); // New random goal time for next round
+        
+        await game.save();
+
+        // Reset game session for next round
+        gameSession.gameState = 'waiting_round';
+        gameSession.raceWinner = null;
+        await gameSession.save();
+
+        // Notify players to prepare for next round
+        setTimeout(async () => {
+          gameSession.gameState = 'countdown';
+          await gameSession.save();
+          
+          this.io.to(`game_${gameId}`).emit('next_round_starting', {
+            round: game.currentRound,
+            goalTime: game.goalTime,
+            scores: {
+              player1: game.player1Score,
+              player2: game.player2Score
+            }
+          });
+
+          setTimeout(async () => {
+            await this.startGameplay(gameId);
+          }, 3000);
+        }, 3000);
+      }
+
+    } catch (error) {
+      console.error('Finish round error:', error);
+    }
+  }
+
+  /**
+   * Finish the game and determine overall winner
+   */
+  async finishGame(gameId, gameData = null) {
+    try {
+      const game = gameData || await Game.findById(gameId).populate('player1 player2');
+      const gameSession = await GameSession.findOne({ gameId });
+
+      if (!game || !gameSession) return;
+
+      // Determine overall winner based on best of 3
+      let overallWinner = null;
+      if (game.player1Score > game.player2Score) {
+        overallWinner = game.player1;
+      } else if (game.player2Score > game.player1Score) {
+        overallWinner = game.player2;
+      }
+
+      game.winner = overallWinner;
       game.status = 'finished';
       game.gameEndedAt = new Date();
 
@@ -300,22 +432,22 @@ class GameSocketHandler {
 
       const gameResult = {
         gameId: gameId,
-        goalTime: game.goalTime,
+        totalRounds: game.totalRounds,
+        roundsPlayed: game.rounds.length,
         player1: {
           id: game.player1._id,
           username: game.player1.username,
-          time: game.player1Time,
-          difference: game.player1Time ? Math.abs(game.player1Time - game.goalTime) : null
+          score: game.player1Score
         },
         player2: {
           id: game.player2._id,
           username: game.player2.username,
-          time: game.player2Time,
-          difference: game.player2Time ? Math.abs(game.player2Time - game.goalTime) : null
+          score: game.player2Score
         },
-        winner: winner ? {
-          id: winner._id,
-          username: winner.username
+        rounds: game.rounds,
+        winner: overallWinner ? {
+          id: overallWinner._id,
+          username: overallWinner.username
         } : null,
         duration: game.gameEndedAt - game.gameStartedAt
       };
@@ -324,7 +456,7 @@ class GameSocketHandler {
 
       setTimeout(() => {
         this.cleanupGame(gameId);
-      }, 10000);
+      }, 15000);
 
     } catch (error) {
       console.error('Finish game error:', error);
@@ -436,6 +568,32 @@ class GameSocketHandler {
    * Handle player leaving game
    */
   async handleLeaveGame(socket, data) {
+    console.log(`[GAME] Player leaving game ${data.gameId}, forceEnd: ${data.forceEnd}`);
+    
+    if (data.forceEnd) {
+      // Force cancel the game immediately
+      try {
+        const game = await Game.findById(data.gameId);
+        if (game && game.status !== 'finished' && game.status !== 'cancelled') {
+          game.status = 'cancelled';
+          game.gameEndedAt = new Date();
+          game.cancelReason = 'player_left';
+          await game.save();
+          console.log(`[GAME] Game ${data.gameId} force cancelled by leave_game`);
+          
+          // Notify other player
+          this.io.to(`game_${data.gameId}`).emit('game_ended_forfeit', {
+            reason: 'opponent_left',
+            message: 'Opponent left the game'
+          });
+        }
+        
+        await GameSession.findOneAndDelete({ gameId: data.gameId });
+      } catch (error) {
+        console.error('[GAME] Error force cancelling game:', error);
+      }
+    }
+    
     await this.handleDisconnect(socket);
     socket.leave(`game_${data.gameId}`);
   }
