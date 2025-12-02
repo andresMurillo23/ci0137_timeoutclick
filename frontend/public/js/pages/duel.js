@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let gameState = {
     gameId: gameId,
     playerRole: null,
+    currentUserId: null,
     player1: null,
     player2: null,
     goalTime: 0,
@@ -50,6 +51,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     scores: { player1: 0, player2: 0 },
     isMyTurn: false,
     clickStartTime: null,
+    hasClicked: false,
     gameEnded: false
   };
 
@@ -176,6 +178,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     gameState.player1 = data.game.player1;
     gameState.player2 = data.game.player2;
     gameState.goalTime = data.game.goalTime;
+    
+    // Store current user ID
+    gameState.currentUserId = data.playerRole === 'player1' ? data.game.player1.id : data.game.player2.id;
+    console.log('[DUEL] Current user ID:', gameState.currentUserId);
 
     // Update UI
     player1Name.textContent = data.game.player1.username.toUpperCase();
@@ -255,14 +261,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('[DUEL] Game start data:', data);
     console.log('[DUEL] Goal time:', data.goalTime);
     console.log('[DUEL] Game start time:', data.gameStartTime);
+    console.log('[DUEL] Current round:', gameState.currentRound);
     
-    // Game started! Enable button
+    // Game started! Enable button and reset click flag
+    gameState.hasClicked = false;
     const goalSeconds = (data.goalTime / 1000).toFixed(1);
     updateTurnStatus('CLICK NOW! Try to hit ' + goalSeconds + 's!');
+    
+    console.log('[DUEL] Enabling button...');
+    console.log('[DUEL] Button disabled before?', pressButton.disabled);
+    
     pressButton.disabled = false;
     pressButton.classList.add('active');
     pressButton.classList.remove('pressed');
-    console.log('[DUEL] Button enabled, waiting for player click');
+    
+    console.log('[DUEL] Button disabled after?', pressButton.disabled);
+    console.log('[DUEL] Button classes:', pressButton.className);
+    console.log('[DUEL] Button enabled and ready for round', gameState.currentRound);
+    
     gameState.clickStartTime = Date.now();
   }
 
@@ -270,41 +286,75 @@ document.addEventListener('DOMContentLoaded', async () => {
    * Handle player clicked
    */
   function handlePlayerClicked(data) {
-    console.log('[DUEL] Player clicked:', data);
+    console.log('[DUEL] Player clicked event received:', data);
+    console.log('[DUEL] Click from player:', data.playerId);
+    console.log('[DUEL] Current user ID:', gameState.currentUserId);
+    console.log('[DUEL] Is this me?', data.playerId === gameState.currentUserId);
     
-    pressButton.disabled = true;
-    pressButton.classList.remove('active');
-    
-    // Display the time they clicked at
     const timeInSeconds = (data.clickTime / 1000).toFixed(3);
     const diffInMs = Math.abs(data.clickTime - data.goalTime);
     const diffInSeconds = (diffInMs / 1000).toFixed(3);
     
-    updateTurnStatus(`Clicked at ${timeInSeconds}s (diff: ${diffInSeconds}s)`);
+    // Only disable button if THIS player clicked
+    if (data.playerId === gameState.currentUserId) {
+      console.log('[DUEL] This is MY click - disabling button');
+      pressButton.disabled = true;
+      pressButton.classList.remove('active');
+      pressButton.classList.add('pressed');
+      gameState.hasClicked = true;
+      updateTurnStatus(`You clicked at ${timeInSeconds}s (diff: ${diffInSeconds}s)`);
+    } else {
+      console.log('[DUEL] This is OPPONENT click - keeping button enabled');
+      updateTurnStatus(`Opponent clicked at ${timeInSeconds}s. Your turn!`);
+    }
   }
 
   function handleRoundFinished(data) {
-    console.log('[DUEL] Round finished:', data);
+    console.log('[DUEL] ======= Round finished! =======');
+    console.log('[DUEL] Round data:', data);
+    
     pressButton.disabled = true;
     pressButton.classList.remove('active');
     gameState.scores = data.scores;
     scoreValue.textContent = data.scores.player1 + ' - ' + data.scores.player2;
+    
     const roundWinnerName = data.roundWinner ? data.roundWinner.username : 'TIE';
     const player1TimeStr = data.player1.time ? (data.player1.time / 1000).toFixed(3) + 's' : 'N/A';
     const player2TimeStr = data.player2.time ? (data.player2.time / 1000).toFixed(3) + 's' : 'N/A';
     const goalTimeStr = (data.goalTime / 1000).toFixed(1) + 's';
-    updateTurnStatus('Round ' + data.round + ' winner: ' + roundWinnerName + '! (Goal: ' + goalTimeStr + ', P1: ' + player1TimeStr + ', P2: ' + player2TimeStr + ')');
+    
+    updateTurnStatus('Round ' + data.round + ' winner: ' + roundWinnerName + '!');
+    
+    // Add to history
+    console.log('[DUEL] Adding round to history...');
+    addToHistory({
+      round: data.round,
+      player1Time: data.player1.time ? data.player1.time / 1000 : null,
+      player2Time: data.player2.time ? data.player2.time / 1000 : null,
+      winner: data.roundWinner ? (data.roundWinner.id === gameState.player1.id ? 'player1' : 'player2') : 'draw',
+      goalTime: data.goalTime / 1000,
+      scores: data.scores
+    });
   }
 
   function handleNextRoundStarting(data) {
-    console.log('[DUEL] Next round starting:', data);
+    console.log('[DUEL] ======= Next round starting! =======');
+    console.log('[DUEL] Round:', data.round);
+    console.log('[DUEL] New goal time:', data.goalTime);
+    
     gameState.currentRound = data.round;
+    gameState.hasClicked = false;
     roundNumber.textContent = data.round;
     gameState.goalTime = data.goalTime;
     goalValue.textContent = (data.goalTime / 1000).toFixed(1) + 's';
     scoreValue.textContent = data.scores.player1 + ' - ' + data.scores.player2;
     updateTurnStatus('Round ' + data.round + ' starting soon...');
     pressTime.textContent = '';
+    
+    // Keep button disabled until game_start event
+    pressButton.disabled = true;
+    pressButton.classList.remove('pressed');
+    pressButton.classList.remove('active');
   }
 
   /**
@@ -352,13 +402,34 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   pressButton.addEventListener('click', function() {
-    if (pressButton.disabled || gameState.gameEnded) return;
-    console.log('[DUEL] Button clicked!');
+    console.log('[DUEL] ======= Button clicked! =======');
+    console.log('[DUEL] Button disabled?', pressButton.disabled);
+    console.log('[DUEL] Game ended?', gameState.gameEnded);
+    console.log('[DUEL] Has clicked?', gameState.hasClicked);
+    console.log('[DUEL] Socket connected?', socket && socket.connected);
+    
+    if (pressButton.disabled || gameState.gameEnded) {
+      console.log('[DUEL] Click ignored - button disabled or game ended');
+      return;
+    }
+    
+    if (gameState.hasClicked) {
+      console.log('[DUEL] Click ignored - already clicked this round');
+      return;
+    }
+    
+    console.log('[DUEL] Emitting player_click to server...');
+    console.log('[DUEL] Game ID:', gameState.gameId);
+    
     pressButton.classList.add('pressed');
     pressButton.disabled = true;
+    gameState.hasClicked = true;
+    
     socket.emit('player_click', {
       gameId: gameState.gameId
     });
+    
+    console.log('[DUEL] player_click event sent!');
     updateTurnStatus('Click registered! Waiting for opponent...');
   });
 
@@ -367,18 +438,32 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function addToHistory(data) {
+    console.log('[DUEL] Adding to history:', data);
+    
     if (historyEmpty) {
-      historyEmpty.remove();
+      historyEmpty.style.display = 'none';
     }
+    
     const li = document.createElement('li');
     li.className = 'history-item';
-    const winner = data.winner === 'player1' ? gameState.player1.username : 
-                   data.winner === 'player2' ? gameState.player2.username : 'Draw';
-    li.innerHTML = '<strong>Round ' + data.round + '</strong><br>' +
-      gameState.player1.username + ': ' + (data.player1Time ? data.player1Time.toFixed(3) : '-') + 's<br>' +
-      gameState.player2.username + ': ' + (data.player2Time ? data.player2Time.toFixed(3) : '-') + 's<br>' +
-      'Winner: ' + winner;
+    
+    const winnerText = data.winner === 'player1' ? gameState.player1.username : 
+                       data.winner === 'player2' ? gameState.player2.username : 
+                       'TIE';
+    
+    const p1Time = data.player1Time ? data.player1Time.toFixed(3) + 's' : 'N/A';
+    const p2Time = data.player2Time ? data.player2Time.toFixed(3) + 's' : 'N/A';
+    const goal = data.goalTime ? data.goalTime.toFixed(1) + 's' : 'N/A';
+    
+    li.innerHTML = `
+      <strong>Round ${data.round}</strong> (Goal: ${goal})<br>
+      ${gameState.player1.username}: ${p1Time}<br>
+      ${gameState.player2.username}: ${p2Time}<br>
+      <span style="color: #4CAF50;">Winner: ${winnerText}</span>
+    `;
+    
     historyList.insertBefore(li, historyList.firstChild);
+    console.log('[DUEL] History item added');
   }
 
   function showRoundResult(data) {

@@ -107,7 +107,7 @@ const gameSchema = new mongoose.Schema({
   },
   totalRounds: {
     type: Number,
-    default: 1
+    default: 3  // Best of 3
   },
   player1Score: {
     type: Number,

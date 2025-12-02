@@ -29,7 +29,7 @@ const gameSessionSchema = new mongoose.Schema({
   },
   gameState: {
     type: String,
-    enum: ['waiting_players', 'countdown', 'playing', 'finished', 'paused'],
+    enum: ['waiting_players', 'countdown', 'playing', 'finished', 'paused', 'waiting_round'],
     default: 'waiting_players'
   },
   countdownStartedAt: {

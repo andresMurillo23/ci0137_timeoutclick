@@ -221,9 +221,16 @@ class GameSocketHandler {
    * Handle player click (stop button)
    */
   async handlePlayerClick(socket, data) {
+    console.log(`[GAME] ======= Player click received =======`);
+    console.log(`[GAME] Socket ID: ${socket.id}`);
+    console.log(`[GAME] Click data:`, data);
+    
     try {
       const playerData = this.playerSockets.get(socket.id);
+      console.log(`[GAME] Player data from socket map:`, playerData);
+      
       if (!playerData) {
+        console.error('[GAME] Player not found in active games map!');
         socket.emit('game_error', { message: 'Player not found in active games' });
         return;
       }
@@ -231,35 +238,51 @@ class GameSocketHandler {
       const { userId, gameId } = playerData;
       const clickTime = new Date();
 
+      console.log(`[GAME] User ${userId} clicked in game ${gameId}`);
+      console.log(`[GAME] Click time:`, clickTime);
+
+      // Use findOneAndUpdate with atomic operations to prevent race conditions
       const game = await Game.findById(gameId);
       const gameSession = await GameSession.findOne({ gameId });
 
-      if (!game || !gameSession || gameSession.gameState !== 'playing') {
+      if (!game || !gameSession) {
+        console.error('[GAME] Game or session not found!');
+        socket.emit('game_error', { message: 'Game not found' });
+        return;
+      }
+
+      console.log(`[GAME] Game state: ${gameSession.gameState}`);
+      console.log(`[GAME] Game status: ${game.status}`);
+
+      if (gameSession.gameState !== 'playing') {
+        console.error(`[GAME] Game is not in playing state! Current state: ${gameSession.gameState}`);
         socket.emit('game_error', { message: 'Game is not in playing state' });
         return;
       }
 
-      const wasFirstToClick = await gameSession.setRaceLock(userId);
-      if (!wasFirstToClick && gameSession.raceWinner.toString() !== userId) {
-        socket.emit('click_rejected', { 
-          message: 'Another player clicked first',
-          winner: gameSession.raceWinner
-        });
+      const timeDifference = clickTime - gameSession.gameStartedAt;
+      const isPlayer1 = game.player1.toString() === userId;
+
+      console.log(`[GAME] Time difference: ${timeDifference}ms`);
+      console.log(`[GAME] Is Player 1: ${isPlayer1}`);
+      console.log(`[GAME] Current P1 time: ${game.player1Time}`);
+      console.log(`[GAME] Current P2 time: ${game.player2Time}`);
+
+      // Check if this player already clicked
+      if ((isPlayer1 && game.player1Time !== null) || (!isPlayer1 && game.player2Time !== null)) {
+        console.log(`[GAME] Player ${userId} already clicked in this round`);
+        socket.emit('game_error', { message: 'You already clicked in this round' });
         return;
       }
 
-      const timeDifference = clickTime - gameSession.gameStartedAt;
-      
-      const isPlayer1 = game.player1.toString() === userId;
-      if (isPlayer1) {
-        game.player1Time = timeDifference;
-        game.player1ClickTime = clickTime;
-      } else {
-        game.player2Time = timeDifference;
-        game.player2ClickTime = clickTime;
-      }
+      // Save click time atomically to prevent race conditions
+      const updateQuery = isPlayer1 
+        ? { player1Time: timeDifference, player1ClickTime: clickTime }
+        : { player2Time: timeDifference, player2ClickTime: clickTime };
 
-      await game.save();
+      await Game.findByIdAndUpdate(gameId, updateQuery);
+
+      console.log(`[GAME] Player ${isPlayer1 ? 'P1' : 'P2'} clicked at ${timeDifference}ms (goal: ${game.goalTime}ms)`);
 
       socket.emit('click_registered', {
         playerId: userId,
@@ -284,8 +307,28 @@ class GameSocketHandler {
         });
       }
 
-      if (game.isComplete()) {
+      // Reload game to get updated times
+      const updatedGame = await Game.findById(gameId);
+
+      // Check if both players have clicked
+      if (updatedGame.player1Time !== null && updatedGame.player2Time !== null) {
+        console.log(`[GAME] Both players clicked - finishing round`);
         await this.finishRound(gameId);
+      } else {
+        console.log(`[GAME] Waiting for other player to click...`);
+        const currentRound = updatedGame.currentRound; // Capture current round for timeout check
+        // Set timeout to finish round if other player doesn't click (e.g., 10 seconds)
+        setTimeout(async () => {
+          const gameCheck = await Game.findById(gameId);
+          if (gameCheck && gameCheck.status === 'active' && 
+              gameCheck.currentRound === currentRound && // Only timeout for the same round
+              (gameCheck.player1Time === null || gameCheck.player2Time === null)) {
+            console.log(`[GAME] Timeout for round ${currentRound} - finishing round with incomplete clicks`);
+            await this.finishRound(gameId);
+          } else if (gameCheck && gameCheck.currentRound !== currentRound) {
+            console.log(`[GAME] Timeout ignored - already moved to round ${gameCheck.currentRound}`);
+          }
+        }, 10000); // 10 second timeout
       }
 
     } catch (error) {
@@ -299,13 +342,50 @@ class GameSocketHandler {
    */
   async finishRound(gameId) {
     try {
+      console.log(`[GAME] ======= Finishing round for game ${gameId} =======`);
       const game = await Game.findById(gameId).populate('player1 player2');
       const gameSession = await GameSession.findOne({ gameId });
 
-      if (!game || !gameSession) return;
+      if (!game || !gameSession) {
+        console.error('[GAME] Cannot finish round - game or session not found');
+        return;
+      }
+
+      console.log(`[GAME] Player 1 (${game.player1.username}) time: ${game.player1Time}ms`);
+      console.log(`[GAME] Player 2 (${game.player2.username}) time: ${game.player2Time}ms`);
+      console.log(`[GAME] Goal time: ${game.goalTime}ms`);
 
       // Determine round winner
-      const roundWinner = game.calculateWinner();
+      const roundWinnerResult = game.calculateWinner(); // Returns ObjectId or User object or null
+      
+      console.log(`[GAME] Round winner result:`, roundWinnerResult);
+      console.log(`[GAME] Round winner type:`, typeof roundWinnerResult);
+      
+      // Extract ObjectId and find winner object from populated players
+      let roundWinnerId = null;
+      let roundWinner = null;
+      
+      if (roundWinnerResult) {
+        // If it's a User object with _id, extract the _id
+        if (roundWinnerResult._id) {
+          roundWinnerId = roundWinnerResult._id;
+        } else {
+          // Otherwise it's already an ObjectId
+          roundWinnerId = roundWinnerResult;
+        }
+        
+        console.log(`[GAME] Round winner ID:`, roundWinnerId);
+        
+        if (roundWinnerId.toString() === game.player1._id.toString()) {
+          roundWinner = game.player1;
+          console.log(`[GAME] Round winner: Player 1 (${game.player1.username})`);
+        } else if (roundWinnerId.toString() === game.player2._id.toString()) {
+          roundWinner = game.player2;
+          console.log(`[GAME] Round winner: Player 2 (${game.player2.username})`);
+        }
+      } else {
+        console.log(`[GAME] Round result: TIE`);
+      }
       
       // Save round results
       const roundData = {
@@ -313,26 +393,34 @@ class GameSocketHandler {
         goalTime: game.goalTime,
         player1Time: game.player1Time,
         player2Time: game.player2Time,
-        winner: roundWinner,
+        winner: roundWinnerId,
         completedAt: new Date()
       };
       
       game.rounds.push(roundData);
       
       // Update scores
-      if (roundWinner) {
-        if (roundWinner.toString() === game.player1.toString()) {
+      if (roundWinnerId) {
+        if (roundWinnerId.toString() === game.player1._id.toString()) {
           game.player1Score += 1;
+          console.log(`[GAME] Player 1 score: ${game.player1Score}`);
         } else {
           game.player2Score += 1;
+          console.log(`[GAME] Player 2 score: ${game.player2Score}`);
         }
       }
+
+      await game.save();
+      console.log(`[GAME] Game saved with updated scores`);
 
       const player1Diff = game.player1Time ? Math.abs(game.player1Time - game.goalTime) : null;
       const player2Diff = game.player2Time ? Math.abs(game.player2Time - game.goalTime) : null;
 
+      console.log(`[GAME] Player 1 difference: ${player1Diff}ms`);
+      console.log(`[GAME] Player 2 difference: ${player2Diff}ms`);
+
       // Emit round results
-      this.io.to(`game_${gameId}`).emit('round_finished', {
+      const roundFinishedData = {
         round: game.currentRound,
         goalTime: game.goalTime,
         player1: {
@@ -355,7 +443,10 @@ class GameSocketHandler {
           player1: game.player1Score,
           player2: game.player2Score
         }
-      });
+      };
+      
+      console.log(`[GAME] Emitting round_finished:`, JSON.stringify(roundFinishedData, null, 2));
+      this.io.to(`game_${gameId}`).emit('round_finished', roundFinishedData);
 
       // Check if game is complete (best of 3)
       if (game.currentRound >= game.totalRounds || game.player1Score >= 2 || game.player2Score >= 2) {
@@ -368,7 +459,6 @@ class GameSocketHandler {
         game.player1ClickTime = null;
         game.player2ClickTime = null;
         game.goalTime = Game.generateGoalTime(); // New random goal time for next round
-        
         await game.save();
 
         // Reset game session for next round
@@ -376,10 +466,11 @@ class GameSocketHandler {
         gameSession.raceWinner = null;
         await gameSession.save();
 
+        console.log(`[GAME] Waiting 3 seconds before starting next round...`);
+
         // Notify players to prepare for next round
         setTimeout(async () => {
-          gameSession.gameState = 'countdown';
-          await gameSession.save();
+          console.log(`[GAME] Emitting next_round_starting for round ${game.currentRound}`);
           
           this.io.to(`game_${gameId}`).emit('next_round_starting', {
             round: game.currentRound,
@@ -390,9 +481,11 @@ class GameSocketHandler {
             }
           });
 
+          // Wait 2 seconds then start countdown for next round
           setTimeout(async () => {
-            await this.startGameplay(gameId);
-          }, 3000);
+            console.log(`[GAME] Starting countdown for round ${game.currentRound}`);
+            await this.startGameCountdown(gameId);
+          }, 2000);
         }, 3000);
       }
 
