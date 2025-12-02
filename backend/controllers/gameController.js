@@ -360,7 +360,9 @@ const getUserGameStats = async (req, res) => {
  */
 const getLeaderboard = async (req, res) => {
   try {
-    const { type = 'wins', limit = 10 } = req.query;
+    const { type = 'wins', limit = 100 } = req.query;
+    
+    console.log('[LEADERBOARD] Fetching leaderboard, type:', type, 'limit:', limit);
     
     let sortField;
     switch (type) {
@@ -385,22 +387,33 @@ const getLeaderboard = async (req, res) => {
     .sort(sortField)
     .limit(parseInt(limit));
 
-    const leaderboard = users.map((user, index) => ({
-      rank: index + 1,
-      id: user._id,
-      username: user.username,
-      avatar: user.avatar,
-      firstName: user.profile?.firstName,
-      lastName: user.profile?.lastName,
-      stats: {
-        gamesPlayed: user.gameStats.gamesPlayed,
-        gamesWon: user.gameStats.gamesWon,
+    console.log('[LEADERBOARD] Found', users.length, 'users with games played');
+
+    const leaderboard = users.map((user, index) => {
+      const stats = {
+        gamesPlayed: user.gameStats.gamesPlayed || 0,
+        gamesWon: user.gameStats.gamesWon || 0,
         winRate: user.gameStats.gamesPlayed > 0 ? 
           Math.round((user.gameStats.gamesWon / user.gameStats.gamesPlayed) * 100) : 0,
         bestAccuracy: user.gameStats.bestTime,
-        totalScore: user.gameStats.totalScore
-      }
-    }));
+        totalScore: user.gameStats.totalScore || 0
+      };
+      
+      return {
+        rank: index + 1,
+        id: user._id,
+        username: user.username,
+        avatar: user.avatar,
+        firstName: user.profile?.firstName,
+        lastName: user.profile?.lastName,
+        stats: stats
+      };
+    });
+
+    console.log('[LEADERBOARD] Returning', leaderboard.length, 'players');
+    if (leaderboard.length > 0) {
+      console.log('[LEADERBOARD] Top player:', leaderboard[0].username, 'with', leaderboard[0].stats.gamesWon, 'wins');
+    }
 
     res.json({
       success: true,

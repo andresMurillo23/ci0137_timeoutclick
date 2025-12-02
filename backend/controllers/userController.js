@@ -322,11 +322,13 @@ const getUserStats = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const user = await User.findById(id).select('username avatar gameStats createdAt');
+    const user = await User.findById(id).select('username avatar gameStats createdAt status');
     
     if (!user || user.status !== 'active') {
       return res.status(404).json({ error: 'User not found' });
     }
+
+    const gamesLost = user.gameStats.gamesPlayed - user.gameStats.gamesWon;
 
     res.json({
       success: true,
@@ -335,6 +337,7 @@ const getUserStats = async (req, res) => {
         avatar: user.avatar,
         gamesPlayed: user.gameStats.gamesPlayed,
         gamesWon: user.gameStats.gamesWon,
+        gamesLost: gamesLost,
         totalScore: user.gameStats.totalScore,
         bestTime: user.gameStats.bestTime,
         averageTime: user.gameStats.averageTime,

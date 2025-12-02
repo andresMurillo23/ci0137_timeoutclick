@@ -16,13 +16,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Loading leaderboard...</td></tr>';
       
+      console.log('[RANKING] Fetching leaderboard...');
       const response = await window.api.getLeaderboard();
-      leaderboard = response.leaderboard || response;
+      console.log('[RANKING] Leaderboard response:', response);
       
+      if (response.success && response.leaderboard) {
+        leaderboard = response.leaderboard;
+      } else {
+        leaderboard = [];
+      }
+      
+      console.log('[RANKING] Leaderboard data:', leaderboard);
       totalPages = Math.ceil(leaderboard.length / pageSize);
       displayLeaderboard();
     } catch (error) {
-      console.error('Failed to load leaderboard:', error);
+      console.error('[RANKING] Failed to load leaderboard:', error);
       tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px; color: #ff4444;">Failed to load leaderboard</td></tr>';
     }
   }
@@ -43,23 +51,21 @@ document.addEventListener('DOMContentLoaded', async () => {
       const row = document.createElement('tr');
       const position = start + index + 1;
       
-      const wins = player.gamesWon || player.wins || 0;
-      const totalGames = player.gamesPlayed || player.totalGames || 0;
+      const wins = player.stats?.gamesWon || 0;
+      const totalGames = player.stats?.gamesPlayed || 0;
       const losses = totalGames - wins;
-      const winRate = totalGames > 0 ? Math.round((wins / totalGames) * 100) : 0;
+      const winRate = player.stats?.winRate || 0;
       
-      row.innerHTML = `
-        <td>${position}</td>
-        <td>${player.username}</td>
-        <td>${wins}</td>
-        <td>${losses}</td>
-        <td>${winRate}%</td>
-      `;
+      row.innerHTML = '<td>' + position + '</td>' +
+        '<td>' + player.username + '</td>' +
+        '<td>' + wins + '</td>' +
+        '<td>' + losses + '</td>' +
+        '<td>' + winRate + '%</td>';
       
       tbody.appendChild(row);
     });
     
-    pageInfo.innerHTML = `Page <strong>${currentPage}</strong> of <strong>${totalPages}</strong>`;
+    pageInfo.innerHTML = 'Page <strong>' + currentPage + '</strong> of <strong>' + totalPages + '</strong>';
     prevBtn.disabled = currentPage === 1;
     nextBtn.disabled = currentPage === totalPages;
   }
