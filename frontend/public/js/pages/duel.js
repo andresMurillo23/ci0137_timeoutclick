@@ -393,7 +393,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       round: data.round,
       player1Time: data.player1.time ? data.player1.time / 1000 : null,
       player2Time: data.player2.time ? data.player2.time / 1000 : null,
-      winner: data.roundWinner ? (data.roundWinner.id === gameState.player1.id ? 'player1' : 'player2') : 'draw',
+      winner: data.roundWinner ? (data.roundWinner.id === data.player1.id ? 'player1' : 'player2') : 'draw',
       goalTime: data.goalTime / 1000,
       scores: data.scores
     });
@@ -526,7 +526,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('[DUEL] Adding to history:', data);
     
     if (historyEmpty) {
-      historyEmpty.style.display = 'none';
+      historyEmpty.remove();
     }
     
     const li = document.createElement('li');
@@ -536,16 +536,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                        data.winner === 'player2' ? gameState.player2.username : 
                        'TIE';
     
-    const p1Time = data.player1Time ? data.player1Time.toFixed(3) + 's' : 'N/A';
-    const p2Time = data.player2Time ? data.player2Time.toFixed(3) + 's' : 'N/A';
-    const goal = data.goalTime ? data.goalTime.toFixed(1) + 's' : 'N/A';
+    const p1Time = data.player1Time !== null ? data.player1Time.toFixed(3) + 's' : 'N/A';
+    const p2Time = data.player2Time !== null ? data.player2Time.toFixed(3) + 's' : 'N/A';
+    const goal = data.goalTime !== null ? data.goalTime.toFixed(1) + 's' : 'N/A';
     
-    li.innerHTML = `
-      <strong>Round ${data.round}</strong> (Goal: ${goal})<br>
-      ${gameState.player1.username}: ${p1Time}<br>
-      ${gameState.player2.username}: ${p2Time}<br>
-      <span style="color: #4CAF50;">Winner: ${winnerText}</span>
-    `;
+    li.innerHTML = '<strong>Round ' + data.round + '</strong> (Goal: ' + goal + ')<br>' +
+      gameState.player1.username + ': ' + p1Time + '<br>' +
+      gameState.player2.username + ': ' + p2Time + '<br>' +
+      '<span style="color: #4CAF50;">Winner: ' + winnerText + '</span>';
     
     historyList.insertBefore(li, historyList.firstChild);
     console.log('[DUEL] History item added');
