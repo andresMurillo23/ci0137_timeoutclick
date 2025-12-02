@@ -52,7 +52,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     isMyTurn: false,
     clickStartTime: null,
     hasClicked: false,
-    gameEnded: false
+    gameEnded: false,
+    inactivityTimer: null
   };
 
   // DOM elements
@@ -88,6 +89,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   const finalTitle = document.getElementById('finalTitle');
   const finalDetails = document.getElementById('finalDetails');
   const rematchBtn = document.getElementById('rematchBtn');
+  const stillTherePopup = document.getElementById('stillTherePopup');
+  const stillPlayingBtn = document.getElementById('stillPlayingBtn');
+  const forfeitBtn = document.getElementById('forfeitBtn');
 
   /**
    * Get full avatar URL from relative path
@@ -274,17 +278,62 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateTurnStatus('CLICK NOW! Try to hit ' + goalSeconds + 's!');
     
     console.log('[DUEL] Enabling button...');
-    console.log('[DUEL] Button disabled before?', pressButton.disabled);
-    
     pressButton.disabled = false;
     pressButton.classList.add('active');
-    pressButton.classList.remove('pressed');
+    gameState.clickStartTime = new Date(data.gameStartTime);
     
-    console.log('[DUEL] Button disabled after?', pressButton.disabled);
-    console.log('[DUEL] Button classes:', pressButton.className);
-    console.log('[DUEL] Button enabled and ready for round', gameState.currentRound);
+    // Start inactivity timer - show popup after goalTime if not clicked
+    startInactivityTimer(data.goalTime);
+  }
+  
+  /**
+   * Start inactivity timer to check if player is still there
+   */
+  function startInactivityTimer(goalTime) {
+    // Clear any existing timer
+    if (gameState.inactivityTimer) {
+      clearTimeout(gameState.inactivityTimer);
+    }
     
-    gameState.clickStartTime = Date.now();
+    // Set timer to show popup after goalTime passes
+    gameState.inactivityTimer = setTimeout(function() {
+      // Only show if player hasn't clicked yet
+      if (!gameState.hasClicked && !gameState.gameEnded) {
+        console.log('[DUEL] Goal time passed without click - showing "still there" popup');
+        showStillTherePopup();
+      }
+    }, goalTime);
+  }
+  
+  /**
+   * Clear inactivity timer
+   */
+  function clearInactivityTimer() {
+    if (gameState.inactivityTimer) {
+      clearTimeout(gameState.inactivityTimer);
+      gameState.inactivityTimer = null;
+    }
+  }
+  
+  /**
+   * Show "Are you still there?" popup
+   */
+  function showStillTherePopup() {
+    stillTherePopup.style.display = 'flex';
+    
+    // Handle "I'm Still Here" button
+    stillPlayingBtn.onclick = function() {
+      console.log('[DUEL] Player confirmed they are still playing');
+      stillTherePopup.style.display = 'none';
+      updateTurnStatus('Click when ready!');
+    };
+    
+    // Handle "Forfeit" button
+    forfeitBtn.onclick = function() {
+      console.log('[DUEL] Player chose to forfeit');
+      stillTherePopup.style.display = 'none';
+      handleSurrender();
+    };
   }
 
   /**
@@ -317,6 +366,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   function handleRoundFinished(data) {
     console.log('[DUEL] ======= Round finished! =======');
     console.log('[DUEL] Round data:', data);
+    
+    // Clear inactivity timer
+    clearInactivityTimer();
+    
+    // Close "still there" popup if it's open
+    if (stillTherePopup.style.display === 'flex') {
+      stillTherePopup.style.display = 'none';
+    }
     
     pressButton.disabled = true;
     pressButton.classList.remove('active');
@@ -444,6 +501,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     pressButton.classList.add('pressed');
     pressButton.disabled = true;
     gameState.hasClicked = true;
+    
+    // Clear inactivity timer since player clicked
+    clearInactivityTimer();
+    
+    // Close "still there" popup if it's open
+    if (stillTherePopup.style.display === 'flex') {
+      stillTherePopup.style.display = 'none';
+    }
     
     socket.emit('player_click', {
       gameId: gameState.gameId
