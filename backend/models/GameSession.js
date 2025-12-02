@@ -48,6 +48,14 @@ const gameSessionSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
+  player1Ready: {
+    type: Boolean,
+    default: false
+  },
+  player2Ready: {
+    type: Boolean,
+    default: false
+  },
   raceLock: {
     type: Boolean,
     default: false

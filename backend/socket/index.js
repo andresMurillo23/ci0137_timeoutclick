@@ -454,11 +454,17 @@ const initializeSocket = (server) => {
   
   const io = new Server(server, {
     cors: {
-      origin: `http://localhost:${process.env.FRONTEND_PORT || 5000}`,
-      credentials: true
+      origin: [
+        `http://localhost:${process.env.FRONTEND_PORT || 5000}`,
+        'http://localhost:3000',
+        'http://localhost:5000'
+      ],
+      credentials: true,
+      methods: ['GET', 'POST']
     },
     pingTimeout: 60000,
-    pingInterval: 25000
+    pingInterval: 25000,
+    transports: ['websocket', 'polling']
   });
 
   const socketManager = new SocketManager(io);

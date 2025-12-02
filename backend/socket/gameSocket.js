@@ -19,8 +19,8 @@ class GameSocketHandler {
    */
   initializeEvents(socket) {
     socket.on('join_game', (data) => this.handleJoinGame(socket, data));
-    socket.on('player_ready', (data) => this.handlePlayerReady(socket, data));
     socket.on('player_click', (data) => this.handlePlayerClick(socket, data));
+    socket.on('player_ready_for_next_round', (data) => this.handlePlayerReadyForNextRound(socket, data));
     socket.on('leave_game', (data) => this.handleLeaveGame(socket, data));
     socket.on('disconnect', () => this.handleDisconnect(socket));
   }
@@ -72,13 +72,17 @@ class GameSocketHandler {
         return;
       }
 
-      let gameSession = await GameSession.findOne({ gameId: gameId });
-      if (!gameSession) {
-        gameSession = new GameSession({
-          gameId: gameId,
-          gameState: 'waiting_players'
-        });
-      }
+      // Use findOneAndUpdate with upsert to avoid race condition
+      let gameSession = await GameSession.findOneAndUpdate(
+        { gameId: gameId },
+        { 
+          $setOnInsert: { 
+            gameId: gameId,
+            gameState: 'waiting_players'
+          }
+        },
+        { upsert: true, new: true }
+      );
 
       gameSession.setPlayerConnection(userId, socket.id, true, game);
       await gameSession.save();
@@ -338,6 +342,82 @@ class GameSocketHandler {
   }
 
   /**
+   * Handle player ready for next round
+   */
+  async handlePlayerReadyForNextRound(socket, data) {
+    console.log(`[GAME] ======= Player ready for next round =======`);
+    console.log(`[GAME] Socket ID: ${socket.id}`);
+    console.log(`[GAME] Data:`, data);
+    
+    try {
+      const playerData = this.playerSockets.get(socket.id);
+      if (!playerData) {
+        console.error('[GAME] Player not found in socket map');
+        socket.emit('game_error', { message: 'Player session not found' });
+        return;
+      }
+
+      const { userId, gameId } = playerData;
+      const game = await Game.findById(gameId).populate('player1 player2');
+      const gameSession = await GameSession.findOne({ gameId });
+
+      if (!game || !gameSession) {
+        console.error('[GAME] Game or session not found');
+        socket.emit('game_error', { message: 'Game not found' });
+        return;
+      }
+
+      // Mark player as ready
+      const isPlayer1 = game.player1._id.toString() === userId;
+      if (isPlayer1) {
+        gameSession.player1Ready = true;
+        console.log(`[GAME] Player 1 (${game.player1.username}) is ready for next round`);
+      } else {
+        gameSession.player2Ready = true;
+        console.log(`[GAME] Player 2 (${game.player2.username}) is ready for next round`);
+      }
+      
+      await gameSession.save();
+
+      // Notify both players of ready status
+      this.io.to(`game_${gameId}`).emit('player_confirmed_next_round', {
+        player1Ready: gameSession.player1Ready,
+        player2Ready: gameSession.player2Ready
+      });
+
+      // Check if both players are ready
+      if (gameSession.player1Ready && gameSession.player2Ready) {
+        console.log(`[GAME] Both players ready! Starting next round...`);
+        
+        setTimeout(async () => {
+          console.log(`[GAME] Emitting next_round_starting for round ${game.currentRound}`);
+          
+          this.io.to(`game_${gameId}`).emit('next_round_starting', {
+            round: game.currentRound,
+            goalTime: game.goalTime,
+            scores: {
+              player1: game.player1Score,
+              player2: game.player2Score
+            }
+          });
+
+          // Wait 2 seconds then start countdown for next round
+          setTimeout(async () => {
+            console.log(`[GAME] Starting countdown for round ${game.currentRound}`);
+            await this.startGameCountdown(gameId);
+          }, 2000);
+        }, 1000);
+      } else {
+        console.log(`[GAME] Waiting for other player... P1: ${gameSession.player1Ready}, P2: ${gameSession.player2Ready}`);
+      }
+
+    } catch (error) {
+      console.error('Player ready for next round error:', error);
+      socket.emit('game_error', { message: 'Failed to register ready status' });
+    }
+  }
+
+  /**
    * Finish a round and determine round winner
    */
   async finishRound(gameId) {
@@ -464,29 +544,12 @@ class GameSocketHandler {
         // Reset game session for next round
         gameSession.gameState = 'waiting_round';
         gameSession.raceWinner = null;
+        gameSession.player1Ready = false;
+        gameSession.player2Ready = false;
         await gameSession.save();
 
-        console.log(`[GAME] Waiting 3 seconds before starting next round...`);
-
-        // Notify players to prepare for next round
-        setTimeout(async () => {
-          console.log(`[GAME] Emitting next_round_starting for round ${game.currentRound}`);
-          
-          this.io.to(`game_${gameId}`).emit('next_round_starting', {
-            round: game.currentRound,
-            goalTime: game.goalTime,
-            scores: {
-              player1: game.player1Score,
-              player2: game.player2Score
-            }
-          });
-
-          // Wait 2 seconds then start countdown for next round
-          setTimeout(async () => {
-            console.log(`[GAME] Starting countdown for round ${game.currentRound}`);
-            await this.startGameCountdown(gameId);
-          }, 2000);
-        }, 3000);
+        console.log(`[GAME] Waiting for both players to confirm next round...`);
+        console.log(`[GAME] Players need to click 'Next Round' button`);
       }
 
     } catch (error) {

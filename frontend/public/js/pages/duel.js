@@ -127,7 +127,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('[DUEL] Connecting to Socket.IO server...');
     // Connect to Socket.IO server
     socket = io('http://localhost:3000', {
-      auth: { token: token }
+      auth: { token: token },
+      transports: ['websocket', 'polling'],
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionAttempts: 5
     });
 
     console.log('[DUEL] Socket object created:', socket ? '✓' : '✗');
@@ -157,6 +161,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     socket.on('game_start', handleGameStart);
     socket.on('player_clicked', handlePlayerClicked);
     socket.on('round_finished', handleRoundFinished);
+    socket.on('player_confirmed_next_round', handlePlayerConfirmedNextRound);
     socket.on('next_round_starting', handleNextRoundStarting);
     socket.on('game_finished', handleGameFinished);
     socket.on('game_ended_forfeit', handleGameEndedForfeit);
@@ -335,6 +340,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       goalTime: data.goalTime / 1000,
       scores: data.scores
     });
+    
+    // Show round result popup
+    console.log('[DUEL] Showing round result popup...');
+    showRoundResultPopup(data);
   }
 
   function handleNextRoundStarting(data) {
@@ -357,6 +366,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     pressButton.classList.remove('active');
   }
 
+  function handlePlayerConfirmedNextRound(data) {
+    console.log('[DUEL] Player confirmed next round:', data);
+    
+    if (data.player1Ready && data.player2Ready) {
+      updateTurnStatus('Both players ready! Starting next round...');
+    } else if (data.player1Ready || data.player2Ready) {
+      updateTurnStatus('Waiting for opponent to continue...');
+    }
+  }
+
   /**
    * Handle game finished
    */
@@ -368,10 +387,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const finalWinnerName = data.winner ? data.winner.username : 'TIE';
     const finalScore = data.player1.score + ' - ' + data.player2.score;
     updateTurnStatus('GAME OVER! Winner: ' + finalWinnerName + ' (' + finalScore + ')');
+    
+    // Show final result popup after a short delay
     setTimeout(function() {
-      alert('Game Over!\n\nWinner: ' + finalWinnerName + '\nFinal Score: ' + finalScore + '\n\nReturning to home...');
-      window.location.href = '/pages/homeLogged.html';
-    }, 3000);
+      showFinalResultPopup(data);
+    }, 1500);
   }
 
   function handleGameEndedForfeit(data) {
@@ -534,6 +554,87 @@ document.addEventListener('DOMContentLoaded', async () => {
     alert('Rematch feature coming soon!');
     window.location.href = '/pages/homeLogged.html';
   });
+
+  /**
+   * Show round result popup
+   */
+  function showRoundResultPopup(data) {
+    const winnerPopup = document.getElementById('winnerPopup');
+    const winnerTitle = document.getElementById('winnerTitle');
+    const winnerDetails = document.getElementById('winnerDetails');
+    const surrenderPopupBtn = document.getElementById('surrenderPopupBtn');
+    const nextRoundBtn = document.getElementById('nextRoundBtn');
+    
+    const roundWinnerName = data.roundWinner ? data.roundWinner.username : 'TIE';
+    const player1Name = data.player1.username || gameState.player1.username;
+    const player2Name = data.player2.username || gameState.player2.username;
+    const player1TimeStr = data.player1.time ? (data.player1.time / 1000).toFixed(3) + 's' : 'N/A';
+    const player2TimeStr = data.player2.time ? (data.player2.time / 1000).toFixed(3) + 's' : 'N/A';
+    const goalTimeStr = (data.goalTime / 1000).toFixed(1) + 's';
+    
+    winnerTitle.textContent = 'Round ' + data.round + ' Results';
+    winnerDetails.innerHTML = 
+      '<strong>Winner: ' + roundWinnerName + '</strong><br><br>' +
+      player1Name + ': ' + player1TimeStr + '<br>' +
+      player2Name + ': ' + player2TimeStr + '<br>' +
+      'Goal Time: ' + goalTimeStr + '<br><br>' +
+      'Score: ' + data.scores.player1 + ' - ' + data.scores.player2;
+    
+    winnerPopup.style.display = 'flex';
+    
+    // Handle next round button
+    nextRoundBtn.onclick = function() {
+      console.log('[DUEL] Player clicked Next Round button');
+      winnerPopup.style.display = 'none';
+      updateTurnStatus('Waiting for opponent to continue...');
+      
+      // Emit ready for next round
+      socket.emit('player_ready_for_next_round', {
+        gameId: gameState.gameId
+      });
+    };
+    
+    // Handle surrender button
+    surrenderPopupBtn.onclick = function() {
+      winnerPopup.style.display = 'none';
+      handleSurrender();
+    };
+  }
+  
+  /**
+   * Show final result popup
+   */
+  function showFinalResultPopup(data) {
+    const finalPopup = document.getElementById('finalPopup');
+    const finalTitle = document.getElementById('finalTitle');
+    const finalDetails = document.getElementById('finalDetails');
+    const rematchBtn = document.getElementById('rematchBtn');
+    const returnHomeBtn = document.getElementById('returnHomeBtn');
+    
+    const finalWinnerName = data.winner ? data.winner.username : 'TIE';
+    const player1Name = data.player1.username || gameState.player1.username;
+    const player2Name = data.player2.username || gameState.player2.username;
+    const finalScore = data.player1.score + ' - ' + data.player2.score;
+    
+    finalTitle.textContent = 'Game Over!';
+    finalDetails.innerHTML = 
+      '<strong>Winner: ' + finalWinnerName + '</strong><br><br>' +
+      'Final Score:<br>' +
+      player1Name + ': ' + data.player1.score + '<br>' +
+      player2Name + ': ' + data.player2.score;
+    
+    finalPopup.style.display = 'flex';
+    
+    // Handle rematch button
+    rematchBtn.onclick = function() {
+      finalPopup.style.display = 'none';
+      // TODO: Implement rematch functionality
+      alert('Rematch functionality coming soon!');
+      window.location.href = '/pages/homeLogged.html';
+    };
+    
+    // Return home button already has href in HTML
+  }
 
   /**
    * Cancel game via API

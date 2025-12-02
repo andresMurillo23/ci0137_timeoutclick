@@ -13,7 +13,7 @@ connectDB();
 
 // Initialize Socket.IO (no session middleware needed)
 const { initializeSocket } = require('./socket');
-const io = initializeSocket(server);
+const { io, socketManager } = initializeSocket(server);
 
 // Make io accessible to other modules
 app.set('socketio', io);
