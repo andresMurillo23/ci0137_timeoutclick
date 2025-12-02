@@ -95,8 +95,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     socket.on('player_clicked', handlePlayerClicked);
     socket.on('round_ended', handleRoundEnded);
     socket.on('game_ended', handleGameEnded);
+    socket.on('game_ended_forfeit', handleGameEndedForfeit);
     socket.on('player_disconnected', handlePlayerDisconnected);
-    socket.on('error', handleError);
+    socket.on('game_error', handleError);
   }
 
   /**
@@ -114,9 +115,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     player1Name.textContent = data.game.player1.username.toUpperCase();
     player2Name.textContent = data.game.player2.username.toUpperCase();
     goalValue.textContent = data.game.goalTime + 's';
+    roundNumber.textContent = '1';
 
     const opponent = gameState.playerRole === 'player1' ? data.game.player2 : data.game.player1;
     opponentName.textContent = opponent.username.toUpperCase();
+    
+    // Update opponent avatar
+    const opponentAvatar = document.getElementById('opponentAvatar');
+    if (opponentAvatar && opponent.avatar) {
+      const avatarUrl = opponent.avatar.startsWith('http') ? 
+        opponent.avatar : 
+        `http://localhost:3000/uploads/avatars/${opponent.avatar}`;
+      opponentAvatar.src = avatarUrl;
+    }
 
     updateTurnStatus('Waiting for opponent...');
     pressButton.disabled = true;
@@ -222,12 +233,30 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   /**
+   * Handle game ended by forfeit
+   */
+  function handleGameEndedForfeit(data) {
+    console.log('[DUEL] Game ended by forfeit:', data);
+    gameState.gameEnded = true;
+    pressButton.disabled = true;
+    
+    alert('Opponent disconnected. You win by forfeit!');
+    window.location.href = '/pages/homeLogged.html';
+  }
+
+  /**
    * Handle player disconnected
    */
   function handlePlayerDisconnected(data) {
     console.log('[DUEL] Player disconnected:', data);
-    alert('Opponent disconnected. Game ended.');
-    window.location.href = '/pages/homeLogged.html';
+    
+    if (!gameState.gameEnded) {
+      alert('Opponent disconnected. Game ended.');
+      gameState.gameEnded = true;
+      setTimeout(() => {
+        window.location.href = '/pages/homeLogged.html';
+      }, 2000);
+    }
   }
 
   /**
@@ -349,16 +378,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   /**
    * Handle surrender button
    */
-  surrenderBtn.addEventListener('click', () => {
+  surrenderBtn.addEventListener('click', async () => {
     if (confirm('Are you sure you want to surrender?')) {
+      gameState.gameEnded = true;
+      await cancelCurrentGame();
       socket.emit('leave_game', { gameId: gameState.gameId });
+      socket.disconnect();
       window.location.href = '/pages/homeLogged.html';
     }
   });
 
-  surrenderPopupBtn.addEventListener('click', () => {
+  surrenderPopupBtn.addEventListener('click', async () => {
     if (confirm('Are you sure you want to surrender?')) {
+      gameState.gameEnded = true;
+      await cancelCurrentGame();
       socket.emit('leave_game', { gameId: gameState.gameId });
+      socket.disconnect();
       window.location.href = '/pages/homeLogged.html';
     }
   });
@@ -380,11 +415,35 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   /**
+   * Cancel game via API
+   */
+  async function cancelCurrentGame() {
+    if (!gameState.gameId) return;
+    
+    try {
+      await window.api.delete(`/games/${gameState.gameId}`);
+      console.log('[DUEL] Game cancelled successfully');
+    } catch (error) {
+      console.error('[DUEL] Failed to cancel game:', error);
+    }
+  }
+
+  /**
    * Clean up on page unload
    */
-  window.addEventListener('beforeunload', () => {
-    if (socket) {
+  window.addEventListener('beforeunload', async (e) => {
+    if (socket && gameState.gameId && !gameState.gameEnded) {
+      // Cancel game if still active
+      await cancelCurrentGame();
+      socket.emit('leave_game', { gameId: gameState.gameId });
       socket.disconnect();
+    }
+  });
+
+  // Handle page visibility change (user switches tabs)
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && socket && gameState.gameId && !gameState.gameEnded) {
+      console.log('[DUEL] Page hidden, maintaining connection');
     }
   });
 

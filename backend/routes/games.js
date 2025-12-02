@@ -7,6 +7,9 @@ const {
   getGameDetails,
   getActiveGame,
   cancelGame,
+  cleanupWaitingGames,
+  forceCleanupActiveGames,
+  getUserGamesStatus,
   getUserGameStats,
   getLeaderboard
 } = require('../controllers/gameController');
@@ -22,6 +25,27 @@ const {
  * @access  Private
  */
 router.post('/challenge', requireAuth, createChallenge);
+
+/**
+ * @route   POST /api/games/cleanup
+ * @desc    Clean up old waiting games
+ * @access  Private
+ */
+router.post('/cleanup', requireAuth, cleanupWaitingGames);
+
+/**
+ * @route   POST /api/games/force-cleanup
+ * @desc    Force cleanup all active games for user (emergency)
+ * @access  Private
+ */
+router.post('/force-cleanup', requireAuth, forceCleanupActiveGames);
+
+/**
+ * @route   GET /api/games/debug-status
+ * @desc    Get debug info about user's games
+ * @access  Private
+ */
+router.get('/debug-status', requireAuth, getUserGamesStatus);
 
 /**
  * @route   GET /api/games/active

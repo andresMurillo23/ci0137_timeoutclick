@@ -111,14 +111,30 @@ gameSessionSchema.methods.getConnectedPlayersCount = function() {
 
 /**
  * Set player socket connection
+ * @param {String} playerId - User ID
+ * @param {String} socketId - Socket ID
+ * @param {Boolean} connected - Connection status
+ * @param {Object} game - Game object with player1 and player2
  */
-gameSessionSchema.methods.setPlayerConnection = function(playerId, socketId, connected = true) {
-  if (this.gameId.player1.toString() === playerId.toString()) {
-    this.player1SocketId = socketId;
-    this.player1Connected = connected;
-  } else if (this.gameId.player2.toString() === playerId.toString()) {
-    this.player2SocketId = socketId;
-    this.player2Connected = connected;
+gameSessionSchema.methods.setPlayerConnection = function(playerId, socketId, connected = true, game = null) {
+  // If game object is provided, use it to determine which player
+  if (game) {
+    if (game.player1._id ? game.player1._id.toString() === playerId.toString() : game.player1.toString() === playerId.toString()) {
+      this.player1SocketId = socketId;
+      this.player1Connected = connected;
+    } else if (game.player2._id ? game.player2._id.toString() === playerId.toString() : game.player2.toString() === playerId.toString()) {
+      this.player2SocketId = socketId;
+      this.player2Connected = connected;
+    }
+  } else {
+    // Fallback: try to determine by existing socket IDs
+    if (this.player1SocketId === socketId || !this.player1SocketId) {
+      this.player1SocketId = socketId;
+      this.player1Connected = connected;
+    } else if (this.player2SocketId === socketId || !this.player2SocketId) {
+      this.player2SocketId = socketId;
+      this.player2Connected = connected;
+    }
   }
 };
 

@@ -411,12 +411,148 @@ const getLeaderboard = async (req, res) => {
   }
 };
 
+/**
+ * Clean up old waiting games for user
+ */
+const cleanupWaitingGames = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    // Cancel all waiting games where user is player1 (sender)
+    const result = await Game.updateMany(
+      {
+        player1: userId,
+        status: 'waiting'
+      },
+      {
+        status: 'cancelled',
+        cancelledAt: new Date(),
+        cancelReason: 'cleanup'
+      }
+    );
+
+    res.json({
+      success: true,
+      message: 'Waiting games cleaned up',
+      count: result.modifiedCount
+    });
+
+  } catch (error) {
+    console.error('Cleanup waiting games error:', error);
+    res.status(500).json({ error: 'Failed to cleanup waiting games' });
+  }
+};
+
+/**
+ * Debug: Get user's current game status
+ */
+const getUserGamesStatus = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const GameSession = require('../models/GameSession');
+
+    const allGames = await Game.find({
+      $or: [
+        { player1: userId },
+        { player2: userId }
+      ]
+    }).sort({ updatedAt: -1 }).limit(10);
+
+    const gamesWithSessions = await Promise.all(allGames.map(async (game) => {
+      const session = await GameSession.findOne({ gameId: game._id });
+      return {
+        id: game._id,
+        status: game.status,
+        createdAt: game.createdAt,
+        updatedAt: game.updatedAt,
+        hasSession: !!session,
+        sessionState: session?.gameState || null,
+        connectedPlayers: session?.getConnectedPlayersCount() || 0
+      };
+    }));
+
+    res.json({
+      success: true,
+      userId: userId,
+      games: gamesWithSessions
+    });
+
+  } catch (error) {
+    console.error('Get user games status error:', error);
+    res.status(500).json({ error: 'Failed to get games status' });
+  }
+};
+
+/**
+ * Force cleanup all active games for user (emergency cleanup)
+ */
+const forceCleanupActiveGames = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const GameSession = require('../models/GameSession');
+
+    console.log(`[CLEANUP] Force cleanup for user ${userId}`);
+
+    // Only cleanup games that haven't been updated in the last 30 seconds
+    const thirtySecondsAgo = new Date(Date.now() - 30000);
+
+    // Find all active/starting games for this user that are old
+    const activeGames = await Game.find({
+      $or: [
+        { player1: userId },
+        { player2: userId }
+      ],
+      status: { $in: ['waiting', 'starting', 'active'] },
+      updatedAt: { $lt: thirtySecondsAgo }
+    });
+
+    console.log(`[CLEANUP] Found ${activeGames.length} stale games (older than 30s)`);
+
+    let cancelled = 0;
+    for (const game of activeGames) {
+      // Double check: only cancel if no active session
+      const gameSession = await GameSession.findOne({ gameId: game._id });
+      
+      if (!gameSession || gameSession.getConnectedPlayersCount() === 0) {
+        game.status = 'cancelled';
+        game.gameEndedAt = new Date();
+        game.cancelReason = 'force_cleanup_stale';
+        await game.save();
+        
+        // Clean up game session if exists
+        if (gameSession) {
+          await GameSession.findByIdAndDelete(gameSession._id);
+        }
+        
+        cancelled++;
+        console.log(`[CLEANUP] Cancelled stale game ${game._id}`);
+      } else {
+        console.log(`[CLEANUP] Skipped game ${game._id} - has active session with ${gameSession.getConnectedPlayersCount()} players`);
+      }
+    }
+
+    res.json({
+      success: true,
+      message: 'Stale games force cleaned',
+      gamesFound: activeGames.length,
+      gamesCancelled: cancelled
+    });
+
+  } catch (error) {
+    console.error('Force cleanup error:', error);
+    res.status(500).json({ error: 'Failed to force cleanup games' });
+  }
+};
+
 module.exports = {
   createChallenge,
   getGameHistory,
   getGameDetails,
   getActiveGame,
   cancelGame,
+  cleanupWaitingGames,
+  forceCleanupActiveGames,
+  getUserGamesStatus,
   getUserGameStats,
   getLeaderboard
 };

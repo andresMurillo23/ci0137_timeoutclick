@@ -22,6 +22,66 @@ document.addEventListener('DOMContentLoaded', async () => {
   let selectedPlayer = null;
   let challengePending = false;
   let socket = null;
+  let currentGameId = null;
+  let pendingChallenges = [];
+
+  /**
+   * Clean up old waiting games from this user
+   */
+  async function cleanupOldGames() {
+    try {
+      console.log('[CHALLENGE] Cleaning up old waiting games...');
+      
+      // Only cleanup waiting games (not active ones)
+      await window.api.post('/games/cleanup');
+      
+      console.log('[CHALLENGE] Waiting games cleaned up');
+    } catch (error) {
+      console.error('[CHALLENGE] Failed to cleanup old games:', error);
+      // Non-critical error, continue
+    }
+  }
+
+  /**
+   * Debug: Check current game status
+   */
+  async function checkGameStatus() {
+    try {
+      const status = await window.api.get('/games/debug-status');
+      console.log('[CHALLENGE] Game status:', status);
+      console.table(status.games);
+      return status;
+    } catch (error) {
+      console.error('[CHALLENGE] Failed to check status:', error);
+    }
+  }
+
+  /**
+   * Force cleanup all stuck games (manual emergency function)
+   */
+  async function forceCleanupAllGames() {
+    try {
+      console.log('[CHALLENGE] Force cleaning all stuck games...');
+      const forceResult = await window.api.post('/games/force-cleanup');
+      console.log('[CHALLENGE] Force cleanup result:', forceResult);
+      
+      if (forceResult.gamesCancelled > 0) {
+        alert(`Cancelled ${forceResult.gamesCancelled} stuck games`);
+      } else {
+        alert('No stuck games found');
+      }
+      
+      // Show updated status
+      await checkGameStatus();
+    } catch (error) {
+      console.error('[CHALLENGE] Failed to force cleanup:', error);
+      alert('Failed to cleanup games');
+    }
+  }
+
+  // Expose functions globally for manual use via console
+  window.checkGameStatus = checkGameStatus;
+  window.forceCleanupGames = forceCleanupAllGames;
 
   /**
    * Initialize Socket.IO for real-time player status
@@ -42,25 +102,147 @@ document.addEventListener('DOMContentLoaded', async () => {
       updatePlayerStatus(data.userId, data.status);
     });
 
+    // Receive incoming challenges
+    socket.on('challenge_received', (data) => {
+      console.log('[CHALLENGE] Challenge received:', data);
+      addChallengeNotification(data);
+    });
+
+    // Challenge accepted by opponent
     socket.on('challenge_accepted', (data) => {
       console.log('[CHALLENGE] Challenge accepted:', data);
       closeModal();
       window.location.href = `/pages/duel.html?gameId=${data.gameId}`;
     });
 
+    // Challenge declined by opponent
     socket.on('challenge_declined', (data) => {
       console.log('[CHALLENGE] Challenge declined');
       closeModal();
-      alert('Player declined your challenge');
+      alert(`${data.declinedBy} declined your challenge`);
       challengePending = false;
+      currentGameId = null;
     });
 
-    socket.on('challenge_timeout', () => {
-      console.log('[CHALLENGE] Challenge timeout');
-      closeModal();
-      alert('Challenge timed out');
-      challengePending = false;
+    // Challenge cancelled by sender
+    socket.on('challenge_cancelled', (data) => {
+      console.log('[CHALLENGE] Challenge cancelled by sender');
+      removeChallengeNotification(data.gameId);
     });
+
+    socket.on('challenge_error', (data) => {
+      console.error('[CHALLENGE] Error:', data.message);
+      alert('Challenge error: ' + data.message);
+      closeModal();
+      challengePending = false;
+      currentGameId = null;
+    });
+  }
+
+  /**
+   * Add challenge notification to the UI
+   */
+  function addChallengeNotification(challenge) {
+    const notificationsSection = document.querySelector('.notifications');
+    if (!notificationsSection) return;
+
+    // Remove "No notifications" message if present
+    const noNotifications = notificationsSection.querySelector('p');
+    if (noNotifications && noNotifications.textContent.includes('No pending')) {
+      noNotifications.remove();
+    }
+
+    // Check if notification already exists
+    if (document.getElementById(`challenge-${challenge.gameId}`)) return;
+
+    // Add to pending challenges
+    pendingChallenges.push(challenge);
+
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = 'notification-item';
+    notification.id = `challenge-${challenge.gameId}`;
+    notification.innerHTML = `
+      <div class="notification-content">
+        <p><strong>${challenge.challenger.username}</strong> wants to duel!</p>
+        <p class="notification-time">Goal: ${challenge.goalTime}s</p>
+      </div>
+      <div class="notification-actions">
+        <button class="btn-accept" data-game-id="${challenge.gameId}" data-challenger-id="${challenge.challengerId}">ACCEPT</button>
+        <button class="btn-decline" data-game-id="${challenge.gameId}" data-challenger-id="${challenge.challengerId}">DECLINE</button>
+      </div>
+    `;
+
+    notificationsSection.appendChild(notification);
+
+    // Add event listeners
+    const acceptBtn = notification.querySelector('.btn-accept');
+    const declineBtn = notification.querySelector('.btn-decline');
+
+    acceptBtn.addEventListener('click', () => handleAcceptChallenge(challenge));
+    declineBtn.addEventListener('click', () => handleDeclineChallenge(challenge));
+  }
+
+  /**
+   * Remove challenge notification from UI
+   */
+  function removeChallengeNotification(gameId) {
+    const notification = document.getElementById(`challenge-${gameId}`);
+    if (notification) {
+      notification.remove();
+    }
+
+    // Remove from pending challenges
+    pendingChallenges = pendingChallenges.filter(c => c.gameId !== gameId);
+
+    // Show "No notifications" if empty
+    const notificationsSection = document.querySelector('.notifications');
+    if (notificationsSection && notificationsSection.children.length === 0) {
+      notificationsSection.innerHTML = '<p style="text-align: center; padding: 20px;">No pending challenges</p>';
+    }
+  }
+
+  /**
+   * Handle accepting a challenge
+   */
+  async function handleAcceptChallenge(challenge) {
+    try {
+      // Emit accept event via socket
+      socket.emit('accept_challenge', {
+        gameId: challenge.gameId,
+        challengerId: challenge.challengerId
+      });
+
+      // Remove notification
+      removeChallengeNotification(challenge.gameId);
+
+      // Wait for server confirmation, then redirect
+    } catch (error) {
+      console.error('[CHALLENGE] Failed to accept:', error);
+      alert('Failed to accept challenge');
+    }
+  }
+
+  /**
+   * Handle declining a challenge
+   */
+  async function handleDeclineChallenge(challenge) {
+    try {
+      // Emit decline event via socket
+      socket.emit('decline_challenge', {
+        gameId: challenge.gameId,
+        challengerId: challenge.challengerId
+      });
+
+      // Remove notification
+      removeChallengeNotification(challenge.gameId);
+
+      // Show confirmation
+      console.log('[CHALLENGE] Challenge declined');
+    } catch (error) {
+      console.error('[CHALLENGE] Failed to decline:', error);
+      alert('Failed to decline challenge');
+    }
   }
 
   /**
@@ -120,6 +302,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     listContainer.innerHTML = '';
+
+    if (players.length === 0) {
+      listContainer.innerHTML = '<p style="text-align: center; padding: 20px;">No friends available to challenge.<br>Add friends first!</p>';
+      return;
+    }
 
     players.forEach(player => {
       console.log('[CHALLENGE] Processing player:', player);
@@ -198,7 +385,12 @@ document.addEventListener('DOMContentLoaded', async () => {
    * Open confirmation modal
    */
   function openConfirmModal(player) {
-    selectedPlayer = player;
+    console.log('[CHALLENGE] Opening modal for player:', player);
+    selectedPlayer = {
+      id: player.id || player._id,
+      username: player.username,
+      avatar: player.avatar
+    };
     whoSpan.textContent = player.username;
     whoWaitingSpan.textContent = player.username;
 
@@ -231,12 +423,33 @@ document.addEventListener('DOMContentLoaded', async () => {
       panelConfirm.hidden = true;
       panelWaiting.hidden = false;
 
+      console.log('[CHALLENGE] Sending challenge to:', selectedPlayer);
+
       // Send challenge via API
       const response = await window.api.post(`/games/challenge`, {
         opponentId: selectedPlayer.id
       });
 
       console.log('[CHALLENGE] Challenge sent:', response);
+      
+      // Store game ID for potential cancellation
+      currentGameId = response.game?.id || response.game?._id || response.gameId;
+      
+      console.log('[CHALLENGE] Game ID:', currentGameId);
+      console.log('[CHALLENGE] Opponent ID:', selectedPlayer.id);
+      console.log('[CHALLENGE] Socket connected:', socket?.connected);
+
+      // Emit socket event to notify opponent in real-time
+      if (socket && currentGameId) {
+        const challengeData = {
+          gameId: String(currentGameId),
+          opponentId: String(selectedPlayer.id)
+        };
+        console.log('[CHALLENGE] Emitting send_challenge:', challengeData);
+        socket.emit('send_challenge', challengeData);
+      } else {
+        console.error('[CHALLENGE] Cannot emit challenge - socket or gameId missing');
+      }
 
       // Wait for response via Socket.IO (challenge_accepted or challenge_declined)
     } catch (error) {
@@ -247,16 +460,30 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   /**
+   * Cancel pending challenge
+   */
+  function cancelChallenge() {
+    if (!currentGameId || !selectedPlayer) return;
+
+    // Emit cancel event via socket
+    if (socket) {
+      socket.emit('cancel_challenge', {
+        gameId: currentGameId,
+        opponentId: selectedPlayer.id
+      });
+    }
+
+    closeModal();
+  }
+
+  /**
    * Event listeners
    */
   noBtn.addEventListener('click', closeModal);
 
   yesBtn.addEventListener('click', sendChallenge);
 
-  cancelWaitBtn.addEventListener('click', () => {
-    // TODO: Cancel challenge via API
-    closeModal();
-  });
+  cancelWaitBtn.addEventListener('click', cancelChallenge);
 
   // Close modal on overlay click
   confirmOverlay.addEventListener('click', (e) => {
@@ -275,6 +502,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // Initialize
+  await cleanupOldGames();
   await initSocket();
   await loadPlayers();
 });

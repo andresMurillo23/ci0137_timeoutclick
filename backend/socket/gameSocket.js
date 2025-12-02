@@ -31,16 +31,36 @@ class GameSocketHandler {
   async handleJoinGame(socket, data) {
     try {
       const { gameId } = data;
-      const userId = socket.request.session?.userId;
+      const userId = socket.userId; // Set by authentication middleware
+
+      console.log(`[GAME] Join attempt - User: ${userId}, Game: ${gameId}`);
 
       if (!userId) {
-        socket.emit('error', { message: 'Authentication required' });
+        console.error('[GAME] Join failed - No userId');
+        socket.emit('game_error', { message: 'Authentication required' });
         return;
       }
 
       const game = await Game.findById(gameId).populate('player1 player2');
       if (!game) {
-        socket.emit('error', { message: 'Game not found' });
+        console.error(`[GAME] Join failed - Game ${gameId} not found`);
+        socket.emit('game_error', { message: 'Game not found' });
+        return;
+      }
+
+      console.log(`[GAME] Game found - Status: ${game.status}`);
+
+      // Check if game was cancelled
+      if (game.status === 'cancelled') {
+        console.error(`[GAME] Join failed - Game ${gameId} was cancelled`);
+        socket.emit('game_error', { message: 'Game was cancelled' });
+        return;
+      }
+
+      // Check if game is in a joinable state
+      if (!['waiting', 'starting', 'active'].includes(game.status)) {
+        console.error(`[GAME] Join failed - Invalid status: ${game.status}`);
+        socket.emit('game_error', { message: `Game is in ${game.status} state and cannot be joined` });
         return;
       }
 
@@ -48,7 +68,7 @@ class GameSocketHandler {
                       game.player2._id.toString() === userId;
       
       if (!isPlayer) {
-        socket.emit('error', { message: 'You are not part of this game' });
+        socket.emit('game_error', { message: 'You are not part of this game' });
         return;
       }
 
@@ -60,11 +80,13 @@ class GameSocketHandler {
         });
       }
 
-      gameSession.setPlayerConnection(userId, socket.id, true);
+      gameSession.setPlayerConnection(userId, socket.id, true, game);
       await gameSession.save();
 
       socket.join(`game_${gameId}`);
       this.playerSockets.set(socket.id, { userId, gameId, gameSession });
+
+      console.log(`[GAME] User ${userId} successfully joined game ${gameId}`);
 
       socket.emit('game_joined', {
         gameId: gameId,
@@ -91,7 +113,10 @@ class GameSocketHandler {
         }
       });
 
-      if (gameSession.areBothPlayersConnected() && game.status === 'waiting') {
+      // Start countdown when both players are connected and game is ready
+      if (gameSession.areBothPlayersConnected() && 
+          (game.status === 'waiting' || game.status === 'active') &&
+          gameSession.gameState === 'waiting_players') {
         await this.startGameCountdown(gameId);
       }
 
@@ -102,8 +127,9 @@ class GameSocketHandler {
       });
 
     } catch (error) {
-      console.error('Join game error:', error);
-      socket.emit('error', { message: 'Failed to join game' });
+      console.error('[GAME] Join game error:', error);
+      console.error('[GAME] Error stack:', error.stack);
+      socket.emit('game_error', { message: 'Failed to join game', detail: error.message });
     }
   }
 
@@ -180,7 +206,7 @@ class GameSocketHandler {
     try {
       const playerData = this.playerSockets.get(socket.id);
       if (!playerData) {
-        socket.emit('error', { message: 'Player not found in active games' });
+        socket.emit('game_error', { message: 'Player not found in active games' });
         return;
       }
 
@@ -191,7 +217,7 @@ class GameSocketHandler {
       const gameSession = await GameSession.findOne({ gameId });
 
       if (!game || !gameSession || gameSession.gameState !== 'playing') {
-        socket.emit('error', { message: 'Game is not in playing state' });
+        socket.emit('game_error', { message: 'Game is not in playing state' });
         return;
       }
 
@@ -245,8 +271,8 @@ class GameSocketHandler {
       }
 
     } catch (error) {
-      console.error('Handle player click error:', error);
-      socket.emit('error', { message: 'Failed to register click' });
+      console.error('Player click error:', error);
+      socket.emit('game_error', { message: 'Failed to register click' });
     }
   }
 
@@ -366,11 +392,35 @@ class GameSocketHandler {
           connectedCount: gameSession.getConnectedPlayersCount()
         });
 
-        if (gameSession.gameState === 'playing' && gameSession.getConnectedPlayersCount() === 0) {
-          const game = await Game.findById(gameId);
-          if (game && game.status === 'active') {
+        // Cancel game if both players disconnect or if one disconnects during active gameplay
+        const game = await Game.findById(gameId);
+        if (game && (game.status === 'active' || game.status === 'starting')) {
+          if (gameSession.getConnectedPlayersCount() === 0) {
+            // Both players disconnected - cancel game
             game.status = 'cancelled';
+            game.gameEndedAt = new Date();
             await game.save();
+            console.log(`[GAME] Game ${gameId} cancelled - both players disconnected`);
+          } else if (gameSession.gameState === 'playing') {
+            // One player disconnected during gameplay - opponent wins by forfeit
+            const connectedPlayerId = gameSession.player1Connected ? 
+              gameSession.player1SocketId : gameSession.player2SocketId;
+            
+            if (connectedPlayerId) {
+              game.status = 'finished';
+              game.gameEndedAt = new Date();
+              // Set winner as the connected player
+              const disconnectedIsPlayer1 = !gameSession.player1Connected;
+              game.winner = disconnectedIsPlayer1 ? game.player2 : game.player1;
+              await game.save();
+              
+              this.io.to(`game_${gameId}`).emit('game_ended_forfeit', {
+                winner: game.winner,
+                reason: 'opponent_disconnected'
+              });
+              
+              console.log(`[GAME] Game ${gameId} ended by forfeit`);
+            }
           }
         }
       }

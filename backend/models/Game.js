@@ -190,12 +190,13 @@ gameSchema.methods.getResultForPlayer = function(playerId) {
  * Static method to find active games for a user
  */
 gameSchema.statics.findActiveGameForUser = async function(userId) {
+  // Only block users who are actually playing (not just waiting for challenge acceptance)
   return await this.findOne({
     $or: [
       { player1: userId },
       { player2: userId }
     ],
-    status: { $in: ['waiting', 'starting', 'active'] }
+    status: { $in: ['starting', 'active'] }
   });
 };
 

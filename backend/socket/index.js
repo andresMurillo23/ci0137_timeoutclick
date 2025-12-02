@@ -58,7 +58,8 @@ class SocketManager {
    * Handle new socket connection
    */
   handleConnection(socket) {
-    console.log(`User ${socket.username} connected with socket ${socket.id}`);
+    console.log(`[SOCKET] User ${socket.username} connected with socket ${socket.id}`);
+    console.log(`[SOCKET] User ID: ${socket.userId} (type: ${typeof socket.userId})`);
 
     this.connectedUsers.set(socket.userId, {
       socketId: socket.id,
@@ -66,6 +67,8 @@ class SocketManager {
       connectedAt: new Date(),
       status: 'online'
     });
+    
+    console.log(`[SOCKET] Total connected users: ${this.connectedUsers.size}`);
 
     socket.emit('connection_established', {
       socketId: socket.id,
@@ -75,6 +78,12 @@ class SocketManager {
     });
 
     this.gameHandler.initializeEvents(socket);
+
+    // Challenge events
+    socket.on('send_challenge', (data) => this.handleSendChallenge(socket, data));
+    socket.on('accept_challenge', (data) => this.handleAcceptChallenge(socket, data));
+    socket.on('decline_challenge', (data) => this.handleDeclineChallenge(socket, data));
+    socket.on('cancel_challenge', (data) => this.handleCancelChallenge(socket, data));
 
     socket.on('ping', (callback) => {
       if (callback) callback({ serverTime: Date.now() });
@@ -105,8 +114,58 @@ class SocketManager {
   /**
    * Handle socket disconnection
    */
-  handleDisconnection(socket, reason) {
-    console.log(`User ${socket.username} disconnected: ${reason}`);
+  async handleDisconnection(socket, reason) {
+    console.log(`[SOCKET] User ${socket.username} disconnected: ${reason}`);
+
+    // Cancel any pending challenges sent by this user
+    try {
+      const Game = require('../models/Game');
+      const GameSession = require('../models/GameSession');
+      
+      // Cancel waiting challenges
+      await Game.updateMany(
+        {
+          player1: socket.userId,
+          status: 'waiting'
+        },
+        {
+          status: 'cancelled',
+          cancelledAt: new Date(),
+          cancelReason: 'sender_disconnected'
+        }
+      );
+
+      // Don't cancel active/starting games on main socket disconnect
+      // They have their own game socket connection and will be handled by gameSocket.js
+      // Only cancel if game has been stuck for more than 2 minutes
+      const twoMinutesAgo = new Date(Date.now() - 120000);
+      
+      const stuckGames = await Game.find({
+        $or: [
+          { player1: socket.userId },
+          { player2: socket.userId }
+        ],
+        status: { $in: ['starting', 'active'] },
+        updatedAt: { $lt: twoMinutesAgo }
+      });
+
+      // For stuck games, check if there's an active game session
+      for (const game of stuckGames) {
+        const gameSession = await GameSession.findOne({ gameId: game._id });
+        
+        // Only cancel if no active game session (means they never joined the game properly)
+        if (!gameSession || gameSession.getConnectedPlayersCount() === 0) {
+          game.status = 'cancelled';
+          game.gameEndedAt = new Date();
+          game.cancelReason = 'player_never_joined_timeout';
+          await game.save();
+          console.log(`[SOCKET] Cancelled stuck game ${game._id} (no players joined for 2+ minutes)`);
+        }
+      }
+      
+    } catch (error) {
+      console.error('[SOCKET] Error cancelling games on disconnect:', error);
+    }
 
     this.connectedUsers.delete(socket.userId);
     this.broadcastUserDisconnected(socket);
@@ -195,6 +254,181 @@ class SocketManager {
    */
   isUserOnline(userId) {
     return this.connectedUsers.has(userId);
+  }
+
+  /**
+   * Handle send challenge event
+   */
+  async handleSendChallenge(socket, data) {
+    try {
+      const { gameId, opponentId } = data;
+      
+      console.log('[SOCKET] Send challenge request:', { gameId, opponentId, sender: socket.userId });
+      console.log('[SOCKET] OpponentId type:', typeof opponentId);
+      console.log('[SOCKET] Connected users:', Array.from(this.connectedUsers.keys()));
+      
+      if (!gameId || !opponentId) {
+        socket.emit('challenge_error', { message: 'Missing game ID or opponent ID' });
+        return;
+      }
+
+      // Convert opponentId to string to ensure proper comparison
+      const opponentIdStr = String(opponentId);
+      
+      // Check if opponent is online
+      const opponent = this.connectedUsers.get(opponentIdStr);
+      console.log('[SOCKET] Looking for opponent:', opponentIdStr);
+      console.log('[SOCKET] Opponent lookup result:', opponent);
+      
+      if (!opponent) {
+        // Try to find by checking all connected users
+        console.log('[SOCKET] Detailed connected users:');
+        this.connectedUsers.forEach((value, key) => {
+          console.log(`  - Key: "${key}" (type: ${typeof key}), User: ${value.username}`);
+        });
+        socket.emit('challenge_error', { message: 'Opponent is not online' });
+        return;
+      }
+
+      // Get game details
+      const Game = require('../models/Game');
+      const game = await Game.findById(gameId).populate('player1 player2');
+      
+      if (!game) {
+        socket.emit('challenge_error', { message: 'Game not found' });
+        return;
+      }
+
+      // Send challenge to opponent
+      console.log(`[SOCKET] Sending challenge_received to socket ${opponent.socketId}`);
+      this.io.to(opponent.socketId).emit('challenge_received', {
+        gameId: game._id,
+        challengerId: socket.userId,
+        challenger: {
+          id: socket.userId,
+          username: socket.username
+        },
+        goalTime: game.goalTime,
+        timestamp: new Date()
+      });
+
+      console.log(`[SOCKET] Challenge sent from ${socket.username} to ${opponent.username}`);
+
+    } catch (error) {
+      console.error('[SOCKET] Send challenge error:', error);
+      socket.emit('challenge_error', { message: 'Failed to send challenge' });
+    }
+  }
+
+  /**
+   * Handle accept challenge event
+   */
+  async handleAcceptChallenge(socket, data) {
+    try {
+      const { gameId, challengerId } = data;
+
+      // Update game status to active
+      const Game = require('../models/Game');
+      const game = await Game.findByIdAndUpdate(
+        gameId,
+        { status: 'active', startedAt: new Date() },
+        { new: true }
+      );
+
+      if (!game) {
+        socket.emit('challenge_error', { message: 'Game not found' });
+        return;
+      }
+
+      // Notify challenger that challenge was accepted
+      const challenger = this.connectedUsers.get(challengerId);
+      if (challenger) {
+        this.io.to(challenger.socketId).emit('challenge_accepted', {
+          gameId: game._id,
+          acceptedBy: socket.username,
+          timestamp: new Date()
+        });
+      }
+
+      // Notify accepter
+      socket.emit('challenge_accepted', {
+        gameId: game._id,
+        acceptedBy: socket.username,
+        timestamp: new Date()
+      });
+
+      console.log(`[SOCKET] Challenge accepted by ${socket.username} for game ${gameId}`);
+
+    } catch (error) {
+      console.error('[SOCKET] Accept challenge error:', error);
+      socket.emit('challenge_error', { message: 'Failed to accept challenge' });
+    }
+  }
+
+  /**
+   * Handle decline challenge event
+   */
+  async handleDeclineChallenge(socket, data) {
+    try {
+      const { gameId, challengerId } = data;
+
+      // Update game status to cancelled
+      const Game = require('../models/Game');
+      await Game.findByIdAndUpdate(gameId, { 
+        status: 'cancelled',
+        cancelledAt: new Date(),
+        cancelReason: 'declined'
+      });
+
+      // Notify challenger that challenge was declined
+      const challenger = this.connectedUsers.get(challengerId);
+      if (challenger) {
+        this.io.to(challenger.socketId).emit('challenge_declined', {
+          gameId: gameId,
+          declinedBy: socket.username,
+          timestamp: new Date()
+        });
+      }
+
+      console.log(`[SOCKET] Challenge declined by ${socket.username} for game ${gameId}`);
+
+    } catch (error) {
+      console.error('[SOCKET] Decline challenge error:', error);
+      socket.emit('challenge_error', { message: 'Failed to decline challenge' });
+    }
+  }
+
+  /**
+   * Handle cancel challenge event
+   */
+  async handleCancelChallenge(socket, data) {
+    try {
+      const { gameId, opponentId } = data;
+
+      // Update game status to cancelled
+      const Game = require('../models/Game');
+      await Game.findByIdAndUpdate(gameId, { 
+        status: 'cancelled',
+        cancelledAt: new Date(),
+        cancelReason: 'cancelled_by_sender'
+      });
+
+      // Notify opponent that challenge was cancelled
+      const opponent = this.connectedUsers.get(opponentId);
+      if (opponent) {
+        this.io.to(opponent.socketId).emit('challenge_cancelled', {
+          gameId: gameId,
+          cancelledBy: socket.username,
+          timestamp: new Date()
+        });
+      }
+
+      console.log(`[SOCKET] Challenge cancelled by ${socket.username} for game ${gameId}`);
+
+    } catch (error) {
+      console.error('[SOCKET] Cancel challenge error:', error);
+      socket.emit('challenge_error', { message: 'Failed to cancel challenge' });
+    }
   }
 
   /**
