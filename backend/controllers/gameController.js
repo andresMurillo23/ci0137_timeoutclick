@@ -102,6 +102,7 @@ const getGameHistory = async (req, res) => {
     .populate('player1', 'username avatar')
     .populate('player2', 'username avatar')
     .populate('winner', 'username avatar')
+    .populate('rounds.winner', 'username avatar')
     .sort({ createdAt: -1 })
     .limit(parseInt(limit))
     .skip(skip);
@@ -125,6 +126,7 @@ const getGameHistory = async (req, res) => {
       result: game.getResultForPlayer(userId),
       gameType: game.gameType,
       duration: game.gameEndedAt ? game.gameEndedAt - game.gameStartedAt : null,
+      rounds: game.rounds || [],
       createdAt: game.createdAt,
       completedAt: game.gameEndedAt
     }));
