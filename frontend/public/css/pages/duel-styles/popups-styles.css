@@ -162,16 +162,29 @@
 }
 
 /* Modal titles */
-#winnerTitle, #finalTitle{
+.modal-content h2,
+#winnerTitle, 
+#finalTitle,
+#stillThereTitle,
+#rematchRequestTitle,
+#rematchDeclinedTitle {
   font-family: "Rye", system-ui, sans-serif;
   text-shadow: 3px 3px 0 #e6cc99, 4px 4px 4px rgba(0, 0, 0, .3);
   letter-spacing: 1.5px;
   color: var(--sienna);
+  margin-bottom: 1rem;
 }
 
 /* Modal details text */
-#winnerDetails, #finalDetails{
+.modal-content p,
+#winnerDetails, 
+#finalDetails,
+#stillThereDetails,
+#rematchRequestDetails,
+#rematchDeclinedDetails {
   color: var(--black-bean);
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
 }
 
 /* Action buttons container */
@@ -191,6 +204,10 @@
   border: none;
   cursor: pointer;
   transition: 0.2s ease;
+  font-family: var(--montfont);
+  font-size: 1rem;
+  text-decoration: none;
+  display: inline-block;
 }
 
 /* Confirm button */
