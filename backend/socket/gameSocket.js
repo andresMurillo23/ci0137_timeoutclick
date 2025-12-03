@@ -369,6 +369,12 @@ class GameSocketHandler {
         return;
       }
 
+      // If game is already finished, ignore ready signal
+      if (game.status === 'finished' || gameSession.gameState === 'finished') {
+        console.log(`[GAME] Game already finished, ignoring ready signal`);
+        return;
+      }
+
       // Mark player as ready
       const isPlayer1 = game.player1._id.toString() === userId;
       if (isPlayer1) {
@@ -641,17 +647,18 @@ class GameSocketHandler {
       this.io.to(`game_${gameId}`).emit('game_finished', gameResult);
       console.log(`[GAME] game_finished emitted successfully!`);
 
-      // Clean up playerSockets immediately so players can start new games
-      console.log(`[GAME] Cleaning up playerSockets for game ${gameId}`);
-      const sockets = await this.io.in(`game_${gameId}`).fetchSockets();
-      sockets.forEach(socket => {
-        this.playerSockets.delete(socket.id);
-        console.log(`[GAME] Removed socket ${socket.id} from playerSockets`);
-      });
-
-      // Clean up game session after a delay (for rematch functionality)
-      setTimeout(() => {
+      // Clean up playerSockets and game session after a delay
+      // This allows players to see final results and potentially rematch
+      setTimeout(async () => {
         console.log(`[GAME] Cleaning up game ${gameId} after 15 seconds`);
+        
+        // Remove players from socket map so they can join new games
+        const sockets = await this.io.in(`game_${gameId}`).fetchSockets();
+        sockets.forEach(socket => {
+          this.playerSockets.delete(socket.id);
+          console.log(`[GAME] Removed socket ${socket.id} from playerSockets`);
+        });
+        
         this.cleanupGame(gameId);
       }, 15000);
       
