@@ -16,6 +16,11 @@
     <button type="submit" class="btn btn--secondary"
             onclick="window.location.href='/pages/unregistered-challenge.html'">PLAY</button>
 
+    <!-- Guest challenge button -->
+    <button type="button" class="btn btn--secondary" id="guestChallengeBtn">
+      CHALLENGE RANDOM PLAYER
+    </button>
+
     <!-- Public leaderboard -->
     <button type="button" class="btn btn--primary-brown"
             onclick="window.location.href='/pages/unregistered-bestPlayers.html'">BEST PLAYERS</button>
@@ -41,3 +46,47 @@
 
 <!-- Shared footer scripts -->
 <script src="/js/partials/footer.js"></script>
+
+<!-- Guest challenge functionality -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const guestChallengeBtn = document.getElementById('guestChallengeBtn');
+  
+  if (guestChallengeBtn) {
+    guestChallengeBtn.addEventListener('click', async () => {
+      // Disable button while processing
+      guestChallengeBtn.disabled = true;
+      guestChallengeBtn.textContent = 'SEARCHING...';
+      
+      try {
+        const response = await fetch('http://localhost:3000/api/games/guest-challenge', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          if (data.emailPreview) {
+            console.log('Email preview:', data.emailPreview);
+          }
+          
+          // Redirect guest immediately to duel page to wait
+          window.location.href = `/pages/duel.html?gameId=${data.gameId}&guest=true&opponent=${encodeURIComponent(data.opponent)}`;
+        } else {
+          alert(data.message || 'No players available at the moment. Please try again later.');
+          guestChallengeBtn.disabled = false;
+          guestChallengeBtn.textContent = 'CHALLENGE RANDOM PLAYER';
+        }
+      } catch (error) {
+        console.error('Guest challenge error:', error);
+        alert('Failed to send challenge. Please try again.');
+        guestChallengeBtn.disabled = false;
+        guestChallengeBtn.textContent = 'CHALLENGE RANDOM PLAYER';
+      }
+    });
+  }
+});
+</script>

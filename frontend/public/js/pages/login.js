@@ -1,9 +1,19 @@
 // Login page functionality
 document.addEventListener('DOMContentLoaded', () => {
+  // Check for redirect parameters (e.g., from guest challenge email)
+  const urlParams = new URLSearchParams(window.location.search);
+  const redirect = urlParams.get('redirect');
+  const gameId = urlParams.get('gameId');
+
   // Redirect if already logged in
   window.auth.onAuthChange((isLoggedIn) => {
     if (isLoggedIn) {
-      window.location.href = '/pages/homeLogged.html';
+      // If coming from guest challenge email, redirect to duel
+      if (redirect === 'duel' && gameId) {
+        window.location.href = `/pages/duel.html?gameId=${gameId}`;
+      } else {
+        window.location.href = '/pages/homeLogged.html';
+      }
     }
   });
 
@@ -28,7 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       await window.auth.login(identifier, password);
-      // Auth manager will redirect automatically
+      
+      // After successful login, redirect based on parameters
+      if (redirect === 'duel' && gameId) {
+        window.location.href = `/pages/duel.html?gameId=${gameId}`;
+      } else {
+        window.location.href = '/pages/homeLogged.html';
+      }
     } catch (error) {
       showError(error.message || 'Login failed. Please try again.');
     } finally {

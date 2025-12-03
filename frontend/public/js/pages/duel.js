@@ -9,41 +9,54 @@ console.log('[DUEL] ========================================');
 
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('[DUEL] DOM Content Loaded event fired');
-  console.log('[DUEL] Checking authentication...');
   
-  if (!window.auth) {
-    console.error('[DUEL] ERROR: window.auth is not defined!');
-    window.PopupManager.error('Error', 'Sistema de autenticación no cargado');
-    return;
-  }
-
-  if (!window.auth.requireAuth()) {
-    console.log('[DUEL] User not authenticated, redirecting to login');
-    window.location.href = '/pages/login.html';
-    return;
-  }
-
-  console.log('[DUEL] User authenticated, proceeding...');
-
-  // Get game ID from URL
+  // Get game ID and guest flag from URL
   const urlParams = new URLSearchParams(window.location.search);
   const gameId = urlParams.get('gameId');
+  const isGuest = urlParams.get('guest') === 'true';
 
   console.log('[DUEL] Game ID from URL:', gameId);
+  console.log('[DUEL] Is guest?:', isGuest);
 
   if (!gameId) {
     console.error('[DUEL] ERROR: No game ID in URL!');
-    window.PopupManager.error('Error', 'No se proporcionó ID de juego');
+    if (window.PopupManager) {
+      window.PopupManager.error('Error', 'No se proporcionó ID de juego');
+    } else {
+      alert('Error: No game ID provided');
+    }
     setTimeout(() => {
-      window.location.href = '/pages/homeLogged.html';
+      window.location.href = isGuest ? '/pages/home.html' : '/pages/homeLogged.html';
     }, 1500);
     return;
+  }
+
+  // Check authentication only for non-guest users
+  if (!isGuest) {
+    console.log('[DUEL] Checking authentication...');
+    
+    if (!window.auth) {
+      console.error('[DUEL] ERROR: window.auth is not defined!');
+      window.PopupManager.error('Error', 'Sistema de autenticación no cargado');
+      return;
+    }
+
+    if (!window.auth.requireAuth()) {
+      console.log('[DUEL] User not authenticated, redirecting to login');
+      window.location.href = '/pages/login.html';
+      return;
+    }
+
+    console.log('[DUEL] User authenticated, proceeding...');
+  } else {
+    console.log('[DUEL] Guest user, skipping authentication...');
   }
 
   // Socket.IO connection
   let socket = null;
   let gameState = {
     gameId: gameId,
+    isGuest: isGuest,
     playerRole: null,
     currentUserId: null,
     player1: null,
@@ -119,22 +132,38 @@ document.addEventListener('DOMContentLoaded', async () => {
    */
   async function initSocket() {
     console.log('[DUEL] ======= Initializing Socket.IO =======');
-    const token = sessionStorage.getItem('authToken');
-    console.log('[DUEL] Auth token:', token ? 'Found' : 'NOT FOUND');
+    console.log('[DUEL] Is guest?:', isGuest);
     
-    if (!token) {
-      console.error('[DUEL] ERROR: No auth token!');
-      window.PopupManager.error('Error', 'Se requiere autenticación');
-      setTimeout(() => {
-        window.location.href = '/pages/login.html';
-      }, 1500);
-      return;
+    let token = null;
+    
+    if (!isGuest) {
+      token = sessionStorage.getItem('authToken');
+      console.log('[DUEL] Auth token:', token ? 'Found' : 'NOT FOUND');
+      
+      if (!token) {
+        console.error('[DUEL] ERROR: No auth token!');
+        if (window.PopupManager) {
+          window.PopupManager.error('Error', 'Se requiere autenticación');
+        }
+        setTimeout(() => {
+          window.location.href = '/pages/login.html';
+        }, 1500);
+        return;
+      }
+    } else {
+      console.log('[DUEL] Guest user - skipping token check');
+      // For guest users, create a temporary guest token
+      token = btoa('guest_' + Date.now());
     }
 
     // Check if Socket.IO is loaded
     if (!window.io) {
       console.error('[DUEL] ERROR: Socket.IO library not loaded!');
-      window.PopupManager.error('Error', 'Socket.IO no cargado. Por favor, recarga la página.');
+      if (window.PopupManager) {
+        window.PopupManager.error('Error', 'Socket.IO no cargado. Por favor, recarga la página.');
+      } else {
+        alert('Socket.IO not loaded. Please refresh.');
+      }
       return;
     }
 
@@ -225,7 +254,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.log('[DUEL] Setting opponent avatar:', avatarUrl);
     }
 
-    updateTurnStatus('Waiting for opponent...');
+    // Show waiting message with opponent name
+    updateTurnStatus(`Waiting for ${opponent.username} to accept...`);
     pressButton.disabled = true;
   }
 
@@ -729,23 +759,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     finalPopup.style.display = 'flex';
     
-    // Handle rematch button
-    rematchBtn.onclick = function() {
-      console.log('[DUEL] Rematch button clicked - sending request...');
-      console.log('[DUEL] Socket connected?', socket && socket.connected);
-      console.log('[DUEL] Game ID:', gameState.gameId);
-      console.log('[DUEL] Emitting rematch_request...');
+    // Hide rematch button for guest games
+    if (gameState.isGuest) {
+      rematchBtn.style.display = 'none';
       
-      socket.emit('rematch_request', { gameId: gameState.gameId });
-      
-      console.log('[DUEL] Event emitted!');
-      
-      // Update UI to show waiting state
-      rematchBtn.disabled = true;
-      rematchBtn.textContent = 'Waiting for opponent...';
-    };
-    
-    // Return home button already has href in HTML
+      // Update return home button for guests
+      returnHomeBtn.onclick = function() {
+        window.location.href = '/pages/home.html';
+      };
+    } else {
+      // Handle rematch button for registered users
+      rematchBtn.style.display = 'block';
+      rematchBtn.onclick = function() {
+        console.log('[DUEL] Rematch button clicked - sending request...');
+        console.log('[DUEL] Socket connected?', socket && socket.connected);
+        console.log('[DUEL] Game ID:', gameState.gameId);
+        console.log('[DUEL] Emitting rematch_request...');
+        
+        socket.emit('rematch_request', { gameId: gameState.gameId });
+        
+        console.log('[DUEL] Event emitted!');
+        
+        // Update UI to show waiting state
+        rematchBtn.disabled = true;
+        rematchBtn.textContent = 'Waiting for opponent...';
+      };
+    }
   }
 
   /**

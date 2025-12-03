@@ -601,8 +601,143 @@ const forceCleanupActiveGames = async (req, res) => {
   }
 };
 
+/**
+ * Create a guest challenge - guest user challenges random ONLINE player
+ */
+const createGuestChallenge = async (req, res) => {
+  try {
+    console.log('[GUEST CHALLENGE] Starting guest challenge request...');
+    const nodemailer = require('nodemailer');
+    
+    // Get socket manager to check online users
+    const socketManager = req.app.get('socketManager');
+    if (!socketManager) {
+      return res.status(500).json({ error: 'Socket system not available' });
+    }
+
+    // Get all ONLINE users
+    const onlineUsers = socketManager.getOnlineUsers();
+    console.log('[GUEST CHALLENGE] Total online users:', onlineUsers.length);
+    console.log('[GUEST CHALLENGE] Online users:', onlineUsers.map(u => ({ username: u.username, userId: u.userId })));
+
+    if (onlineUsers.length === 0) {
+      return res.json({
+        success: false,
+        message: 'No players online at the moment'
+      });
+    }
+
+    // Filter to only ONLINE logged-in users who are free (not in game)
+    const availablePlayers = [];
+    
+    for (const userData of onlineUsers) {
+      if (!userData.userId) continue; // Skip guests or invalid users
+      
+      // Check if user has active game
+      const activeGame = await Game.findActiveGameForUser(userData.userId);
+      console.log(`[GUEST CHALLENGE] User ${userData.username} - Active game:`, activeGame ? 'YES' : 'NO');
+      
+      if (!activeGame) {
+        // Get full user data including email
+        const user = await User.findById(userData.userId).select('username email');
+        if (user && user.email) {
+          availablePlayers.push({
+            id: user._id,
+            username: user.username,
+            email: user.email
+          });
+        }
+      }
+    }
+
+    console.log('[GUEST CHALLENGE] Available online players (not in game):', availablePlayers.length);
+    console.log('[GUEST CHALLENGE] Available players list:', availablePlayers.map(p => p.username));
+
+    if (availablePlayers.length === 0) {
+      return res.json({
+        success: false,
+        message: 'All online players are currently in games. Try again later.'
+      });
+    }
+
+    // Select random player
+    const randomIndex = Math.floor(Math.random() * availablePlayers.length);
+    const selectedPlayer = availablePlayers[randomIndex];
+
+    console.log('[GUEST CHALLENGE] Selected player:', selectedPlayer.username);
+
+    // Create game with guest as player1 (no user ID)
+    const goalTime = Game.generateGoalTime();
+    
+    const game = new Game({
+      player1: null, // Guest user (no ID)
+      player2: selectedPlayer.id,
+      status: 'waiting',
+      gameType: 'guest_challenge',
+      goalTime: goalTime,
+      totalRounds: 3,
+      createdAt: new Date()
+    });
+
+    await game.save();
+
+    console.log('[GUEST CHALLENGE] Game created:', game._id);
+
+    // Send email to selected player
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.ethereal.email',
+      port: 587,
+      auth: {
+        user: 'alphonso77@ethereal.email',
+        pass: 'd3dsT2xAxPjvgep2r6'
+      }
+    });
+
+    const mailOptions = {
+      from: '"TimeoutClick" <noreply@timeoutclick.com>',
+      to: selectedPlayer.email,
+      subject: 'New Challenge from Guest Player',
+      text: `Hi ${selectedPlayer.username},\n\nA guest player has challenged you to a duel in TimeoutClick!\n\nClick here to accept: http://localhost:5000/pages/login.html?redirect=duel&gameId=${game._id}\n\nGood luck!`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2>New Challenge!</h2>
+          <p>Hi <strong>${selectedPlayer.username}</strong>,</p>
+          <p>A guest player has challenged you to a duel in TimeoutClick!</p>
+          <p style="margin: 30px 0;">
+            <a href="http://localhost:5000/pages/login.html?redirect=duel&gameId=${game._id}" 
+               style="background: #D2691E; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+              Accept Challenge
+            </a>
+          </p>
+          <p>Good luck!</p>
+          <hr style="margin: 20px 0; border: none; border-top: 1px solid #ccc;">
+          <p style="font-size: 12px; color: #666;">TimeoutClick - Test your timing skills</p>
+        </div>
+      `
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    
+    console.log('[GUEST CHALLENGE] Email sent:', info.messageId);
+    console.log('[GUEST CHALLENGE] Preview URL:', nodemailer.getTestMessageUrl(info));
+
+    res.json({
+      success: true,
+      message: `Challenge sent to ${selectedPlayer.username}`,
+      gameId: game._id,
+      opponent: selectedPlayer.username,
+      emailPreview: nodemailer.getTestMessageUrl(info)
+    });
+
+  } catch (error) {
+    console.error('[GUEST CHALLENGE] Error:', error);
+    res.status(500).json({ error: 'Failed to create guest challenge' });
+  }
+};
+
 module.exports = {
   createChallenge,
+  createGuestChallenge,
   getGameHistory,
   getGameDetails,
   getActiveGame,

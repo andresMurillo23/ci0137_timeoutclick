@@ -29,6 +29,15 @@ class SocketManager {
         // Decode token (base64 encoded user ID)
         const userId = Buffer.from(token, 'base64').toString('utf8');
         
+        // Check if it's a guest user
+        if (userId.startsWith('guest_')) {
+          console.log('[SOCKET] Guest user connecting:', userId);
+          socket.userId = null;  // No user ID for guests
+          socket.username = 'Guest';
+          socket.isGuest = true;
+          return next();
+        }
+        
         // Get user from database to verify and get username
         const User = require('../models/User');
         const user = await User.findById(userId);
@@ -39,6 +48,7 @@ class SocketManager {
         
         socket.userId = user._id.toString();
         socket.username = user.username;
+        socket.isGuest = false;
         next();
       } catch (error) {
         next(new Error('Authentication failed'));

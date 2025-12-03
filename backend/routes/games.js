@@ -28,6 +28,14 @@ const {
 router.post('/challenge', requireAuth, createChallenge);
 
 /**
+ * @route   POST /api/games/guest-challenge
+ * @desc    Guest user challenges a random online player
+ * @access  Public (no auth required)
+ */
+const { createGuestChallenge } = require('../controllers/gameController');
+router.post('/guest-challenge', createGuestChallenge);
+
+/**
  * @route   POST /api/games/cleanup
  * @desc    Clean up old waiting games
  * @access  Private

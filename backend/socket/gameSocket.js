@@ -3,6 +3,24 @@ const GameSession = require('../models/GameSession');
 const User = require('../models/User');
 
 /**
+ * Helper function to safely get player data (handles guest case where player1 can be null)
+ */
+function getPlayerData(player) {
+  if (!player) {
+    return {
+      id: null,
+      username: 'Guest',
+      avatar: null
+    };
+  }
+  return {
+    id: player._id,
+    username: player.username,
+    avatar: player.avatar
+  };
+}
+
+/**
  * Socket.IO game event handlers
  * Manages real-time TimeoutClick gameplay
  */
@@ -34,11 +52,12 @@ class GameSocketHandler {
     try {
       const { gameId } = data;
       const userId = socket.userId; // Set by authentication middleware
+      const isGuest = socket.isGuest;
 
-      console.log(`[GAME] Join attempt - User: ${userId}, Game: ${gameId}`);
+      console.log(`[GAME] Join attempt - User: ${userId}, Guest: ${isGuest}, Game: ${gameId}`);
 
-      if (!userId) {
-        console.error('[GAME] Join failed - No userId');
+      if (!userId && !isGuest) {
+        console.error('[GAME] Join failed - No userId and not a guest');
         socket.emit('game_error', { message: 'Authentication required' });
         return;
       }
@@ -66,8 +85,14 @@ class GameSocketHandler {
         return;
       }
 
-      const isPlayer = game.player1._id.toString() === userId || 
-                      game.player2._id.toString() === userId;
+      // Check if user is part of this game (handle guest case where player1 is null)
+      const player1Id = game.player1 ? game.player1._id.toString() : null;
+      const player2Id = game.player2 ? game.player2._id.toString() : null;
+      
+      // For guests, they are player1 (null) in guest_challenge games
+      const isPlayer = (isGuest && game.gameType === 'guest_challenge' && player1Id === null) ||
+                      player1Id === userId || 
+                      player2Id === userId;
 
       if (!isPlayer) {
         socket.emit('game_error', { message: 'You are not part of this game' });
@@ -86,23 +111,33 @@ class GameSocketHandler {
         { upsert: true, new: true }
       );
 
-      gameSession.setPlayerConnection(userId, socket.id, true, game);
+      // Use special ID for guests
+      const playerIdForSession = isGuest ? 'guest_player' : userId;
+      
+      gameSession.setPlayerConnection(playerIdForSession, socket.id, true, game);
       await gameSession.save();
 
       socket.join(`game_${gameId}`);
-      this.playerSockets.set(socket.id, { userId, gameId, gameSession });
+      this.playerSockets.set(socket.id, { userId: playerIdForSession, gameId, gameSession });
 
-      console.log(`[GAME] User ${userId} successfully joined game ${gameId}`);
+      console.log(`[GAME] User ${playerIdForSession} (Guest: ${isGuest}) successfully joined game ${gameId}`);
+
+      // Determine player role (handle guest case)
+      const playerRole = (isGuest || player1Id === userId) ? 'player1' : 'player2';
 
       socket.emit('game_joined', {
         gameId: gameId,
-        playerRole: game.player1._id.toString() === userId ? 'player1' : 'player2',
+        playerRole: playerRole,
         game: {
           id: game._id,
-          player1: {
+          player1: game.player1 ? {
             id: game.player1._id,
             username: game.player1.username,
             avatar: game.player1.avatar
+          } : {
+            id: null,
+            username: 'Guest',
+            avatar: null
           },
           player2: {
             id: game.player2._id,

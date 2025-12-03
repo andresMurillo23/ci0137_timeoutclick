@@ -127,10 +127,15 @@ gameSessionSchema.methods.getConnectedPlayersCount = function() {
 gameSessionSchema.methods.setPlayerConnection = function(playerId, socketId, connected = true, game = null) {
   // If game object is provided, use it to determine which player
   if (game) {
-    if (game.player1._id ? game.player1._id.toString() === playerId.toString() : game.player1.toString() === playerId.toString()) {
+    // Handle guest case where player1 is null
+    const player1Id = game.player1 ? (game.player1._id ? game.player1._id.toString() : game.player1.toString()) : null;
+    const player2Id = game.player2 ? (game.player2._id ? game.player2._id.toString() : game.player2.toString()) : null;
+    
+    // Check if this is player1 (including guest with special ID)
+    if ((player1Id === null && playerId === 'guest_player') || player1Id === playerId.toString()) {
       this.player1SocketId = socketId;
       this.player1Connected = connected;
-    } else if (game.player2._id ? game.player2._id.toString() === playerId.toString() : game.player2.toString() === playerId.toString()) {
+    } else if (player2Id === playerId.toString()) {
       this.player2SocketId = socketId;
       this.player2Connected = connected;
     }

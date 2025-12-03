@@ -15,8 +15,9 @@ connectDB();
 const { initializeSocket } = require('./socket');
 const { io, socketManager } = initializeSocket(server);
 
-// Make io accessible to other modules
+// Make io and socketManager accessible to other modules
 app.set('socketio', io);
+app.set('socketManager', socketManager);
 
 app.use(cors({
   origin: `http://localhost:${process.env.FRONTEND_PORT || 5000}`,

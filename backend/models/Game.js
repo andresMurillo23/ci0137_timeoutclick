@@ -8,7 +8,8 @@ const gameSchema = new mongoose.Schema({
   player1: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: false,  // Allow null for guest users
+    default: null
   },
   player2: {
     type: mongoose.Schema.Types.ObjectId,
@@ -57,7 +58,7 @@ const gameSchema = new mongoose.Schema({
   },
   gameType: {
     type: String,
-    enum: ['challenge', 'random', 'tournament'],
+    enum: ['challenge', 'random', 'tournament', 'guest_challenge'],
     default: 'challenge'
   },
   settings: {
