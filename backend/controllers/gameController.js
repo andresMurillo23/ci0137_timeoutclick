@@ -2,6 +2,7 @@ const Game = require('../models/Game');
 const GameSession = require('../models/GameSession');
 const User = require('../models/User');
 const Friendship = require('../models/Friendship');
+const { sendMail } = require('../utils/mailer');
 
 /**
  * Game controller
@@ -62,7 +63,7 @@ const createChallenge = async (req, res) => {
       .populate('player1', 'username avatar')
       .populate('player2', 'username avatar');
 
-    res.status(201).json({
+    const responsePayload = {
       success: true,
       message: 'Game challenge created successfully',
       game: {
@@ -74,7 +75,31 @@ const createChallenge = async (req, res) => {
         status: populatedGame.status,
         createdAt: populatedGame.createdAt
       }
-    });
+    };
+
+    // Respond immediately to the client
+    res.status(201).json(responsePayload);
+
+    // Send email notification to opponent in background (do not block response)
+    try {
+      const opponent = populatedGame.player2;
+      const challenger = populatedGame.player1;
+
+      if (opponent && opponent.email && opponent.settings?.notifications !== false) {
+        const frontendUrl = process.env.FRONTEND_URL || `http://localhost:${process.env.FRONTEND_PORT || 5000}`;
+        const duelUrl = `${frontendUrl.replace(/\/$/, '')}/duel.html?gameId=${game._id}`;
+        const subject = `Invitación a un duelo de ${challenger.username}`;
+        const text = `${challenger.username} te ha retado a un duelo en TimeoutClick. Visita: ${duelUrl}`;
+        const html = `<p><strong>${challenger.username}</strong> te ha retado a un duelo en <em>TimeoutClick</em>.</p><p><a href="${duelUrl}">Ir al duelo</a></p>`;
+
+        // fire-and-forget but handle promise rejection
+        sendMail({ to: opponent.email, subject, text, html })
+          .then(info => console.log('[MAIL] Game invite sent to', opponent.email))
+          .catch(err => console.error('[MAIL] Failed to send game invite to', opponent.email, err));
+      }
+    } catch (mailErr) {
+      console.error('[MAIL] Unexpected error while preparing invite email:', mailErr);
+    }
 
   } catch (error) {
     console.error('Create challenge error:', error);
