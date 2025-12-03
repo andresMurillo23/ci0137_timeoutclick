@@ -21,8 +21,6 @@ class GameSocketHandler {
     socket.on('join_game', (data) => this.handleJoinGame(socket, data));
     socket.on('player_click', (data) => this.handlePlayerClick(socket, data));
     socket.on('player_ready_for_next_round', (data) => this.handlePlayerReadyForNextRound(socket, data));
-    socket.on('rematch_request', (data) => this.handleRematchRequest(socket, data));
-    socket.on('rematch_response', (data) => this.handleRematchResponse(socket, data));
     socket.on('leave_game', (data) => this.handleLeaveGame(socket, data));
     socket.on('disconnect', () => this.handleDisconnect(socket));
   }
@@ -369,12 +367,6 @@ class GameSocketHandler {
         return;
       }
 
-      // If game is already finished, ignore ready signal
-      if (game.status === 'finished' || gameSession.gameState === 'finished') {
-        console.log(`[GAME] Game already finished, ignoring ready signal`);
-        return;
-      }
-
       // Mark player as ready
       const isPlayer1 = game.player1._id.toString() === userId;
       if (isPlayer1) {
@@ -537,12 +529,9 @@ class GameSocketHandler {
       this.io.to(`game_${gameId}`).emit('round_finished', roundFinishedData);
 
       // Check if game is complete (best of 3)
-      console.log(`[GAME] Checking if game should finish - currentRound: ${game.currentRound}/${game.totalRounds}, P1 Score: ${game.player1Score}, P2 Score: ${game.player2Score}`);
       if (game.currentRound >= game.totalRounds || game.player1Score >= 2 || game.player2Score >= 2) {
-        console.log(`[GAME] *** GAME COMPLETE! Calling finishGame() ***`);
         await this.finishGame(gameId, game);
       } else {
-        console.log(`[GAME] Game continues - preparing next round`);
         // Start next round
         game.currentRound += 1;
         game.player1Time = null;
@@ -573,52 +562,29 @@ class GameSocketHandler {
    */
   async finishGame(gameId, gameData = null) {
     try {
-      console.log(`[GAME] ======= FINISHING GAME ${gameId} =======`);
       const game = gameData || await Game.findById(gameId).populate('player1 player2');
-      console.log(`[GAME] Game loaded, status: ${game?.status}`);
       const gameSession = await GameSession.findOne({ gameId });
-      console.log(`[GAME] GameSession loaded, state: ${gameSession?.gameState}`);
 
-      if (!game || !gameSession) {
-        console.log(`[GAME] ERROR: Game or session not found!`);
-        return;
-      }
+      if (!game || !gameSession) return;
 
-      console.log(`[GAME] Scores - P1: ${game.player1Score}, P2: ${game.player2Score}`);
-      console.log(`[GAME] Rounds array length: ${game.rounds?.length || 0}`);
-      
       // Determine overall winner based on best of 3
       let overallWinner = null;
       if (game.player1Score > game.player2Score) {
         overallWinner = game.player1;
-        console.log(`[GAME] Overall winner: Player 1 (${game.player1.username})`);
       } else if (game.player2Score > game.player1Score) {
         overallWinner = game.player2;
-        console.log(`[GAME] Overall winner: Player 2 (${game.player2.username})`);
-      } else {
-        console.log(`[GAME] Game tied!`);
       }
 
       game.winner = overallWinner;
       game.status = 'finished';
       game.gameEndedAt = new Date();
-      console.log(`[GAME] Setting game status to 'finished'`);
-
-      game.winner = overallWinner;
-      game.status = 'finished';
-      game.gameEndedAt = new Date();
-      console.log(`[GAME] Setting game status to 'finished'`);
 
       gameSession.gameState = 'finished';
 
-      console.log(`[GAME] Saving game and session...`);
       await game.save();
       await gameSession.save();
-      console.log(`[GAME] Game and session saved successfully!`);
 
-      console.log(`[GAME] Updating player stats...`);
       await this.updatePlayerStats(game);
-      console.log(`[GAME] Player stats updated!`);
 
       const gameResult = {
         gameId: gameId,
@@ -642,31 +608,14 @@ class GameSocketHandler {
         duration: game.gameEndedAt - game.gameStartedAt
       };
 
-      console.log(`[GAME] Emitting game_finished event...`);
-      console.log(`[GAME] Game result:`, JSON.stringify(gameResult, null, 2));
       this.io.to(`game_${gameId}`).emit('game_finished', gameResult);
-      console.log(`[GAME] game_finished emitted successfully!`);
 
-      // Clean up playerSockets and game session after a delay
-      // This allows players to see final results and potentially rematch
-      setTimeout(async () => {
-        console.log(`[GAME] Cleaning up game ${gameId} after 15 seconds`);
-        
-        // Remove players from socket map so they can join new games
-        const sockets = await this.io.in(`game_${gameId}`).fetchSockets();
-        sockets.forEach(socket => {
-          this.playerSockets.delete(socket.id);
-          console.log(`[GAME] Removed socket ${socket.id} from playerSockets`);
-        });
-        
+      setTimeout(() => {
         this.cleanupGame(gameId);
       }, 15000);
-      
-      console.log(`[GAME] ======= GAME FINISH COMPLETE =======`);
 
     } catch (error) {
-      console.error('[GAME] Finish game error:', error);
-      console.error('[GAME] Error stack:', error.stack);
+      console.error('Finish game error:', error);
     }
   }
 
@@ -803,178 +752,6 @@ class GameSocketHandler {
     
     await this.handleDisconnect(socket);
     socket.leave(`game_${data.gameId}`);
-  }
-
-  /**
-   * Handle rematch request from a player
-   */
-  async handleRematchRequest(socket, data) {
-    try {
-      console.log('[REMATCH] ======= Rematch request received =======');
-      console.log('[REMATCH] Socket ID:', socket.id);
-      console.log('[REMATCH] Data:', data);
-      
-      const { gameId } = data;
-      const userId = socket.userId; // Get userId directly from socket
-      
-      if (!userId) {
-        console.log('[REMATCH] ERROR: No userId in socket');
-        return;
-      }
-      
-      console.log('[REMATCH] Player requesting rematch:', userId);
-      
-      // Get the finished game to find opponent
-      const game = await Game.findById(gameId).populate('player1 player2');
-      if (!game) {
-        console.log('[REMATCH] ERROR: Game not found');
-        return;
-      }
-      
-      // Determine opponent
-      const isPlayer1 = game.player1._id.toString() === userId;
-      const opponent = isPlayer1 ? game.player2 : game.player1;
-      const opponentId = opponent._id.toString();
-      
-      console.log('[REMATCH] Opponent ID:', opponentId);
-      console.log('[REMATCH] Looking for opponent in connected sockets...');
-      
-      // Find opponent's socket by iterating through all connected sockets
-      const sockets = await this.io.fetchSockets();
-      console.log('[REMATCH] Total sockets found:', sockets.length);
-      
-      let opponentSocket = null;
-      
-      for (const s of sockets) {
-        console.log('[REMATCH] Checking socket:', s.id, 'userId:', s.userId);
-        if (s.userId === opponentId) {
-          opponentSocket = s;
-          console.log('[REMATCH] ✓ FOUND OPPONENT!');
-          break;
-        }
-      }
-      
-      if (!opponentSocket) {
-        console.log('[REMATCH] ERROR: Opponent not connected');
-        socket.emit('rematch_declined', { 
-          reason: 'Opponent is not connected',
-          message: 'Your opponent has left the game.'
-        });
-        return;
-      }
-      
-      console.log('[REMATCH] Opponent socket found:', opponentSocket.id);
-      console.log('[REMATCH] Notifying opponent about rematch request...');
-      
-      // Notify opponent about rematch request
-      this.io.to(opponentSocket.id).emit('rematch_requested', {
-        gameId: gameId,
-        requesterId: userId,
-        requesterName: isPlayer1 ? game.player1.username : game.player2.username
-      });
-      
-      console.log('[REMATCH] Rematch request sent to opponent');
-      
-    } catch (error) {
-      console.error('[REMATCH] Error handling rematch request:', error);
-      console.error('[REMATCH] Error stack:', error.stack);
-    }
-  }
-  
-  /**
-   * Handle rematch response (accept/decline)
-   */
-  async handleRematchResponse(socket, data) {
-    try {
-      console.log('[REMATCH] ======= Rematch response received =======');
-      console.log('[REMATCH] Socket ID:', socket.id);
-      console.log('[REMATCH] Data:', data);
-      
-      const { gameId, accepted } = data;
-      const userId = socket.userId; // Get userId directly from socket
-      
-      if (!userId) {
-        console.log('[REMATCH] ERROR: No userId in socket');
-        return;
-      }
-      
-      console.log('[REMATCH] Player responding:', userId, 'Accepted:', accepted);
-      
-      // Get the finished game to find requester
-      const oldGame = await Game.findById(gameId).populate('player1 player2');
-      if (!oldGame) {
-        console.log('[REMATCH] ERROR: Game not found');
-        return;
-      }
-      
-      // Determine requester (the other player)
-      const isPlayer1 = oldGame.player1._id.toString() === userId;
-      const requester = isPlayer1 ? oldGame.player2 : oldGame.player1;
-      const requesterId = requester._id.toString();
-      
-      console.log('[REMATCH] Requester ID:', requesterId);
-      console.log('[REMATCH] Looking for requester in connected sockets...');
-      
-      // Find requester's socket by iterating through all connected sockets
-      const sockets = await this.io.fetchSockets();
-      let requesterSocket = null;
-      
-      for (const s of sockets) {
-        console.log('[REMATCH] Checking socket:', s.id, 'userId:', s.userId);
-        if (s.userId === requesterId) {
-          requesterSocket = s;
-          break;
-        }
-      }
-      
-      if (!requesterSocket) {
-        console.log('[REMATCH] ERROR: Requester not connected');
-        return;
-      }
-      
-      if (!accepted) {
-        console.log('[REMATCH] Rematch DECLINED');
-        // Notify requester that rematch was declined
-        this.io.to(requesterSocket.id).emit('rematch_declined', {
-          reason: 'Opponent declined',
-          message: "Sorry, your opponent doesn't want a rematch."
-        });
-        return;
-      }
-      
-      console.log('[REMATCH] Rematch ACCEPTED - Creating new game...');
-      
-      // Create new game with same players
-      const newGame = new Game({
-        player1: oldGame.player1._id,
-        player2: oldGame.player2._id,
-        goalTime: Game.generateGoalTime(),
-        status: 'active',
-        currentRound: 1,
-        totalRounds: 3,
-        player1Score: 0,
-        player2Score: 0,
-        rounds: []
-      });
-      
-      await newGame.save();
-      console.log('[REMATCH] New game created:', newGame._id);
-      
-      // Notify both players about new game
-      const rematchData = {
-        gameId: newGame._id.toString(),
-        message: 'Rematch accepted! Starting new game...'
-      };
-      
-      this.io.to(requesterSocket.id).emit('rematch_accepted', rematchData);
-      this.io.to(socket.id).emit('rematch_accepted', rematchData);
-      
-      console.log('[REMATCH] Both players notified - they should redirect to new game');
-      
-    } catch (error) {
-      console.error('[REMATCH] Error handling rematch response:', error);
-      console.error('[REMATCH] Error stack:', error.stack);
-    }
   }
 
   /**
