@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  const listContainer = document.querySelector('.list');
+  const listContainer = document.getElementById('playersList');
   const confirmOverlay = document.getElementById('confirmOverlay');
   const panelConfirm = document.getElementById('panelConfirm');
   const panelWaiting = document.getElementById('panelWaiting');
@@ -165,7 +165,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     notification.innerHTML = `
       <div class="notification-content">
         <p><strong>${challenge.challenger.username}</strong> wants to duel!</p>
-        <p class="notification-time">Goal: ${challenge.goalTime}s</p>
       </div>
       <div class="notification-actions">
         <button class="btn-accept" data-game-id="${challenge.gameId}" data-challenger-id="${challenge.challengerId}">ACCEPT</button>
