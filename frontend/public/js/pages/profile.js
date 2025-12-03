@@ -14,8 +14,17 @@ class ProfilePage {
    */
   async init() {
     try {
-      if (!window.auth || !window.auth.isAuthenticated()) {
-        console.log('[PROFILE] Not authenticated, redirecting to login');
+      // Ensure auth manager is initialized and token is present
+      if (window.auth) {
+        try {
+          await window.auth.initialize();
+        } catch (e) {
+          console.warn('[PROFILE] Auth initialize warning:', e && e.message);
+        }
+      }
+
+      if (!sessionStorage.getItem('authToken')) {
+        console.log('[PROFILE] No auth token, redirecting to login');
         window.location.href = '/pages/login.html';
         return;
       }
@@ -57,17 +66,39 @@ class ProfilePage {
       const userId = this.currentUser.id || this.currentUser._id;
       const response = await window.api.get(`/users/${userId}/stats`);
       
-      if (response.success) {
-        this.stats = response.stats;
+      if (response && response.success && response.stats) {
+        const s = response.stats;
+        const gamesPlayed = Number(s.gamesPlayed || 0);
+        const gamesWon = Number(s.gamesWon || 0);
+        const gamesLost = Number(s.gamesLost != null ? s.gamesLost : (gamesPlayed - gamesWon));
+        const rawWinRate = Number(s.winRate != null ? s.winRate : 0);
+
+        this.stats = {
+          gamesPlayed,
+          gamesWon,
+          gamesLost,
+          // legacy aliases for older code
+          wins: gamesWon,
+          losses: gamesLost,
+          // keep raw value and a normalized decimal in [0,1]
+          winRate: rawWinRate,
+          winRateDecimal: rawWinRate > 1 ? rawWinRate / 100 : rawWinRate,
+          totalScore: s.totalScore || 0,
+          bestTime: s.bestTime || null,
+          averageTime: s.averageTime || null
+        };
       } else {
         this.stats = {
-          totalGames: 0,
+          gamesPlayed: 0,
+          gamesWon: 0,
+          gamesLost: 0,
           wins: 0,
           losses: 0,
           winRate: 0,
-          averageAccuracy: 0,
+          winRateDecimal: 0,
+          totalScore: 0,
           bestTime: null,
-          currentStreak: 0
+          averageTime: null
         };
       }
     } catch (error) {
@@ -104,7 +135,7 @@ class ProfilePage {
           const values = kvElements[0].querySelectorAll('.value');
           if (values[0]) values[0].textContent = this.currentUser.username || 'N/A';
           if (values[1]) values[1].textContent = this.currentUser.email || 'N/A';
-          if (values[2]) values[2].textContent = this.formatUserId(this.currentUser.id);
+          if (values[2]) values[2].textContent = this.formatUserId(this.currentUser.id || this.currentUser._id);
         }
 
         // Second column: Member Since, Verification, Password
@@ -134,7 +165,7 @@ class ProfilePage {
         // First column: Wins/Losses, Friends
         if (kvElements[0]) {
           const values = kvElements[0].querySelectorAll('.value');
-          if (values[0]) values[0].textContent = `${this.stats.wins || 0} / ${this.stats.losses || 0}`;
+          if (values[0]) values[0].textContent = `${this.stats.gamesWon || 0} / ${this.stats.gamesLost || 0}`;
           if (values[1]) values[1].textContent = this.currentUser.friendsCount || 0;
         }
 
@@ -142,7 +173,7 @@ class ProfilePage {
         if (kvElements[1]) {
           const values = kvElements[1].querySelectorAll('.value');
           if (values[0]) values[0].textContent = this.calculateRank();
-          if (values[1]) values[1].textContent = `${Math.round(this.stats.winRate * 100)}%`;
+          if (values[1]) values[1].textContent = `${Math.round((this.stats.winRateDecimal || 0) * 100)}%`;
         }
       }
     }
@@ -168,21 +199,21 @@ class ProfilePage {
       // Wins
       if (statElements[1]) {
         const winsValue = statElements[1].querySelector('.v');
-        if (winsValue) winsValue.textContent = this.stats.wins || 0;
+        if (winsValue) winsValue.textContent = this.stats.gamesWon || 0;
       }
 
       // Losses
       if (statElements[2]) {
         const lossesValue = statElements[2].querySelector('.v');
-        if (lossesValue) lossesValue.textContent = this.stats.losses || 0;
+        if (lossesValue) lossesValue.textContent = this.stats.gamesLost || 0;
       }
 
       // Win rate progress bar
       if (statElements[3]) {
         const winRateProgress = statElements[3].querySelector('.progress i');
         if (winRateProgress) {
-          const winRatePercent = Math.round(this.stats.winRate * 100);
-          winRateProgress.style.width = `${winRatePercent}%`;
+          const winRatePercent = Math.round((this.stats.winRateDecimal || 0) * 100);
+          winRateProgress.style.width = `${Math.min(100, Math.max(0, winRatePercent))}%`;
         }
       }
     }
@@ -255,7 +286,7 @@ class ProfilePage {
    * Calculate user rank based on stats
    */
   calculateRank() {
-    const wins = this.stats.wins;
+    const wins = this.stats.gamesWon || 0;
     
     if (wins >= 100) return 'Diamond';
     if (wins >= 50) return 'Platinum';
@@ -304,12 +335,4 @@ class ProfilePage {
 }
 
 // Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', async () => {
-  // Wait for authManager to initialize if not already done
-  if (window.authManager && !window.authManager.isLoggedIn) {
-    await window.authManager.initialize();
-  }
-  
-  const profilePage = new ProfilePage();
-  profilePage.init();
-});
+// Note: profile page is initialized inline in the page markup to control load order.

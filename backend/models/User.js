@@ -137,8 +137,17 @@ userSchema.index({ lastActive: -1 });
  * Virtual for win rate calculation
  */
 userSchema.virtual('winRate').get(function() {
-  if (this.gameStats.gamesPlayed === 0) return 0;
-  return Math.round((this.gameStats.gamesWon / this.gameStats.gamesPlayed) * 100);
+  const gp = Number(this.gameStats?.gamesPlayed || 0);
+  let gw = Number(this.gameStats?.gamesWon || 0);
+
+  if (gp === 0) return 0;
+
+  // Sanitize values: clamp gamesWon to [0, gamesPlayed]
+  if (gw < 0) gw = 0;
+  if (gw > gp) gw = gp;
+
+  const ratio = gw / gp;
+  return Math.round(ratio * 100);
 });
 
 module.exports = mongoose.model('User', userSchema);

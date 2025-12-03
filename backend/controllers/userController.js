@@ -327,21 +327,28 @@ const getUserStats = async (req, res) => {
     if (!user || user.status !== 'active') {
       return res.status(404).json({ error: 'User not found' });
     }
+    // Normalize and sanitize stats to avoid negative values or >100% winRate
+    const gp = Number(user.gameStats?.gamesPlayed || 0);
+    let gw = Number(user.gameStats?.gamesWon || 0);
 
-    const gamesLost = user.gameStats.gamesPlayed - user.gameStats.gamesWon;
+    if (gw < 0) gw = 0;
+    if (gw > gp) gw = gp;
+
+    const gamesLost = Math.max(0, gp - gw);
+    const winRate = gp > 0 ? Math.round((gw / gp) * 100) : 0;
 
     res.json({
       success: true,
       stats: {
         username: user.username,
         avatar: user.avatar,
-        gamesPlayed: user.gameStats.gamesPlayed,
-        gamesWon: user.gameStats.gamesWon,
+        gamesPlayed: gp,
+        gamesWon: gw,
         gamesLost: gamesLost,
-        totalScore: user.gameStats.totalScore,
-        bestTime: user.gameStats.bestTime,
-        averageTime: user.gameStats.averageTime,
-        winRate: user.winRate,
+        totalScore: user.gameStats?.totalScore || 0,
+        bestTime: user.gameStats?.bestTime || null,
+        averageTime: user.gameStats?.averageTime || null,
+        winRate: winRate,
         memberSince: user.createdAt
       }
     });

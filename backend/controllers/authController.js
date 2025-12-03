@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Friendship = require('../models/Friendship');
 const { hashPassword, comparePassword, generateToken } = require('../utils/bcrypt');
 
 /**
@@ -179,7 +180,15 @@ const getCurrentUser = async (req, res) => {
         profile: user.profile,
         createdAt: user.createdAt,
         lastActive: user.lastActive,
-        friendsCount: 0
+        friendsCount: await (async () => {
+          try {
+            const friends = await Friendship.getFriends(user._id);
+            return Array.isArray(friends) ? friends.length : 0;
+          } catch (e) {
+            console.warn('Failed to compute friendsCount:', e && e.message);
+            return 0;
+          }
+        })()
       }
     });
 
