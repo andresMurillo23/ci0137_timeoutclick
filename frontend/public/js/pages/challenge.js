@@ -91,15 +91,47 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!token) return;
 
     socket = io('http://localhost:3000', {
-      auth: { token: token }
+      auth: { token: token },
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionAttempts: 10
     });
 
     socket.on('connect', () => {
-      console.log('[CHALLENGE] Connected to server');
+      console.log('[CHALLENGE] Connected to server, socket ID:', socket.id);
+      // Request online users status after connection
+      setTimeout(() => {
+        if (socket && socket.connected) {
+          console.log('[CHALLENGE] Requesting online users status...');
+          socket.emit('get_online_users');
+        }
+      }, 500);
+    });
+
+    socket.on('disconnect', (reason) => {
+      console.log('[CHALLENGE] Disconnected from server:', reason);
     });
 
     socket.on('user_status_update', (data) => {
       updatePlayerStatus(data.userId, data.status);
+    });
+
+    // Listen for user connection/disconnection events
+    socket.on('user_connected', (data) => {
+      console.log('[CHALLENGE] User connected:', data.username);
+      updatePlayerStatus(data.userId, 'online');
+    });
+
+    socket.on('user_disconnected', (data) => {
+      console.log('[CHALLENGE] User disconnected:', data.username);
+      updatePlayerStatus(data.userId, 'offline');
+    });
+
+    // Listen for online users updates
+    socket.on('online_users_update', (data) => {
+      console.log('[CHALLENGE] Online users update - Count:', data.count);
+      console.log('[CHALLENGE] Online users:', data.users.map(u => u.username).join(', '));
+      updateAllPlayersStatus(data.users);
     });
 
     // Receive incoming challenges
@@ -132,8 +164,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     socket.on('challenge_error', (data) => {
       console.error('[CHALLENGE] Error:', data.message);
-      window.PopupManager.error('Challenge Error', data.message);
       closeModal();
+      
+      // Show proper styled error popup
+      let errorMessage = data.message || 'Unknown error';
+      if (errorMessage.includes('not online')) {
+        errorMessage = 'The player is not currently online. Please try again later.';
+      }
+      
+      window.PopupManager.error('Challenge Failed', errorMessage);
+      
       challengePending = false;
       currentGameId = null;
     });
@@ -351,7 +391,10 @@ document.addEventListener('DOMContentLoaded', async () => {
    */
   function updatePlayerStatus(userId, status) {
     const row = listContainer.querySelector(`[data-user-id="${userId}"]`);
-    if (!row) return;
+    if (!row) {
+      console.log('[CHALLENGE] Row not found for user:', userId);
+      return;
+    }
 
     const statusDot = row.querySelector('.status-dot');
     const btn = row.querySelector('button');
@@ -364,20 +407,51 @@ document.addEventListener('DOMContentLoaded', async () => {
       statusDot.className = 'status-dot ok';
       btn.className = 'btn btn--secondary';
       btn.disabled = false;
+      btn.textContent = 'CHALLENGE';
       username.classList.remove('dim');
     } else if (status === 'in-game') {
       row.classList.add('busy');
       statusDot.className = 'status-dot busy';
       btn.className = 'btn-unavailable';
       btn.disabled = true;
+      btn.textContent = 'IN GAME';
       username.classList.remove('dim');
     } else {
+      // offline or any other status
       row.classList.add('unavailable');
       statusDot.className = 'status-dot no';
       btn.className = 'btn-unavailable';
       btn.disabled = true;
+      btn.textContent = 'OFFLINE';
       username.classList.add('dim');
     }
+  }
+
+  /**
+   * Update all players status based on online users list
+   */
+  function updateAllPlayersStatus(onlineUsers) {
+    if (!onlineUsers || !Array.isArray(onlineUsers)) {
+      console.error('[CHALLENGE] Invalid onlineUsers data:', onlineUsers);
+      return;
+    }
+
+    // Create a map of online user IDs for quick lookup (normalize to string)
+    const onlineUserIds = new Set(onlineUsers.map(u => String(u.userId)));
+    
+    console.log('[CHALLENGE] Online user IDs:', Array.from(onlineUserIds));
+
+    // Update all players in the list
+    const allRows = listContainer.querySelectorAll('[data-user-id]');
+    console.log('[CHALLENGE] Total players in list:', allRows.length);
+    
+    allRows.forEach(row => {
+      const userId = String(row.dataset.userId); // Normalize to string
+      const isOnline = onlineUserIds.has(userId);
+      
+      console.log(`[CHALLENGE] User ${userId}: ${isOnline ? 'ONLINE' : 'OFFLINE'}`);
+      updatePlayerStatus(userId, isOnline ? 'online' : 'offline');
+    });
   }
 
   /**
@@ -504,4 +578,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   await cleanupOldGames();
   await initSocket();
   await loadPlayers();
+  
+  // The online status will be requested automatically in socket.on('connect')
 });

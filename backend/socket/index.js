@@ -62,6 +62,7 @@ class SocketManager {
     console.log(`[SOCKET] User ID: ${socket.userId} (type: ${typeof socket.userId})`);
 
     this.connectedUsers.set(socket.userId, {
+      userId: socket.userId,
       socketId: socket.id,
       username: socket.username,
       connectedAt: new Date(),
@@ -91,6 +92,10 @@ class SocketManager {
 
     socket.on('user_status_update', (data) => {
       this.handleUserStatusUpdate(socket, data);
+    });
+
+    socket.on('get_online_users', () => {
+      this.sendOnlineUsersToSocket(socket);
     });
 
     socket.on('disconnect', (reason) => {
@@ -206,6 +211,27 @@ class SocketManager {
     }));
 
     this.io.emit('online_users_update', {
+      count: onlineCount,
+      users: users,
+      timestamp: new Date()
+    });
+  }
+
+  /**
+   * Send online users list to a specific socket
+   */
+  sendOnlineUsersToSocket(socket) {
+    const onlineCount = this.connectedUsers.size;
+    const users = Array.from(this.connectedUsers.values()).map(user => ({
+      userId: user.userId || user.socketId, // Fallback to socketId if userId not set
+      username: user.username,
+      status: user.status,
+      connectedAt: user.connectedAt
+    }));
+
+    console.log(`[SOCKET] Sending online users to ${socket.username}:`, users.map(u => `${u.username}(${u.userId})`).join(', '));
+
+    socket.emit('online_users_update', {
       count: onlineCount,
       users: users,
       timestamp: new Date()
