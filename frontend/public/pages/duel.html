@@ -110,6 +110,31 @@
       </div>
     </div>
   </div>
+
+  <!-- Rematch request popup -->
+  <div class="modal-overlay" id="rematchRequestPopup">
+    <div class="modal-content" role="dialog" aria-labelledby="rematchRequestTitle" aria-modal="true">
+      <h2 id="rematchRequestTitle">Rematch Request</h2>
+      <p id="rematchRequestDetails"></p>
+      <div class="popup-actions">
+        <button type="button" class="btn btn-cancel" id="declineRematchBtn">Decline</button>
+        <button type="button" class="btn btn-confirm" id="acceptRematchBtn">Accept Rematch!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rematch declined popup -->
+  <div class="modal-overlay" id="rematchDeclinedPopup">
+    <div class="modal-content" role="dialog" aria-labelledby="rematchDeclinedTitle" aria-modal="true">
+      <h2 id="rematchDeclinedTitle">Rematch Declined</h2>
+      <p id="rematchDeclinedDetails">Sorry, your opponent doesn't want a rematch.</p>
+      <div class="popup-actions">
+        <a href="/pages/homeLogged.html" class="btn btn-confirm" role="button">
+          Return Home
+        </a>
+      </div>
+    </div>
+  </div>
 </main>
 
 <!-- Duel game logic -->

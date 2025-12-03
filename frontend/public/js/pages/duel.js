@@ -92,6 +92,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const stillTherePopup = document.getElementById('stillTherePopup');
   const stillPlayingBtn = document.getElementById('stillPlayingBtn');
   const forfeitBtn = document.getElementById('forfeitBtn');
+  const rematchRequestPopup = document.getElementById('rematchRequestPopup');
+  const rematchRequestDetails = document.getElementById('rematchRequestDetails');
+  const acceptRematchBtn = document.getElementById('acceptRematchBtn');
+  const declineRematchBtn = document.getElementById('declineRematchBtn');
+  const rematchDeclinedPopup = document.getElementById('rematchDeclinedPopup');
+  const rematchDeclinedDetails = document.getElementById('rematchDeclinedDetails');
 
   /**
    * Get full avatar URL from relative path
@@ -481,83 +487,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     alert(data.message || 'An error occurred');
   }
 
-  /**
-   * Handle rematch request from opponent
-   */
-  function handleRematchRequested(data) {
-    console.log('[DUEL] Rematch requested event received:', data);
-    console.log('[DUEL] From user ID:', data.from);
-    console.log('[DUEL] Current user ID:', gameState.currentUserId);
-    
-    // Ignore if this is our own request
-    if (data.from === gameState.currentUserId) {
-      console.log('[DUEL] Ignoring own rematch request');
-      return;
-    }
-    
-    // Show confirmation dialog
-    const accept = confirm(data.fromUsername + ' wants a rematch! Do you accept?');
-    
-    console.log('[DUEL] User response to rematch:', accept ? 'accepted' : 'declined');
-    socket.emit('rematch_response', { 
-      gameId: gameState.gameId, 
-      accept: accept 
-    });
-    
-    if (accept) {
-      // Update UI to show waiting
-      const finalPopup = document.getElementById('finalPopup');
-      const finalDetails = document.getElementById('finalDetails');
-      finalDetails.innerHTML = '<strong>Rematch accepted!</strong><br>Starting new game...';
-    } else {
-      // User declined, go home
-      window.location.href = '/pages/homeLogged.html';
-    }
-  }
 
-  /**
-   * Handle rematch accepted - both players agreed
-   */
-  function handleRematchAccepted(data) {
-    console.log('[DUEL] ======= REMATCH ACCEPTED =======');
-    console.log('[DUEL] New game ID:', data.newGameId);
-    console.log('[DUEL] Message:', data.message);
-    
-    // Reset game state and rejoin with new game ID
-    gameState.gameId = data.newGameId;
-    gameState.gameEnded = false;
-    gameState.hasClicked = false;
-    gameState.currentRound = 1;
-    
-    // Clear history for new game
-    const historyList = document.getElementById('historyList');
-    if (historyList) {
-      historyList.innerHTML = '';
-    }
-    
-    // Reset UI elements
-    pressButton.disabled = true;
-    pressButton.classList.remove('active', 'pressed');
-    roundNumber.textContent = '1';
-    
-    // Close popup
-    const finalPopup = document.getElementById('finalPopup');
-    finalPopup.style.display = 'none';
-    
-    console.log('[DUEL] Emitting join_game for new game:', data.newGameId);
-    
-    // Rejoin the new game
-    socket.emit('join_game', { gameId: data.newGameId });
-  }
-
-  /**
-   * Handle rematch declined - one player said no
-   */
-  function handleRematchDeclined(data) {
-    console.log('[DUEL] Rematch declined:', data);
-    alert(data.message || 'Opponent declined the rematch.');
-    window.location.href = '/pages/homeLogged.html';
-  }
 
   pressButton.addEventListener('click', function() {
     console.log('[DUEL] ======= Button clicked! =======');
@@ -791,6 +721,81 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   /**
+   * Handle rematch request from opponent
+   */
+  function handleRematchRequested(data) {
+    console.log('[REMATCH] Opponent requested rematch:', data);
+    
+    // Store gameId for button handlers
+    const requestGameId = data.gameId;
+    
+    // Show custom popup
+    rematchRequestDetails.textContent = `${data.requesterName} wants a rematch! Do you accept?`;
+    rematchRequestPopup.style.display = 'flex';
+    
+    // Handle accept button
+    acceptRematchBtn.onclick = () => {
+      console.log('[REMATCH] Player ACCEPTED rematch');
+      rematchRequestPopup.style.display = 'none';
+      socket.emit('rematch_response', {
+        gameId: requestGameId,
+        accepted: true
+      });
+    };
+    
+    // Handle decline button
+    declineRematchBtn.onclick = () => {
+      console.log('[REMATCH] Player DECLINED rematch');
+      rematchRequestPopup.style.display = 'none';
+      socket.emit('rematch_response', {
+        gameId: requestGameId,
+        accepted: false
+      });
+    };
+  }
+  
+  /**
+   * Handle rematch accepted - redirect to new game
+   */
+  function handleRematchAccepted(data) {
+    console.log('[REMATCH] Rematch accepted! Redirecting to new game:', data);
+    
+    // Mark as rematch to prevent cancellation on unload
+    gameState.isRematchRedirect = true;
+    gameState.gameEnded = true;
+    
+    // Close current popups
+    if (finalPopup) finalPopup.style.display = 'none';
+    
+    // Disconnect current socket cleanly
+    if (socket) {
+      console.log('[REMATCH] Disconnecting current socket...');
+      socket.removeAllListeners();
+      socket.disconnect();
+    }
+    
+    // Small delay to ensure clean disconnect
+    setTimeout(function() {
+      console.log('[REMATCH] Redirecting to new game...');
+      window.location.href = '/pages/duel.html?gameId=' + data.gameId;
+    }, 100);
+  }
+  
+  /**
+   * Handle rematch declined
+   */
+  function handleRematchDeclined(data) {
+    console.log('[REMATCH] Rematch declined:', data);
+    
+    // Close final popup
+    if (finalPopup) finalPopup.style.display = 'none';
+    
+    // Show declined popup
+    rematchDeclinedDetails.textContent = data.message || "Sorry, your opponent doesn't want a rematch.";
+    rematchDeclinedPopup.style.display = 'flex';
+  }
+
+  /**
    * Cancel game via API
    */
   async function cancelCurrentGame() {
@@ -809,6 +814,12 @@ document.addEventListener('DOMContentLoaded', async () => {
    * FORCE cancel game when window closes
    */
   window.addEventListener('beforeunload', function(e) {
+    // Don't cancel if this is a rematch redirect
+    if (gameState.isRematchRedirect) {
+      console.log('[DUEL] Rematch redirect - not cancelling game');
+      return;
+    }
+    
     if (socket && gameState.gameId && !gameState.gameEnded) {
       console.log('[DUEL] Page unloading - FORCE CANCELLING GAME');
       
