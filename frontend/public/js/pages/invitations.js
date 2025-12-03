@@ -202,21 +202,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  tabs.forEach((tab, index) => {
-    tab.addEventListener('click', () => {
-      tabs.forEach(t => t.setAttribute('aria-selected', 'false'));
-      tab.setAttribute('aria-selected', 'true');
-      
-      if (index === 0) {
-        receivedPanel.hidden = false;
-        sentPanel.hidden = true;
-      } else {
-        receivedPanel.hidden = true;
-        sentPanel.hidden = false;
-      }
-    });
-  });
-
   searchBtn.addEventListener('click', searchInvitations);
   searchInput.addEventListener('keyup', (e) => {
     if (e.key === 'Enter') {
