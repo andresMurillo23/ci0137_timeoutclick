@@ -44,8 +44,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const gameId = urlParams.get('gameId');
   
   if (!gameId) {
-    alert('No game specified');
-    window.location.href = '/pages/homeLogged.html';
+    window.PopupManager.error('Error', 'No se especificó ningún juego');
+    setTimeout(() => {
+      window.location.href = '/pages/homeLogged.html';
+    }, 1500);
     return;
   }
 
@@ -63,8 +65,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     
   } catch (error) {
     console.error('Failed to initialize game:', error);
-    alert('Failed to connect to game. Please try again.');
-    window.location.href = '/pages/homeLogged.html';
+    window.PopupManager.error('Error de Conexión', 'No se pudo conectar al juego. Por favor, inténtalo de nuevo.');
+    setTimeout(() => {
+      window.location.href = '/pages/homeLogged.html';
+    }, 2000);
   }
 });
 
@@ -150,7 +154,7 @@ function setupGameHandlers() {
   // Game error
   window.gameManager.on('error', (data) => {
     console.error('Game error:', data);
-    alert(`Game error: ${data.message}`);
+    window.PopupManager.error('Error de Juego', data.message || 'Ha ocurrido un error en el juego');
   });
 }
 

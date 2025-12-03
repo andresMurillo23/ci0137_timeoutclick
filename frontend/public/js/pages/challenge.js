@@ -66,16 +66,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.log('[CHALLENGE] Force cleanup result:', forceResult);
       
       if (forceResult.gamesCancelled > 0) {
-        alert(`Cancelled ${forceResult.gamesCancelled} stuck games`);
+        window.PopupManager.success('Limpieza Completada', `Se cancelaron ${forceResult.gamesCancelled} juegos atascados`);
       } else {
-        alert('No stuck games found');
+        window.PopupManager.success('Todo en Orden', 'No se encontraron juegos atascados');
       }
       
       // Show updated status
       await checkGameStatus();
     } catch (error) {
       console.error('[CHALLENGE] Failed to force cleanup:', error);
-      alert('Failed to cleanup games');
+      window.PopupManager.error('Error', 'Could not clean up games');
     }
   }
 
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     socket.on('challenge_declined', (data) => {
       console.log('[CHALLENGE] Challenge declined');
       closeModal();
-      alert(`${data.declinedBy} declined your challenge`);
+      window.PopupManager.error('Challenge Declined', `${data.declinedBy} declined your challenge`);
       challengePending = false;
       currentGameId = null;
     });
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     socket.on('challenge_error', (data) => {
       console.error('[CHALLENGE] Error:', data.message);
-      alert('Challenge error: ' + data.message);
+      window.PopupManager.error('Challenge Error', data.message);
       closeModal();
       challengePending = false;
       currentGameId = null;
@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Wait for server confirmation, then redirect
     } catch (error) {
       console.error('[CHALLENGE] Failed to accept:', error);
-      alert('Failed to accept challenge');
+      window.PopupManager.error('Error', 'Could not accept challenge');
     }
   }
 
@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.log('[CHALLENGE] Challenge declined');
     } catch (error) {
       console.error('[CHALLENGE] Failed to decline:', error);
-      alert('Failed to decline challenge');
+      window.PopupManager.error('Error', 'Could not decline challenge');
     }
   }
 
@@ -454,7 +454,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Wait for response via Socket.IO (challenge_accepted or challenge_declined)
     } catch (error) {
       console.error('[CHALLENGE] Failed to send challenge:', error);
-      alert('Failed to send challenge: ' + (error.message || 'Unknown error'));
+      window.PopupManager.error('Error', 'Could not send challenge: ' + (error.message || 'Unknown error'));
       closeModal();
     }
   }

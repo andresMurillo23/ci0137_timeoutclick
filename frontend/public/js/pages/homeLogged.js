@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Redirect to game page
       window.location.href = `/pages/duel.html?gameId=${result.game._id}`;
     } catch (error) {
-      alert(`Failed to challenge ${friendName}: ${error.message}`);
+      window.PopupManager.error('Error', `Could not challenge ${friendName}: ${error.message}`);
     }
   };
 });

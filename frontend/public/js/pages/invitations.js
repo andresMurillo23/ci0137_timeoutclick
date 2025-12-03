@@ -147,12 +147,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       await window.api.put(`/friends/invitations/${invitationId}/${action}`);
       
       if (action === 'accept') {
-        alert('Friend request accepted!');
+        window.PopupManager.success('¡Éxito!', 'Solicitud de amistad aceptada');
       }
       
       loadInvitations();
     } catch (error) {
-      alert('Failed to ' + action + ' invitation: ' + error.message);
+      window.PopupManager.error('Error', `Could not ${action === 'accept' ? 'accept' : 'decline'} invitation: ` + error.message);
     }
   }
 
@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       await window.api.delete(`/friends/invitations/${invitationId}`);
       loadInvitations();
     } catch (error) {
-      alert('Failed to cancel invitation: ' + error.message);
+      window.PopupManager.error('Error', 'Could not cancel invitation: ' + error.message);
     }
   }
 

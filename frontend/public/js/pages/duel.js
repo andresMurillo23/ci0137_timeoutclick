@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   if (!window.auth) {
     console.error('[DUEL] ERROR: window.auth is not defined!');
-    alert('Authentication system not loaded');
+    window.PopupManager.error('Error', 'Sistema de autenticación no cargado');
     return;
   }
 
@@ -33,8 +33,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (!gameId) {
     console.error('[DUEL] ERROR: No game ID in URL!');
-    alert('No game ID provided');
-    window.location.href = '/pages/homeLogged.html';
+    window.PopupManager.error('Error', 'No se proporcionó ID de juego');
+    setTimeout(() => {
+      window.location.href = '/pages/homeLogged.html';
+    }, 1500);
     return;
   }
 
@@ -122,15 +124,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     if (!token) {
       console.error('[DUEL] ERROR: No auth token!');
-      alert('Authentication required');
-      window.location.href = '/pages/login.html';
+      window.PopupManager.error('Error', 'Se requiere autenticación');
+      setTimeout(() => {
+        window.location.href = '/pages/login.html';
+      }, 1500);
       return;
     }
 
     // Check if Socket.IO is loaded
     if (!window.io) {
       console.error('[DUEL] ERROR: Socket.IO library not loaded!');
-      alert('Socket.IO not loaded. Please refresh the page.');
+      window.PopupManager.error('Error', 'Socket.IO no cargado. Por favor, recarga la página.');
       return;
     }
 
@@ -157,7 +161,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     socket.on('connect_error', (error) => {
       console.error('[DUEL] ✗✗✗ CONNECTION ERROR ✗✗✗');
       console.error('[DUEL] Error details:', error);
-      alert('Failed to connect to game server: ' + error.message);
+      window.PopupManager.error('Connection Error', 'Could not connect to game server: ' + error.message);
     });
 
     socket.on('disconnect', (reason) => {
@@ -338,10 +342,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
     
     // Handle "Forfeit" button
-    forfeitBtn.onclick = function() {
+    forfeitBtn.onclick = async function() {
       console.log('[DUEL] Player chose to forfeit');
       stillTherePopup.style.display = 'none';
-      handleSurrender();
+      
+      const confirmed = await window.PopupManager.confirm(
+        'Surrender?',
+        'Are you sure you want to surrender? You will lose the game.',
+        { danger: true, confirmText: 'Surrender', cancelText: 'Continue' }
+      );
+      
+      if (confirmed) {
+        gameState.gameEnded = true;
+        await cancelCurrentGame();
+        socket.emit('leave_game', { gameId: gameState.gameId });
+        socket.disconnect();
+        window.location.href = '/pages/homeLogged.html';
+      }
     };
   }
 
@@ -464,14 +481,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('[DUEL] Game ended by forfeit:', data);
     gameState.gameEnded = true;
     pressButton.disabled = true;
-    alert('Opponent disconnected. You win by forfeit!');
-    window.location.href = '/pages/homeLogged.html';
+    window.PopupManager.success('Victory!', 'You won! Your opponent forfeited.', 2000);
+    setTimeout(() => {
+      window.location.href = '/pages/homeLogged.html';
+    }, 2000);
   }
 
   function handlePlayerDisconnected(data) {
     console.log('[DUEL] Player disconnected:', data);
     if (!gameState.gameEnded) {
-      alert('Opponent disconnected. Game ended.');
+      window.PopupManager.error('Opponent Disconnected', 'Opponent disconnected. The game has ended.');
       gameState.gameEnded = true;
       setTimeout(function() {
         window.location.href = '/pages/homeLogged.html';
@@ -484,7 +503,7 @@ document.addEventListener('DOMContentLoaded', async () => {
    */
   function handleError(data) {
     console.error('[DUEL] Error:', data);
-    alert(data.message || 'An error occurred');
+    window.PopupManager.error('Error', data.message || 'Ha ocurrido un error');
   }
 
 
@@ -594,17 +613,13 @@ document.addEventListener('DOMContentLoaded', async () => {
    * Handle surrender button
    */
   surrenderBtn.addEventListener('click', async () => {
-    if (confirm('Are you sure you want to surrender?')) {
-      gameState.gameEnded = true;
-      await cancelCurrentGame();
-      socket.emit('leave_game', { gameId: gameState.gameId });
-      socket.disconnect();
-      window.location.href = '/pages/homeLogged.html';
-    }
-  });
-
-  surrenderPopupBtn.addEventListener('click', async () => {
-    if (confirm('Are you sure you want to surrender?')) {
+    const confirmed = await window.PopupManager.confirm(
+      'Surrender?',
+      'Are you sure you want to surrender? You will lose the game.',
+      { danger: true, confirmText: 'Surrender', cancelText: 'Continue' }
+    );
+    
+    if (confirmed) {
       gameState.gameEnded = true;
       await cancelCurrentGame();
       socket.emit('leave_game', { gameId: gameState.gameId });
@@ -661,9 +676,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
     
     // Handle surrender button
-    surrenderPopupBtn.onclick = function() {
-      winnerPopup.style.display = 'none';
-      handleSurrender();
+    surrenderPopupBtn.onclick = async function() {
+      const confirmed = await window.PopupManager.confirm(
+        'Surrender?',
+        'Are you sure you want to surrender? You will lose the game.',
+        { danger: true, confirmText: 'Surrender', cancelText: 'Continue' }
+      );
+      
+      if (confirmed) {
+        winnerPopup.style.display = 'none';
+        gameState.gameEnded = true;
+        await cancelCurrentGame();
+        socket.emit('leave_game', { gameId: gameState.gameId });
+        socket.disconnect();
+        window.location.href = '/pages/homeLogged.html';
+      }
+      // If not confirmed, popup stays open and player can click Next Round
     };
   }
   
@@ -857,6 +885,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   }).catch(function(error) {
     console.error('[DUEL] ✗✗✗ ERROR in initSocket() ✗✗✗');
     console.error('[DUEL] Error:', error);
-    alert('Failed to initialize game: ' + error.message);
+    window.PopupManager.error('Error', 'Could not initialize game: ' + error.message);
   });
 });

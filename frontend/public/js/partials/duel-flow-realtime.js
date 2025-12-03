@@ -46,8 +46,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const gameId = urlParams.get('gameId');
   
   if (!gameId) {
-    alert('No game specified');
-    window.location.href = '/pages/homeLogged.html';
+    window.PopupManager.error('Error', 'No se especificó ningún juego');
+    setTimeout(() => {
+      window.location.href = '/pages/homeLogged.html';
+    }, 1500);
     return;
   }
 
@@ -66,8 +68,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     
   } catch (error) {
     console.error('Failed to initialize game:', error);
-    alert('Failed to connect to game. Please try again.');
-    window.location.href = '/pages/homeLogged.html';
+    window.PopupManager.error('Error de Conexión', 'No se pudo conectar al juego. Por favor, inténtalo de nuevo.');
+    setTimeout(() => {
+      window.location.href = '/pages/homeLogged.html';
+    }, 2000);
   }
 });
 
@@ -157,7 +161,7 @@ function setupGameHandlers() {
   // Game error
   window.gameManager.on('error', (data) => {
     console.error('Game error:', data);
-    alert(`Game error: ${data.message}`);
+    window.PopupManager.error('Error de Juego', data.message || 'Ha ocurrido un error en el juego');
   });
 }
 
@@ -290,8 +294,14 @@ function closeWinnerPopup() {
 }
 
 // Handle surrender
-function handleSurrender() {
-  if (confirm('Are you sure you want to surrender?')) {
+async function handleSurrender() {
+  const confirmed = await window.PopupManager.confirm(
+    '¿Rendirse?',
+    '¿Estás seguro de que quieres rendirte? Perderás el juego.',
+    { danger: true, confirmText: 'Rendirse', cancelText: 'Continuar' }
+  );
+  
+  if (confirmed) {
     window.gameManager.forfeitGame();
     showFinalPopup('Game Surrendered', 'You forfeited the game.');
   }
@@ -301,9 +311,13 @@ function handleSurrender() {
 function handleRematch() {
   if (opponent) {
     // In a real implementation, this would send a rematch request
-    alert('Rematch feature coming soon!');
+    window.PopupManager.success('Próximamente', '¡La función de revancha estará disponible pronto!', 2000);
+    setTimeout(() => {
+      window.location.href = '/pages/homeLogged.html';
+    }, 2000);
+  } else {
+    window.location.href = '/pages/homeLogged.html';
   }
-  window.location.href = '/pages/homeLogged.html';
 }
 
 // Show final popup

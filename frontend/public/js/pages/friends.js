@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }, 1500);
     } catch (error) {
       console.error('Failed to create challenge:', error);
-      alert('Failed to send challenge: ' + error.message);
+      window.PopupManager.error('Error', 'Could not send challenge: ' + error.message);
       hideModal();
     }
   }
