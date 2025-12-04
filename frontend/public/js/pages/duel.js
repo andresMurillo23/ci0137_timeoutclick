@@ -113,6 +113,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   const declineRematchBtn = document.getElementById('declineRematchBtn');
   const rematchDeclinedPopup = document.getElementById('rematchDeclinedPopup');
   const rematchDeclinedDetails = document.getElementById('rematchDeclinedDetails');
+  const guestWaitingPopup = document.getElementById('guestWaitingPopup');
+  const guestWaitingOpponent = document.getElementById('guestWaitingOpponent');
+  const challengeAcceptPopup = document.getElementById('challengeAcceptPopup');
+  const acceptChallengeBtn = document.getElementById('acceptChallengeBtn');
+  const declineChallengeBtn = document.getElementById('declineChallengeBtn');
 
   /**
    * Get full avatar URL from relative path
@@ -200,6 +205,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Game events
     socket.on('game_joined', handleGameJoined);
     socket.on('player_connection_update', handlePlayerConnectionUpdate);
+    socket.on('challenge_response', handleChallengeResponse);
     socket.on('game_countdown_start', handleGameCountdownStart);
     socket.on('game_start', handleGameStart);
     socket.on('player_clicked', handlePlayerClicked);
@@ -229,10 +235,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     gameState.player1 = data.game.player1;
     gameState.player2 = data.game.player2;
     gameState.goalTime = data.game.goalTime;
+    gameState.gameType = data.game.gameType; // Store game type to check for guest_challenge
     
     // Store current user ID
     gameState.currentUserId = data.playerRole === 'player1' ? data.game.player1.id : data.game.player2.id;
     console.log('[DUEL] Current user ID:', gameState.currentUserId);
+    console.log('[DUEL] Game type:', gameState.gameType);
 
     // Update UI
     player1Name.textContent = data.game.player1.username.toUpperCase();
@@ -254,9 +262,41 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.log('[DUEL] Setting opponent avatar:', avatarUrl);
     }
 
-    // Show waiting message with opponent name
-    updateTurnStatus(`Waiting for ${opponent.username} to accept...`);
+    // Show appropriate popup for guest challenge
+    if (gameState.isGuest && data.playerRole === 'player1') {
+      // Guest user - show waiting popup
+      guestWaitingOpponent.textContent = opponent.username;
+      guestWaitingPopup.style.display = 'flex';
+      updateTurnStatus(`Waiting for ${opponent.username} to accept...`);
+    } else if (!gameState.isGuest && data.playerRole === 'player2' && data.game.player1.id === null) {
+      // Registered user receiving guest challenge - show accept popup
+      challengeAcceptPopup.style.display = 'flex';
+      updateTurnStatus('Challenge received...');
+    } else {
+      updateTurnStatus(`Waiting for ${opponent.username}...`);
+    }
+    
     pressButton.disabled = true;
+  }
+
+  /**
+   * Handle challenge response (accept/decline)
+   */
+  function handleChallengeResponse(data) {
+    console.log('[DUEL] ======= Challenge response received =======');
+    console.log('[DUEL] Accepted:', data.accepted);
+    
+    if (data.accepted) {
+      // Close guest waiting popup
+      if (guestWaitingPopup) {
+        guestWaitingPopup.style.display = 'none';
+      }
+      updateTurnStatus('Challenge accepted! Starting soon...');
+    } else {
+      // Challenge declined
+      alert('The player declined your challenge.');
+      window.location.href = '/pages/home.html';
+    }
   }
 
   /**
@@ -759,17 +799,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     finalPopup.style.display = 'flex';
     
-    // Hide rematch button for guest games
-    if (gameState.isGuest) {
+    // Hide rematch button for guest games OR guest_challenge games
+    if (gameState.isGuest || gameState.gameType === 'guest_challenge') {
       rematchBtn.style.display = 'none';
+      console.log('[DUEL] Rematch button hidden - guest user or guest_challenge game');
       
-      // Update return home button for guests
-      returnHomeBtn.onclick = function() {
-        window.location.href = '/pages/home.html';
+      // Update return home button - prevent default link behavior
+      returnHomeBtn.onclick = function(e) {
+        e.preventDefault(); // Prevent default <a> href navigation
+        if (gameState.isGuest) {
+          console.log('[DUEL] Guest returning to home page');
+          window.location.href = '/pages/home.html';
+        } else {
+          console.log('[DUEL] Registered user returning to homeLogged');
+          window.location.href = '/pages/homeLogged.html';
+        }
       };
     } else {
-      // Handle rematch button for registered users
+      // Handle rematch button for registered users (only for non-guest_challenge games)
       rematchBtn.style.display = 'block';
+      
+      // Also handle return home for normal registered games
+      returnHomeBtn.onclick = function(e) {
+        e.preventDefault();
+        console.log('[DUEL] Returning to homeLogged');
+        window.location.href = '/pages/homeLogged.html';
+      };
+      
       rematchBtn.onclick = function() {
         console.log('[DUEL] Rematch button clicked - sending request...');
         console.log('[DUEL] Socket connected?', socket && socket.connected);
@@ -916,6 +972,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  // Handle guest challenge accept/decline
+  if (acceptChallengeBtn) {
+    acceptChallengeBtn.addEventListener('click', function() {
+      console.log('[DUEL] Challenge accepted by registered player');
+      challengeAcceptPopup.style.display = 'none';
+      updateTurnStatus('Challenge accepted! Waiting to start...');
+      
+      // Notify server that challenge was accepted (will trigger game start)
+      socket.emit('challenge_accepted', { gameId: gameState.gameId });
+    });
+  }
+
+  if (declineChallengeBtn) {
+    declineChallengeBtn.addEventListener('click', function() {
+      console.log('[DUEL] Challenge declined by registered player');
+      challengeAcceptPopup.style.display = 'none';
+      
+      // Notify server and leave
+      socket.emit('challenge_declined', { gameId: gameState.gameId });
+      
+      setTimeout(() => {
+        window.location.href = '/pages/homeLogged.html';
+      }, 1000);
+    });
+  }
+
   // Initialize
   console.log('[DUEL] ======= Calling initSocket() =======');
   initSocket().then(function() {
@@ -924,6 +1006,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   }).catch(function(error) {
     console.error('[DUEL] ✗✗✗ ERROR in initSocket() ✗✗✗');
     console.error('[DUEL] Error:', error);
-    window.PopupManager.error('Error', 'Could not initialize game: ' + error.message);
+    if (window.PopupManager) {
+      window.PopupManager.error('Error', 'Could not initialize game: ' + error.message);
+    } else {
+      alert('Error: ' + error.message);
+    }
   });
 });

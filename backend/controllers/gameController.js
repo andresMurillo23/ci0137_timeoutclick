@@ -612,10 +612,12 @@ const cleanupWaitingGames = async (req, res) => {
     const userId = req.session.userId;
 
     // Cancel all waiting games where user is player1 (sender)
+    // BUT do NOT cancel guest_challenge games (they have player1=null and different lifecycle)
     const result = await Game.updateMany(
       {
         player1: userId,
-        status: 'waiting'
+        status: 'waiting',
+        gameType: { $ne: 'guest_challenge' }
       },
       {
         status: 'cancelled',
@@ -833,14 +835,14 @@ const createGuestChallenge = async (req, res) => {
       from: '"TimeoutClick" <noreply@timeoutclick.com>',
       to: selectedPlayer.email,
       subject: 'New Challenge from Guest Player',
-      text: `Hi ${selectedPlayer.username},\n\nA guest player has challenged you to a duel in TimeoutClick!\n\nClick here to accept: http://localhost:5000/pages/login.html?redirect=duel&gameId=${game._id}\n\nGood luck!`,
+      text: `Hi ${selectedPlayer.username},\n\nA guest player has challenged you to a duel in TimeoutClick!\n\nClick here to accept: http://localhost:5000/pages/login.html?redirect=challenge&gameId=${game._id}\n\nGood luck!`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2>New Challenge!</h2>
           <p>Hi <strong>${selectedPlayer.username}</strong>,</p>
           <p>A guest player has challenged you to a duel in TimeoutClick!</p>
           <p style="margin: 30px 0;">
-            <a href="http://localhost:5000/pages/login.html?redirect=duel&gameId=${game._id}" 
+            <a href="http://localhost:5000/pages/login.html?redirect=challenge&gameId=${game._id}" 
                style="background: #D2691E; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
               Accept Challenge
             </a>

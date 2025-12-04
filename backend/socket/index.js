@@ -137,11 +137,12 @@ class SocketManager {
       const Game = require('../models/Game');
       const GameSession = require('../models/GameSession');
       
-      // Cancel waiting challenges
+      // Cancel waiting challenges (but NOT guest_challenge games - they handle disconnects differently)
       await Game.updateMany(
         {
           player1: socket.userId,
-          status: 'waiting'
+          status: 'waiting',
+          gameType: { $ne: 'guest_challenge' } // Don't cancel guest challenges
         },
         {
           status: 'cancelled',
@@ -161,6 +162,7 @@ class SocketManager {
           { player2: socket.userId }
         ],
         status: { $in: ['starting', 'active'] },
+        gameType: { $ne: 'guest_challenge' }, // Don't auto-cancel guest challenges
         updatedAt: { $lt: twoMinutesAgo }
       });
 

@@ -9,6 +9,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
+  // Check if coming from guest challenge email
+  const urlParams = new URLSearchParams(window.location.search);
+  const challengeType = urlParams.get('type');
+  const gameId = urlParams.get('gameId');
+
   const listContainer = document.getElementById('playersList');
   const confirmOverlay = document.getElementById('confirmOverlay');
   const panelConfirm = document.getElementById('panelConfirm');
@@ -24,6 +29,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   let socket = null;
   let currentGameId = null;
   let pendingChallenges = [];
+
+  // Handle guest challenge acceptance flow
+  if (challengeType === 'guest' && gameId) {
+    showGuestChallengePopup(gameId);
+    return; // Don't load normal challenge page
+  }
 
   /**
    * Clean up old waiting games from this user
@@ -581,3 +592,50 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // The online status will be requested automatically in socket.on('connect')
 });
+
+/**
+ * Show guest challenge acceptance popup
+ */
+function showGuestChallengePopup(gameId) {
+  // Show popup asking if user accepts the challenge
+  const confirmOverlay = document.getElementById('confirmOverlay');
+  const panelConfirm = document.getElementById('panelConfirm');
+  const whoSpan = document.getElementById('who');
+  const yesBtn = document.getElementById('yesBtn');
+  const noBtn = document.getElementById('noBtn');
+
+  whoSpan.textContent = 'Guest';
+  panelConfirm.style.display = 'block';
+  confirmOverlay.style.display = 'flex';
+
+  // Connect to socket
+  const token = sessionStorage.getItem('authToken');
+  const challengeSocket = io('http://localhost:3000', {
+    auth: { token: token },
+    transports: ['websocket', 'polling']
+  });
+
+  challengeSocket.on('connect', () => {
+    console.log('[CHALLENGE] Connected to server for guest challenge');
+    challengeSocket.emit('join_game', { gameId: gameId });
+  });
+
+  // Handle accept
+  yesBtn.onclick = () => {
+    console.log('[CHALLENGE] Accepted guest challenge');
+    challengeSocket.emit('challenge_accepted', { gameId: gameId });
+    
+    // Redirect to duel
+    window.location.href = `/pages/duel.html?gameId=${gameId}`;
+  };
+
+  // Handle decline
+  noBtn.onclick = () => {
+    console.log('[CHALLENGE] Declined guest challenge');
+    challengeSocket.emit('challenge_declined', { gameId: gameId });
+    challengeSocket.disconnect();
+    
+    // Redirect to home
+    window.location.href = '/pages/homeLogged.html';
+  };
+}

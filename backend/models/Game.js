@@ -139,6 +139,7 @@ gameSchema.statics.generateGoalTime = function() {
 
 /**
  * Calculate winner based on closest time to goal
+ * Returns the winner's ObjectId (or 'guest_player' string for guest), or null for tie
  */
 gameSchema.methods.calculateWinner = function() {
   if (this.player1Time === null && this.player2Time === null) {
@@ -146,21 +147,27 @@ gameSchema.methods.calculateWinner = function() {
   }
   
   if (this.player1Time === null) {
-    return this.player2;
+    // Player2 wins by default (player1 didn't click)
+    return this.player2?._id || this.player2;
   }
   
   if (this.player2Time === null) {
-    return this.player1;
+    // Player1 wins by default (player2 didn't click)
+    // For guest games, return special marker
+    return this.player1 ? (this.player1._id || this.player1) : 'guest_player';
   }
 
   const player1Diff = Math.abs(this.player1Time - this.goalTime);
   const player2Diff = Math.abs(this.player2Time - this.goalTime);
   
   if (player1Diff < player2Diff) {
-    return this.player1;
+    // Player1 is closer
+    return this.player1 ? (this.player1._id || this.player1) : 'guest_player';
   } else if (player2Diff < player1Diff) {
-    return this.player2;
+    // Player2 is closer
+    return this.player2?._id || this.player2;
   } else {
+    // Tie
     return null;
   }
 };

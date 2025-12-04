@@ -136,6 +136,26 @@
       </div>
     </div>
   </div>
+
+  <!-- Guest waiting popup -->
+  <div class="modal-overlay" id="guestWaitingPopup">
+    <div class="modal-content" role="dialog" aria-labelledby="guestWaitingTitle" aria-modal="true">
+      <h2 id="guestWaitingTitle">WAITING FOR PLAYER...</h2>
+      <p id="guestWaitingDetails">Waiting for <strong id="guestWaitingOpponent">Player</strong> to accept...</p>
+    </div>
+  </div>
+
+  <!-- Challenge accept popup (for registered player) -->
+  <div class="modal-overlay" id="challengeAcceptPopup">
+    <div class="modal-content" role="dialog" aria-labelledby="challengeAcceptTitle" aria-modal="true">
+      <h2 id="challengeAcceptTitle">NEW CHALLENGE!</h2>
+      <p id="challengeAcceptDetails">A guest player has challenged you to a duel!</p>
+      <div class="popup-actions">
+        <button class="btn btn-confirm" id="acceptChallengeBtn">Accept</button>
+        <button class="btn btn-cancel" id="declineChallengeBtn">Decline</button>
+      </div>
+    </div>
+  </div>
 </main>
 
 <!-- Duel game logic -->

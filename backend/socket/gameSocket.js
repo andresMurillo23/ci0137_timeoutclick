@@ -37,8 +37,11 @@ class GameSocketHandler {
    */
   initializeEvents(socket) {
     socket.on('join_game', (data) => this.handleJoinGame(socket, data));
+    socket.on('guest_waiting', (data) => this.handleGuestWaiting(socket, data));
     socket.on('player_click', (data) => this.handlePlayerClick(socket, data));
     socket.on('player_ready_for_next_round', (data) => this.handlePlayerReadyForNextRound(socket, data));
+    socket.on('challenge_accepted', (data) => this.handleChallengeAccepted(socket, data));
+    socket.on('challenge_declined', (data) => this.handleChallengeDeclined(socket, data));
     socket.on('rematch_request', (data) => this.handleRematchRequest(socket, data));
     socket.on('rematch_response', (data) => this.handleRematchResponse(socket, data));
     socket.on('leave_game', (data) => this.handleLeaveGame(socket, data));
@@ -54,26 +57,37 @@ class GameSocketHandler {
       const userId = socket.userId; // Set by authentication middleware
       const isGuest = socket.isGuest;
 
-      console.log(`[GAME] Join attempt - User: ${userId}, Guest: ${isGuest}, Game: ${gameId}`);
+      console.log(`\n========== JOIN GAME DEBUG ==========`);
+      console.log(`[GAME-DEBUG] Join attempt:`);
+      console.log(`  - Socket ID: ${socket.id}`);
+      console.log(`  - User ID: ${userId}`);
+      console.log(`  - Is Guest: ${isGuest}`);
+      console.log(`  - Game ID: ${gameId}`);
 
       if (!userId && !isGuest) {
-        console.error('[GAME] Join failed - No userId and not a guest');
+        console.error('[GAME-DEBUG] ❌ JOIN REJECTED: No userId and not a guest');
         socket.emit('game_error', { message: 'Authentication required' });
         return;
       }
 
       const game = await Game.findById(gameId).populate('player1 player2');
       if (!game) {
-        console.error(`[GAME] Join failed - Game ${gameId} not found`);
+        console.error(`[GAME-DEBUG] ❌ JOIN REJECTED: Game ${gameId} not found`);
         socket.emit('game_error', { message: 'Game not found' });
         return;
       }
 
-      console.log(`[GAME] Game found - Status: ${game.status}`);
+      console.log(`[GAME-DEBUG] Game found:`);
+      console.log(`  - Status: ${game.status}`);
+      console.log(`  - Type: ${game.gameType}`);
+      console.log(`  - Player1: ${game.player1 ? game.player1._id : 'NULL'}`);
+      console.log(`  - Player2: ${game.player2 ? game.player2._id : 'NULL'}`);
+      console.log(`  - Created: ${game.createdAt}`);
 
       // Check if game was cancelled
       if (game.status === 'cancelled') {
-        console.error(`[GAME] Join failed - Game ${gameId} was cancelled`);
+        console.error(`[GAME-DEBUG] ❌ JOIN REJECTED: Game ${gameId} STATUS IS CANCELLED`);
+        console.error(`[GAME-DEBUG] Game was cancelled at some point. Check who/what cancelled it.`);
         socket.emit('game_error', { message: 'Game was cancelled' });
         return;
       }
@@ -145,7 +159,8 @@ class GameSocketHandler {
             avatar: game.player2.avatar
           },
           status: game.status,
-          goalTime: game.goalTime
+          goalTime: game.goalTime,
+          gameType: game.gameType
         },
         session: {
           player1Connected: gameSession.player1Connected,
@@ -302,10 +317,12 @@ class GameSocketHandler {
       }
 
       const timeDifference = clickTime - gameSession.gameStartedAt;
-      const isPlayer1 = game.player1.toString() === userId;
+      // Handle guest case where player1 can be null
+      const player1Id = game.player1 ? game.player1.toString() : null;
+      const isPlayer1 = (player1Id === null && userId === 'guest_player') || player1Id === userId;
 
       console.log(`[GAME] Time difference: ${timeDifference}ms`);
-      console.log(`[GAME] Is Player 1: ${isPlayer1}`);
+      console.log(`[GAME] Is Player 1: ${isPlayer1} (userId: ${userId})`);
       console.log(`[GAME] Current P1 time: ${game.player1Time}`);
       console.log(`[GAME] Current P2 time: ${game.player2Time}`);
 
@@ -411,13 +428,22 @@ class GameSocketHandler {
       }
 
       // Mark player as ready
-      const isPlayer1 = game.player1._id.toString() === userId;
+      // For guest games, player1 is null, so guest is always considered player1
+      const player1Id = game.player1?._id?.toString();
+      const player2Id = game.player2?._id?.toString();
+      
+      const isPlayer1 = (userId && player1Id && userId === player1Id) || 
+                        (socket.isGuest && !player1Id); // Guest is player1 when player1 is null
+      
+      const player1Data = getPlayerData(game.player1);
+      const player2Data = getPlayerData(game.player2);
+      
       if (isPlayer1) {
         gameSession.player1Ready = true;
-        console.log(`[GAME] Player 1 (${game.player1.username}) is ready for next round`);
+        console.log(`[GAME] Player 1 (${player1Data.username}) is ready for next round`);
       } else {
         gameSession.player2Ready = true;
-        console.log(`[GAME] Player 2 (${game.player2.username}) is ready for next round`);
+        console.log(`[GAME] Player 2 (${player2Data.username}) is ready for next round`);
       }
 
       await gameSession.save();
@@ -474,12 +500,15 @@ class GameSocketHandler {
         return;
       }
 
-      console.log(`[GAME] Player 1 (${game.player1.username}) time: ${game.player1Time}ms`);
-      console.log(`[GAME] Player 2 (${game.player2.username}) time: ${game.player2Time}ms`);
+      const player1Data = getPlayerData(game.player1);
+      const player2Data = getPlayerData(game.player2);
+
+      console.log(`[GAME] Player 1 (${player1Data.username}) time: ${game.player1Time}ms`);
+      console.log(`[GAME] Player 2 (${player2Data.username}) time: ${game.player2Time}ms`);
       console.log(`[GAME] Goal time: ${game.goalTime}ms`);
 
       // Determine round winner
-      const roundWinnerResult = game.calculateWinner(); // Returns ObjectId or User object or null
+      const roundWinnerResult = game.calculateWinner(); // Returns ObjectId, 'guest_player', or null
 
       console.log(`[GAME] Round winner result:`, roundWinnerResult);
       console.log(`[GAME] Round winner type:`, typeof roundWinnerResult);
@@ -487,24 +516,36 @@ class GameSocketHandler {
       // Extract ObjectId and find winner object from populated players
       let roundWinnerId = null;
       let roundWinner = null;
+      let isGuestWinner = false;
 
       if (roundWinnerResult) {
-        // If it's a User object with _id, extract the _id
-        if (roundWinnerResult._id) {
-          roundWinnerId = roundWinnerResult._id;
+        // Check if guest won
+        if (roundWinnerResult === 'guest_player') {
+          roundWinnerId = null; // Guest doesn't have an ID
+          roundWinner = null;
+          isGuestWinner = true;
+          console.log(`[GAME] Round winner: Player 1 (Guest)`);
         } else {
-          // Otherwise it's already an ObjectId
-          roundWinnerId = roundWinnerResult;
-        }
+          // If it's a User object with _id, extract the _id
+          if (roundWinnerResult._id) {
+            roundWinnerId = roundWinnerResult._id;
+          } else {
+            // Otherwise it's already an ObjectId
+            roundWinnerId = roundWinnerResult;
+          }
 
-        console.log(`[GAME] Round winner ID:`, roundWinnerId);
+          console.log(`[GAME] Round winner ID:`, roundWinnerId);
 
-        if (roundWinnerId.toString() === game.player1._id.toString()) {
-          roundWinner = game.player1;
-          console.log(`[GAME] Round winner: Player 1 (${game.player1.username})`);
-        } else if (roundWinnerId.toString() === game.player2._id.toString()) {
-          roundWinner = game.player2;
-          console.log(`[GAME] Round winner: Player 2 (${game.player2.username})`);
+          const player1Id = game.player1?._id?.toString();
+          const player2Id = game.player2?._id?.toString();
+
+          if (player1Id && roundWinnerId.toString() === player1Id) {
+            roundWinner = game.player1;
+            console.log(`[GAME] Round winner: Player 1 (${getPlayerData(game.player1).username})`);
+          } else if (player2Id && roundWinnerId.toString() === player2Id) {
+            roundWinner = game.player2;
+            console.log(`[GAME] Round winner: Player 2 (${getPlayerData(game.player2).username})`);
+          }
         }
       } else {
         console.log(`[GAME] Round result: TIE`);
@@ -522,16 +563,37 @@ class GameSocketHandler {
 
       game.rounds.push(roundData);
 
+      console.log(`[GAME] ===== SCORE UPDATE =====`);
+      console.log(`[GAME] Before update - P1: ${game.player1Score}, P2: ${game.player2Score}`);
+      console.log(`[GAME] isGuestWinner: ${isGuestWinner}`);
+      console.log(`[GAME] roundWinnerId: ${roundWinnerId}`);
+      
       // Update scores
-      if (roundWinnerId) {
-        if (roundWinnerId.toString() === game.player1._id.toString()) {
+      if (isGuestWinner) {
+        // Guest (player1) won
+        game.player1Score += 1;
+        console.log(`[GAME] ✅ Player 1 (Guest) WON - score: ${game.player1Score}`);
+      } else if (roundWinnerId) {
+        const player1Id = game.player1?._id?.toString();
+        const player2Id = game.player2?._id?.toString();
+        
+        console.log(`[GAME] Comparing IDs - roundWinner: ${roundWinnerId.toString()}, P1: ${player1Id}, P2: ${player2Id}`);
+        
+        if (player1Id && roundWinnerId.toString() === player1Id) {
           game.player1Score += 1;
-          console.log(`[GAME] Player 1 score: ${game.player1Score}`);
-        } else {
+          console.log(`[GAME] ✅ Player 1 WON - score: ${game.player1Score}`);
+        } else if (player2Id && roundWinnerId.toString() === player2Id) {
           game.player2Score += 1;
-          console.log(`[GAME] Player 2 score: ${game.player2Score}`);
+          console.log(`[GAME] ✅ Player 2 WON - score: ${game.player2Score}`);
+        } else {
+          console.log(`[GAME] ⚠️ WARNING: Winner ID didn't match any player!`);
         }
+      } else {
+        console.log(`[GAME] Round was a TIE - no score update`);
       }
+      
+      console.log(`[GAME] After update - P1: ${game.player1Score}, P2: ${game.player2Score}`);
+      console.log(`[GAME] =======================`);
 
       await game.save();
       console.log(`[GAME] Game saved with updated scores`);
@@ -542,19 +604,19 @@ class GameSocketHandler {
       console.log(`[GAME] Player 1 difference: ${player1Diff}ms`);
       console.log(`[GAME] Player 2 difference: ${player2Diff}ms`);
 
-      // Emit round results
+      // Emit round results (using player1Data and player2Data already declared above)
       const roundFinishedData = {
         round: game.currentRound,
         goalTime: game.goalTime,
         player1: {
-          id: game.player1._id,
-          username: game.player1.username,
+          id: player1Data.id,
+          username: player1Data.username,
           time: game.player1Time,
           difference: player1Diff
         },
         player2: {
-          id: game.player2._id,
-          username: game.player2.username,
+          id: player2Data.id,
+          username: player2Data.username,
           time: game.player2Time,
           difference: player2Diff
         },
@@ -622,14 +684,17 @@ class GameSocketHandler {
       console.log(`[GAME] Scores - P1: ${game.player1Score}, P2: ${game.player2Score}`);
       console.log(`[GAME] Rounds array length: ${game.rounds?.length || 0}`);
       
+      const player1Data = getPlayerData(game.player1);
+      const player2Data = getPlayerData(game.player2);
+      
       // Determine overall winner based on best of 3
       let overallWinner = null;
       if (game.player1Score > game.player2Score) {
         overallWinner = game.player1;
-        console.log(`[GAME] Overall winner: Player 1 (${game.player1.username})`);
+        console.log(`[GAME] Overall winner: Player 1 (${player1Data.username})`);
       } else if (game.player2Score > game.player1Score) {
         overallWinner = game.player2;
-        console.log(`[GAME] Overall winner: Player 2 (${game.player2.username})`);
+        console.log(`[GAME] Overall winner: Player 2 (${player2Data.username})`);
       } else {
         console.log(`[GAME] Game tied!`);
       }
@@ -655,18 +720,19 @@ class GameSocketHandler {
       await this.updatePlayerStats(game);
       console.log(`[GAME] Player stats updated!`);
 
+      // Use player1Data and player2Data already declared above
       const gameResult = {
         gameId: gameId,
         totalRounds: game.totalRounds,
         roundsPlayed: game.rounds.length,
         player1: {
-          id: game.player1._id,
-          username: game.player1.username,
+          id: player1Data.id,
+          username: player1Data.username,
           score: game.player1Score
         },
         player2: {
-          id: game.player2._id,
-          username: game.player2.username,
+          id: player2Data.id,
+          username: player2Data.username,
           score: game.player2Score
         },
         rounds: game.rounds,
@@ -710,6 +776,12 @@ class GameSocketHandler {
    */
   async updatePlayerStats(game) {
     try {
+      // Don't update stats for guest games (player1 is null)
+      if (!game.player1 || game.gameType === 'guest_challenge') {
+        console.log('[GAME] Skipping stats update for guest game');
+        return;
+      }
+
       const player1Update = {
         $inc: { 'gameStats.gamesPlayed': 1 }
       };
@@ -718,7 +790,8 @@ class GameSocketHandler {
       };
 
       if (game.winner) {
-        if (game.winner.toString() === game.player1.toString()) {
+        const player1Id = game.player1 ? game.player1.toString() : null;
+        if (game.winner.toString() === player1Id) {
           player1Update.$inc['gameStats.gamesWon'] = 1;
         } else {
           player2Update.$inc['gameStats.gamesWon'] = 1;
@@ -866,6 +939,13 @@ class GameSocketHandler {
         return;
       }
       
+      // Guest games don't support rematch
+      if (!game.player1 || game.gameType === 'guest_challenge') {
+        console.log('[REMATCH] ERROR: Rematch not allowed for guest games');
+        socket.emit('game_error', { message: 'Rematch not available for guest games' });
+        return;
+      }
+      
       // Determine opponent
       const isPlayer1 = game.player1._id.toString() === userId;
       const opponent = isPlayer1 ? game.player2 : game.player1;
@@ -939,6 +1019,13 @@ class GameSocketHandler {
       const oldGame = await Game.findById(gameId).populate('player1 player2');
       if (!oldGame) {
         console.log('[REMATCH] ERROR: Game not found');
+        return;
+      }
+      
+      // Guest games don't support rematch
+      if (!oldGame.player1 || oldGame.gameType === 'guest_challenge') {
+        console.log('[REMATCH] ERROR: Rematch not allowed for guest games');
+        socket.emit('game_error', { message: 'Rematch not available for guest games' });
         return;
       }
       
@@ -1030,6 +1117,114 @@ class GameSocketHandler {
 
     } catch (error) {
       console.error('Cleanup game error:', error);
+    }
+  }
+
+  /**
+   * Handle guest waiting for challenge acceptance
+   */
+  async handleGuestWaiting(socket, data) {
+    try {
+      const { gameId } = data;
+      console.log(`\n========== GUEST WAITING DEBUG ==========`);
+      console.log(`[CHALLENGE-DEBUG] Guest waiting event received:`);
+      console.log(`  - Socket ID: ${socket.id}`);
+      console.log(`  - Is Guest: ${socket.isGuest}`);
+      console.log(`  - Game ID: ${gameId}`);
+
+      // Verify game exists and check its status
+      const game = await Game.findById(gameId);
+      if (!game) {
+        console.error(`[CHALLENGE-DEBUG] ❌ Game ${gameId} not found`);
+        socket.emit('game_error', { message: 'Game not found' });
+        return;
+      }
+      
+      console.log(`[CHALLENGE-DEBUG] Game status: ${game.status}`);
+      console.log(`[CHALLENGE-DEBUG] Game type: ${game.gameType}`);
+
+      // Join a waiting room (not the actual game room yet)
+      socket.join(`game_${gameId}_waiting`);
+      
+      console.log(`[CHALLENGE-DEBUG] ✅ Guest joined waiting room: game_${gameId}_waiting`);
+      console.log(`[CHALLENGE-DEBUG] Current socket rooms:`, Array.from(socket.rooms));
+      console.log(`======================================\n`);
+    } catch (error) {
+      console.error('[CHALLENGE-DEBUG] ❌ Error in guest waiting:', error);
+      socket.emit('game_error', { message: error.message });
+    }
+  }
+
+  /**
+   * Handle challenge accepted (for guest challenges)
+   */
+  async handleChallengeAccepted(socket, data) {
+    try {
+      const { gameId } = data;
+      console.log(`\n========== CHALLENGE ACCEPTED DEBUG ==========`);
+      console.log(`[CHALLENGE-DEBUG] Player accepted guest challenge`);
+      console.log(`  - Socket ID: ${socket.id}`);
+      console.log(`  - Game ID: ${gameId}`);
+
+      // Verify game exists and check status
+      const game = await Game.findById(gameId);
+      if (!game) {
+        console.error(`[CHALLENGE-DEBUG] ❌ Game not found`);
+        socket.emit('game_error', { message: 'Game not found' });
+        return;
+      }
+      
+      console.log(`[CHALLENGE-DEBUG] Game status: ${game.status}`);
+      console.log(`[CHALLENGE-DEBUG] Game type: ${game.gameType}`);
+      
+      // Update game status to 'waiting' if needed
+      if (game.status === 'pending') {
+        game.status = 'waiting';
+        await game.save();
+        console.log(`[CHALLENGE-DEBUG] ✅ Game status updated: pending → waiting`);
+      }
+
+      // Notify guest in waiting room that challenge was accepted
+      console.log(`[CHALLENGE-DEBUG] Emitting challenge_response to room: game_${gameId}_waiting`);
+      this.io.to(`game_${gameId}_waiting`).emit('challenge_response', { accepted: true });
+
+      // Also notify in the actual game room (in case guest already joined)
+      console.log(`[CHALLENGE-DEBUG] Emitting challenge_response to room: game_${gameId}`);
+      this.io.to(`game_${gameId}`).emit('challenge_response', { accepted: true });
+
+      console.log(`[CHALLENGE-DEBUG] ✅ Challenge acceptance notifications sent`);
+      
+      // Check if both players are connected and start game
+      const gameSession = await GameSession.findOne({ gameId });
+      if (gameSession && gameSession.player1Connected && gameSession.player2Connected) {
+        console.log(`[CHALLENGE-DEBUG] Both players connected, starting countdown`);
+        await this.startGameCountdown(gameId);
+      } else {
+        console.log(`[CHALLENGE-DEBUG] Waiting for both players to join game`);
+      }
+      console.log(`==============================================\n`);
+    } catch (error) {
+      console.error('[CHALLENGE-DEBUG] ❌ Error accepting challenge:', error);
+    }
+  }
+
+  /**
+   * Handle challenge declined (for guest challenges)
+   */
+  async handleChallengeDeclined(socket, data) {
+    try {
+      const { gameId } = data;
+      console.log(`[CHALLENGE] Player declined guest challenge for game ${gameId}`);
+
+      // Notify guest in waiting room that challenge was declined
+      this.io.to(`game_${gameId}_waiting`).emit('challenge_response', { accepted: false });
+      this.io.to(`game_${gameId}`).emit('challenge_response', { accepted: false });
+
+      // Cancel the game
+      await Game.findByIdAndUpdate(gameId, { status: 'cancelled' });
+      await this.cleanupGame(gameId);
+    } catch (error) {
+      console.error('[CHALLENGE] Error declining challenge:', error);
     }
   }
 }

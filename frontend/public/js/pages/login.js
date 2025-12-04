@@ -8,8 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Redirect if already logged in
   window.auth.onAuthChange((isLoggedIn) => {
     if (isLoggedIn) {
-      // If coming from guest challenge email, redirect to duel
-      if (redirect === 'duel' && gameId) {
+      // If coming from guest challenge email, redirect to challenge page
+      if (redirect === 'challenge' && gameId) {
+        window.location.href = `/pages/challenge.html?gameId=${gameId}&type=guest`;
+      } else if (redirect === 'duel' && gameId) {
         window.location.href = `/pages/duel.html?gameId=${gameId}`;
       } else {
         window.location.href = '/pages/homeLogged.html';
@@ -40,7 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
       await window.auth.login(identifier, password);
       
       // After successful login, redirect based on parameters
-      if (redirect === 'duel' && gameId) {
+      if (redirect === 'challenge' && gameId) {
+        window.location.href = `/pages/challenge.html?gameId=${gameId}&type=guest`;
+      } else if (redirect === 'duel' && gameId) {
         window.location.href = `/pages/duel.html?gameId=${gameId}`;
       } else {
         window.location.href = '/pages/homeLogged.html';

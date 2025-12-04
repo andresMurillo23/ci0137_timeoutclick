@@ -47,46 +47,142 @@
 <!-- Shared footer scripts -->
 <script src="/js/partials/footer.js"></script>
 
+<!-- Socket.IO -->
+<script src="/socket.io/socket.io.js"></script>
+
+<!-- Guest Waiting Popup -->
+<div class="modal-overlay" id="guestWaitingPopupHome" style="display: none;">
+  <div class="modal-content confirm-box" role="dialog" aria-modal="true">
+    <h2 class="confirm-title">WAITING FOR PLAYER...</h2>
+    <p class="confirm-message">Waiting for <strong id="guestWaitingOpponentHome">Player</strong> to accept...</p>
+    <div class="popup-actions">
+      <button class="btn btn--cancel" id="cancelGuestChallengeBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <!-- Guest challenge functionality -->
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const guestChallengeBtn = document.getElementById('guestChallengeBtn');
-  
-  if (guestChallengeBtn) {
-    guestChallengeBtn.addEventListener('click', async () => {
-      // Disable button while processing
-      guestChallengeBtn.disabled = true;
-      guestChallengeBtn.textContent = 'SEARCHING...';
+(function() {
+  let guestSocket = null;
+  let currentGameId = null;
+
+  function showGuestWaitingPopup(opponentName, gameId) {
+    currentGameId = gameId;
+    const popup = document.getElementById('guestWaitingPopupHome');
+    const opponentElement = document.getElementById('guestWaitingOpponentHome');
+    
+    opponentElement.textContent = opponentName;
+    popup.style.display = 'flex';
+    
+    // Connect to socket to listen for challenge response
+    connectGuestSocket(gameId);
+  }
+
+  function connectGuestSocket(gameId) {
+    const guestToken = btoa('guest_' + Date.now());
+    
+    guestSocket = io('http://localhost:3000', {
+      auth: { token: guestToken },
+      transports: ['websocket', 'polling']
+    });
+    
+    guestSocket.on('connect', () => {
+      console.log('[GUEST] Connected to server, waiting for response...');
+      // DON'T join game yet - just listen for challenge_response
+      // We'll join the room through a special event
+      guestSocket.emit('guest_waiting', { gameId: gameId });
+    });
+    
+    guestSocket.on('challenge_response', (data) => {
+      console.log('[GUEST-DEBUG] Step 8: Received challenge_response:', JSON.stringify(data));
       
-      try {
-        const response = await fetch('http://localhost:3000/api/games/guest-challenge', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-          if (data.emailPreview) {
-            console.log('Email preview:', data.emailPreview);
-          }
-          
-          // Redirect guest immediately to duel page to wait
-          window.location.href = `/pages/duel.html?gameId=${data.gameId}&guest=true&opponent=${encodeURIComponent(data.opponent)}`;
-        } else {
-          alert(data.message || 'No players available at the moment. Please try again later.');
-          guestChallengeBtn.disabled = false;
-          guestChallengeBtn.textContent = 'CHALLENGE RANDOM PLAYER';
+      if (data.accepted) {
+        console.log('[GUEST-DEBUG] Step 9: Challenge ACCEPTED, redirecting to duel');
+        // Challenge accepted - redirect to duel
+        window.location.href = `/pages/duel.html?gameId=${gameId}&guest=true`;
+      } else {
+        // Challenge declined
+        alert('The player declined your challenge.');
+        document.getElementById('guestWaitingPopupHome').style.display = 'none';
+        document.getElementById('guestChallengeBtn').disabled = false;
+        document.getElementById('guestChallengeBtn').textContent = 'CHALLENGE RANDOM PLAYER';
+        if (guestSocket) {
+          guestSocket.disconnect();
+          guestSocket = null;
         }
-      } catch (error) {
-        console.error('Guest challenge error:', error);
-        alert('Failed to send challenge. Please try again.');
-        guestChallengeBtn.disabled = false;
-        guestChallengeBtn.textContent = 'CHALLENGE RANDOM PLAYER';
+      }
+    });
+    
+    guestSocket.on('connect_error', (error) => {
+      console.error('[GUEST-DEBUG] Connection error:', error);
+    });
+    
+    guestSocket.on('game_error', (data) => {
+      console.error('[GUEST-DEBUG] Game error received:', JSON.stringify(data));
+      alert('Error: ' + data.message);
+      document.getElementById('guestWaitingPopupHome').style.display = 'none';
+      if (guestSocket) {
+        guestSocket.disconnect();
+        guestSocket = null;
       }
     });
   }
-});
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const guestChallengeBtn = document.getElementById('guestChallengeBtn');
+    const cancelBtn = document.getElementById('cancelGuestChallengeBtn');
+    
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => {
+        if (guestSocket) {
+          // Don't emit challenge_declined, just disconnect
+          // The registered player can still accept if they want
+          guestSocket.disconnect();
+          guestSocket = null;
+        }
+        document.getElementById('guestWaitingPopupHome').style.display = 'none';
+        guestChallengeBtn.disabled = false;
+        guestChallengeBtn.textContent = 'CHALLENGE RANDOM PLAYER';
+      });
+    }
+    
+    if (guestChallengeBtn) {
+      guestChallengeBtn.addEventListener('click', async () => {
+        // Disable button while processing
+        guestChallengeBtn.disabled = true;
+        guestChallengeBtn.textContent = 'SEARCHING...';
+        
+        try {
+          const response = await fetch('http://localhost:3000/api/games/guest-challenge', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            if (data.emailPreview) {
+              console.log('Email preview:', data.emailPreview);
+            }
+            
+            // Show waiting popup on home page (don't redirect yet)
+            showGuestWaitingPopup(data.opponent, data.gameId);
+          } else {
+            alert(data.message || 'No players available at the moment. Please try again later.');
+            guestChallengeBtn.disabled = false;
+            guestChallengeBtn.textContent = 'CHALLENGE RANDOM PLAYER';
+          }
+        } catch (error) {
+          console.error('Guest challenge error:', error);
+          alert('Failed to send challenge. Please try again.');
+          guestChallengeBtn.disabled = false;
+          guestChallengeBtn.textContent = 'CHALLENGE RANDOM PLAYER';
+        }
+      });
+    }
+  });
+})();
 </script>
