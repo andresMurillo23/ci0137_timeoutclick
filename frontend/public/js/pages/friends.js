@@ -80,7 +80,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       };
       
       card.onclick = () => {
-        window.location.href = `/pages/otherProfile.html?userId=${friend._id}`;
+        const friendId = friend._id || friend.id;
+        window.location.href = `/pages/deleteFriend.html?userId=${friendId}`;
       };
       
       card.appendChild(statusDot);
