@@ -29,36 +29,28 @@
       <section class="panel">
         <div class="friends-grid-container">
           <div class="friends-grid">
-            <!-- Friend card: online/available -->
-            <div class="friend-card available" onclick="if (event.target.closest('a')) return; location.href='/pages/deleteFriend.html'">
-              <span class="status-dot on" aria-hidden="true"></span>
+            <!-- Friend card -->
+            <div class="friend-card" onclick="location.href='/pages/deleteFriend.html'">
               <div class="user-avatar">A</div>
               <span class="user-name">andresmimi</span>
-              <a class="btn--secondary challenge-btn">CHALLENGE</a>
             </div>
 
-            <!-- Friend card: busy -->
-            <div class="friend-card busy" onclick="if (event.target.closest('a')) return; location.href='/pages/deleteFriend.html'">
-              <span class="status-dot busy" aria-hidden="true"></span>
+            <!-- Friend card -->
+            <div class="friend-card" onclick="location.href='/pages/deleteFriend.html'">
               <div class="user-avatar">R</div>
               <span class="user-name">rolipoli</span>
-              <a class="btn--secondary challenge-btn">CHALLENGE</a>
             </div>
 
-            <!-- Friend card: available -->
-            <div class="friend-card available" onclick="if (event.target.closest('a')) return; location.href='/pages/deleteFriend.html'">
-              <span class="status-dot on" aria-hidden="true"></span>
+            <!-- Friend card -->
+            <div class="friend-card" onclick="location.href='/pages/deleteFriend.html'">
               <div class="user-avatar">I</div>
               <span class="user-name">isabel</span>
-              <a class="btn--secondary challenge-btn">CHALLENGE</a>
             </div>
 
-            <!-- Friend card: offline -->
-            <div class="friend-card unavailable" onclick="if (event.target.closest('a')) return; location.href='/pages/deleteFriend.html'">
-              <span class="status-dot off" aria-hidden="true"></span>
+            <!-- Friend card -->
+            <div class="friend-card" onclick="location.href='/pages/deleteFriend.html'">
               <div class="user-avatar">T</div>
               <span class="user-name">tatsparamo</span>
-              <a class="btn--secondary challenge-btn">CHALLENGE</a>
             </div>
           </div>
         </div>
@@ -67,41 +59,7 @@
   </section>
 </main>
 
-<!-- Challenge modal (confirm -> waiting) -->
-<div id="confirmOverlay" class="confirm-overlay" aria-hidden="true">
-  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" tabindex="-1">
-
-    <!-- Confirm view -->
-    <div class="panel panel-confirm" id="panelConfirm">
-      <h3 id="confirmTitle" class="confirm-title">CONFIRM CHALLENGE</h3>
-      <p class="confirm-text">
-        Do you want to challenge <strong id="who">Player</strong>?
-      </p>
-      <div class="confirm-actions">
-        <button type="button" id="noBtn" class="btn btn--back">NO</button>
-        <button type="button" id="yesBtn" class="btn btn--secondary">YES</button>
-      </div>
-    </div>
-
-    <!-- Waiting view -->
-    <div class="panel panel-waiting" id="panelWaiting" aria-live="polite" hidden>
-      <h3 class="confirm-title">WAITING FOR PLAYER…</h3>
-      <div class="loading">
-        <div class="spinner" aria-hidden="true"></div>
-        <p class="confirm-text">
-          Waiting for <strong id="whoWaiting">Player</strong> to accept…
-        </p>
-      </div>
-      <div class="confirm-actions">
-        <button type="button" id="cancelWaitBtn" class="btn btn--back">CANCEL</button>
-      </div>
-    </div>
-
-  </div>
-</div>
-
 <!-- Modal logic + shared footer -->
-<script src="/js/partials/popup.js"></script>
 <script src="/js/partials/footer.js"></script>
 <script src="/js/utils/api-client.js"></script>
 <script src="/js/utils/auth-manager.js"></script>
