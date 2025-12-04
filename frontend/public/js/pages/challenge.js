@@ -218,8 +218,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         <p><strong>${challenge.challenger.username}</strong> wants to duel!</p>
       </div>
       <div class="notification-actions">
-        <button class="btn-accept" data-game-id="${challenge.gameId}" data-challenger-id="${challenge.challengerId}">ACCEPT</button>
         <button class="btn-decline" data-game-id="${challenge.gameId}" data-challenger-id="${challenge.challengerId}">DECLINE</button>
+        <button class="btn-accept" data-game-id="${challenge.gameId}" data-challenger-id="${challenge.challengerId}">ACCEPT</button>
       </div>
     `;
 
