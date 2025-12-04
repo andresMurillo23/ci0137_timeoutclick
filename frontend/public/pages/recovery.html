@@ -11,29 +11,32 @@
 
   <div class="poster__scroll">
     <!-- Password recovery form -->
-    <form>
+    <form id="recoveryForm">
       <!-- Account email -->
       <div class="field">
         <label for="email">Email:</label>
-        <input id="email" type="email" placeholder="EMAIL">
+        <input id="email" type="email" placeholder="EMAIL" required>
       </div>
 
       <!-- New password -->
       <div class="field">
         <label for="newpass">New Password:</label>
-        <input id="newpass" type="password" placeholder="PASSWORD">
+        <input id="newpass" type="password" placeholder="PASSWORD" required>
       </div>
 
       <!-- Confirm new password -->
       <div class="field">
         <label for="confpass">Confirm Password:</label>
-        <input id="confpass" type="password" placeholder="PASSWORD">
+        <input id="confpass" type="password" placeholder="PASSWORD" required>
       </div>
+
+      <!-- Message display -->
+      <div id="message" style="display: none; text-align: center; margin: 15px 0; padding: 10px;"></div>
 
       <!-- Actions -->
       <div class="actions">
-        <button type="button" class="btn btn--back" onclick="history.back()">BACK</button>
-        <button type="button" class="btn btn--secondary" onclick="location.href='/pages/login.html'">UPDATE</button>
+        <button type="button" class="btn btn--back">BACK</button>
+        <button type="button" class="btn btn--secondary">UPDATE</button>
       </div>
     </form>
   </div>
@@ -41,3 +44,5 @@
 
 <!-- Shared footer -->
 <script src="/js/partials/footer.js"></script>
+<script src="/js/utils/popup-manager.js"></script>
+<script src="/js/pages/recovery.js"></script>
