@@ -2,6 +2,7 @@ const Game = require('../models/Game');
 const GameSession = require('../models/GameSession');
 const User = require('../models/User');
 const Friendship = require('../models/Friendship');
+const mongoose = require('mongoose');
 
 /**
  * Game controller
@@ -356,7 +357,7 @@ const getUserGameStats = async (req, res) => {
 };
 
 /**
- * Get leaderboard
+ * Get leaderboard (legacy - now returns all players)
  */
 const getLeaderboard = async (req, res) => {
   try {
@@ -425,6 +426,141 @@ const getLeaderboard = async (req, res) => {
   } catch (error) {
     console.error('Get leaderboard error:', error);
     res.status(500).json({ error: 'Failed to get leaderboard' });
+  }
+};
+
+/**
+ * Get friends ranking (only user and their friends)
+ */
+const getFriendsRanking = async (req, res) => {
+  try {
+    const userId = req.userId || req.session?.userId;
+    const { type = 'wins' } = req.query;
+    
+    console.log('[FRIENDS-RANKING] Fetching friends ranking for user:', userId);
+    
+    // Convert userId to ObjectId if it's a string
+    const userObjectId = typeof userId === 'string' ? new mongoose.Types.ObjectId(userId) : userId;
+    
+    // Get user's friends
+    const Friendship = require('../models/Friendship');
+    const friends = await Friendship.getFriends(userObjectId);
+    const friendIds = friends.map(f => new mongoose.Types.ObjectId(f.id)); // f.id not f._id
+    
+    // Include the current user in the list
+    friendIds.push(userObjectId);
+    
+    console.log('[FRIENDS-RANKING] Total users to rank:', friendIds.length);
+    console.log('[FRIENDS-RANKING] Friend IDs:', friendIds.map(id => id.toString()));
+    
+    let sortField;
+    switch (type) {
+      case 'wins':
+        sortField = { 'gameStats.gamesWon': -1 };
+        break;
+      case 'accuracy':
+        sortField = { 'gameStats.bestTime': 1 };
+        break;
+      case 'games':
+        sortField = { 'gameStats.gamesPlayed': -1 };
+        break;
+      default:
+        sortField = { 'gameStats.gamesWon': -1 };
+    }
+
+    const users = await User.find({
+      _id: { $in: friendIds },
+      status: 'active'
+    })
+    .select('username avatar gameStats profile.firstName profile.lastName')
+    .sort(sortField);
+
+    const leaderboard = users.map((user, index) => {
+      const stats = {
+        gamesPlayed: user.gameStats.gamesPlayed || 0,
+        gamesWon: user.gameStats.gamesWon || 0,
+        winRate: user.gameStats.gamesPlayed > 0 ? 
+          Math.round((user.gameStats.gamesWon / user.gameStats.gamesPlayed) * 100) : 0,
+        bestAccuracy: user.gameStats.bestTime,
+        totalScore: user.gameStats.totalScore || 0
+      };
+      
+      return {
+        rank: index + 1,
+        id: user._id,
+        username: user.username,
+        avatar: user.avatar,
+        firstName: user.profile?.firstName,
+        lastName: user.profile?.lastName,
+        stats: stats,
+        isCurrentUser: user._id.toString() === userId
+      };
+    });
+
+    console.log('[FRIENDS-RANKING] Returning', leaderboard.length, 'players');
+
+    res.json({
+      success: true,
+      leaderboard: leaderboard,
+      type: type,
+      timestamp: new Date()
+    });
+
+  } catch (error) {
+    console.error('Get friends ranking error:', error);
+    res.status(500).json({ error: 'Failed to get friends ranking' });
+  }
+};
+
+/**
+ * Get top players (public - top 5 players globally)
+ */
+const getTopPlayers = async (req, res) => {
+  try {
+    const { limit = 5 } = req.query;
+    
+    console.log('[TOP-PLAYERS] Fetching top', limit, 'players');
+    
+    const users = await User.find({
+      status: 'active',
+      'gameStats.gamesPlayed': { $gt: 0 }
+    })
+    .select('username avatar gameStats profile.firstName profile.lastName')
+    .sort({ 'gameStats.gamesWon': -1 })
+    .limit(parseInt(limit));
+
+    const topPlayers = users.map((user, index) => {
+      const stats = {
+        gamesPlayed: user.gameStats.gamesPlayed || 0,
+        gamesWon: user.gameStats.gamesWon || 0,
+        winRate: user.gameStats.gamesPlayed > 0 ? 
+          Math.round((user.gameStats.gamesWon / user.gameStats.gamesPlayed) * 100) : 0,
+        bestAccuracy: user.gameStats.bestTime,
+        totalScore: user.gameStats.totalScore || 0
+      };
+      
+      return {
+        rank: index + 1,
+        id: user._id,
+        username: user.username,
+        avatar: user.avatar,
+        firstName: user.profile?.firstName,
+        lastName: user.profile?.lastName,
+        stats: stats
+      };
+    });
+
+    console.log('[TOP-PLAYERS] Returning', topPlayers.length, 'players');
+
+    res.json({
+      success: true,
+      topPlayers: topPlayers,
+      timestamp: new Date()
+    });
+
+  } catch (error) {
+    console.error('Get top players error:', error);
+    res.status(500).json({ error: 'Failed to get top players' });
   }
 };
 
@@ -747,5 +883,7 @@ module.exports = {
   forceCleanupActiveGames,
   getUserGamesStatus,
   getUserGameStats,
-  getLeaderboard
+  getLeaderboard,
+  getFriendsRanking,
+  getTopPlayers
 };

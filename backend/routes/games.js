@@ -12,7 +12,10 @@ const {
   forceCleanupActiveGames,
   getUserGamesStatus,
   getUserGameStats,
-  getLeaderboard
+  getLeaderboard,
+  getFriendsRanking,
+  getTopPlayers,
+  createGuestChallenge
 } = require('../controllers/gameController');
 
 /**
@@ -32,7 +35,6 @@ router.post('/challenge', requireAuth, createChallenge);
  * @desc    Guest user challenges a random online player
  * @access  Public (no auth required)
  */
-const { createGuestChallenge } = require('../controllers/gameController');
 router.post('/guest-challenge', createGuestChallenge);
 
 /**
@@ -86,10 +88,24 @@ router.get('/stats', requireAuth, getUserGameStats);
 
 /**
  * @route   GET /api/games/leaderboard
- * @desc    Get game leaderboard
+ * @desc    Get game leaderboard (all players)
  * @access  Private
  */
 router.get('/leaderboard', requireAuth, getLeaderboard);
+
+/**
+ * @route   GET /api/games/friends-ranking
+ * @desc    Get friends ranking (only user and their friends)
+ * @access  Private
+ */
+router.get('/friends-ranking', requireAuth, getFriendsRanking);
+
+/**
+ * @route   GET /api/games/top-players
+ * @desc    Get top 5 players globally (public)
+ * @access  Public
+ */
+router.get('/top-players', getTopPlayers);
 
 /**
  * @route   GET /api/games/:gameId

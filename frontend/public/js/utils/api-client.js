@@ -222,6 +222,14 @@ class ApiClient {
     return this.request('/games/leaderboard');
   }
 
+  async getFriendsRanking() {
+    return this.request('/games/friends-ranking');
+  }
+
+  async getTopPlayers(limit = 5) {
+    return this.request(`/games/top-players?limit=${limit}`);
+  }
+
   async cancelGame(gameId) {
     return this.request(`/games/${gameId}/cancel`, {
       method: 'PUT'

@@ -10,38 +10,34 @@ document.addEventListener('DOMContentLoaded', async () => {
   let currentPage = 1;
   let totalPages = 1;
   let pageSize = 10;
-  let leaderboard = [];
+  let topPlayers = [];
 
-  async function loadLeaderboard() {
+  async function loadTopPlayers() {
     try {
-      tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Loading leaderboard...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Loading top players...</td></tr>';
       
-      console.log('[RANKING] Fetching friends ranking...');
-      console.log('[RANKING] API client available?', !!window.api);
-      console.log('[RANKING] getFriendsRanking method available?', typeof window.api?.getFriendsRanking);
+      console.log('[BEST-PLAYERS] Fetching top players...');
+      const response = await window.api.getTopPlayers();
+      console.log('[BEST-PLAYERS] Top players response:', response);
       
-      const response = await window.api.getFriendsRanking();
-      console.log('[RANKING] Friends ranking response:', response);
-      
-      if (response.success && response.leaderboard) {
-        leaderboard = response.leaderboard;
+      if (response.success && response.topPlayers) {
+        topPlayers = response.topPlayers;
       } else {
-        leaderboard = [];
+        topPlayers = [];
       }
       
-      console.log('[RANKING] Friends ranking data:', leaderboard);
-      totalPages = Math.ceil(leaderboard.length / pageSize);
-      displayLeaderboard();
+      console.log('[BEST-PLAYERS] Top players data:', topPlayers);
+      totalPages = Math.ceil(topPlayers.length / pageSize);
+      displayTopPlayers();
     } catch (error) {
-      console.error('[RANKING] Failed to load friends ranking:', error);
-      console.error('[RANKING] Error details:', error.message, error.stack);
-      tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px; color: #ff4444;">Failed to load ranking</td></tr>';
+      console.error('[BEST-PLAYERS] Failed to load top players:', error);
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px; color: #ff4444;">Failed to load top players</td></tr>';
     }
   }
 
-  function displayLeaderboard() {
-    if (!leaderboard || leaderboard.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">No players yet. Add friends to see them here!</td></tr>';
+  function displayTopPlayers() {
+    if (!topPlayers || topPlayers.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">No players yet</td></tr>';
       return;
     }
 
@@ -49,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     const start = (currentPage - 1) * pageSize;
     const end = start + pageSize;
-    const pageData = leaderboard.slice(start, end);
+    const pageData = topPlayers.slice(start, end);
     
     pageData.forEach((player, index) => {
       const row = document.createElement('tr');
@@ -61,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const winRate = player.stats?.winRate || 0;
       
       row.innerHTML = '<td>' + position + '</td>' +
-        '<td>' + player.username + (player.isCurrentUser ? ' (You)' : '') + '</td>' +
+        '<td>' + player.username + '</td>' +
         '<td>' + wins + '</td>' +
         '<td>' + losses + '</td>' +
         '<td>' + winRate + '%</td>';
@@ -77,14 +73,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   prevBtn.addEventListener('click', () => {
     if (currentPage > 1) {
       currentPage--;
-      displayLeaderboard();
+      displayTopPlayers();
     }
   });
 
   nextBtn.addEventListener('click', () => {
     if (currentPage < totalPages) {
       currentPage++;
-      displayLeaderboard();
+      displayTopPlayers();
     }
   });
 
@@ -92,10 +88,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     pageSizeSelect.addEventListener('change', (e) => {
       pageSize = parseInt(e.target.value);
       currentPage = 1;
-      totalPages = Math.ceil(leaderboard.length / pageSize);
-      displayLeaderboard();
+      totalPages = Math.ceil(topPlayers.length / pageSize);
+      displayTopPlayers();
     });
   }
 
-  loadLeaderboard();
+  loadTopPlayers();
 });
