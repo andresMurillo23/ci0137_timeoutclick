@@ -485,11 +485,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Add to history
     console.log('[DUEL] Adding round to history...');
+    let winnerRole = 'draw';
+    if (data.roundWinner) {
+      // Check if guest won (id is 'guest' or null)
+      if (data.roundWinner.id === 'guest' || (data.roundWinner.id === null && data.roundWinner.username === 'Guest')) {
+        winnerRole = 'player1';
+      } else if (data.roundWinner.id === data.player1.id) {
+        winnerRole = 'player1';
+      } else {
+        winnerRole = 'player2';
+      }
+    }
     addToHistory({
       round: data.round,
       player1Time: data.player1.time ? data.player1.time / 1000 : null,
       player2Time: data.player2.time ? data.player2.time / 1000 : null,
-      winner: data.roundWinner ? (data.roundWinner.id === data.player1.id ? 'player1' : 'player2') : 'draw',
+      winner: winnerRole,
       goalTime: data.goalTime / 1000,
       scores: data.scores
     });

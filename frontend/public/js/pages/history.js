@@ -50,8 +50,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Check if game has rounds array
         if (game.rounds && game.rounds.length > 0) {
           game.rounds.forEach(round => {
-            const isPlayer1 = game.player1._id === currentUser.id || game.player1._id === currentUser._id;
-            const opponent = isPlayer1 ? game.player2 : game.player1;
+            // Handle guest games where player1 is null
+            const isPlayer1 = game.player1 ? (game.player1._id === currentUser.id || game.player1._id === currentUser._id) : false;
+            const opponent = isPlayer1 ? game.player2 : (game.player1 || { username: 'Guest' });
             const myTime = isPlayer1 ? round.player1Time : round.player2Time;
             const opponentTime = isPlayer1 ? round.player2Time : round.player1Time;
             
@@ -59,12 +60,30 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (round.winner) {
               const winnerId = round.winner._id || round.winner;
               const currentUserId = currentUser.id || currentUser._id;
-              winner = winnerId.toString() === currentUserId.toString() ? 'You' : opponent.username;
+              winner = winnerId.toString() === currentUserId.toString() ? 'You' : (opponent.username || 'Guest');
+            } else if (round.completedAt) {
+              // If no winner but round completed, check if it's a guest win or tie
+              // In guest games, if player1 (guest) won, winner is null
+              // We need to determine by comparing times
+              if (!game.player1 && round.player1Time !== null && round.player2Time !== null) {
+                // This is a guest game
+                const player1Diff = Math.abs(round.player1Time - round.goalTime);
+                const player2Diff = Math.abs(round.player2Time - round.goalTime);
+                if (player1Diff < player2Diff) {
+                  winner = 'Guest'; // Guest won
+                } else if (player2Diff < player1Diff) {
+                  winner = 'You'; // You won
+                } else {
+                  winner = 'TIE'; // Actual tie
+                }
+              } else {
+                winner = 'TIE'; // Actual tie in non-guest game
+              }
             }
             
             allRounds.push({
               date: round.completedAt || round.startedAt || game.createdAt,
-              opponent: opponent.username,
+              opponent: opponent.username || 'Guest',
               opponentTime: opponentTime ? (opponentTime / 1000).toFixed(2) : 'N/A',
               myTime: myTime ? (myTime / 1000).toFixed(2) : 'N/A',
               goalTime: (round.goalTime / 1000).toFixed(1),

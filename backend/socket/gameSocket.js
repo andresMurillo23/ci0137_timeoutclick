@@ -620,10 +620,13 @@ class GameSocketHandler {
           time: game.player2Time,
           difference: player2Diff
         },
-        roundWinner: roundWinner ? {
+        roundWinner: isGuestWinner ? {
+          id: 'guest',
+          username: 'Guest'
+        } : (roundWinner ? {
           id: roundWinner._id,
           username: roundWinner.username
-        } : null,
+        } : null),
         scores: {
           player1: game.player1Score,
           player2: game.player2Score
@@ -689,8 +692,10 @@ class GameSocketHandler {
       
       // Determine overall winner based on best of 3
       let overallWinner = null;
+      let isGuestOverallWinner = false;
       if (game.player1Score > game.player2Score) {
         overallWinner = game.player1;
+        isGuestOverallWinner = !game.player1; // Guest is player1 when player1 is null
         console.log(`[GAME] Overall winner: Player 1 (${player1Data.username})`);
       } else if (game.player2Score > game.player1Score) {
         overallWinner = game.player2;
@@ -736,10 +741,13 @@ class GameSocketHandler {
           score: game.player2Score
         },
         rounds: game.rounds,
-        winner: overallWinner ? {
+        winner: isGuestOverallWinner ? {
+          id: 'guest',
+          username: 'Guest'
+        } : (overallWinner ? {
           id: overallWinner._id,
           username: overallWinner.username
-        } : null,
+        } : null),
         duration: game.gameEndedAt - game.gameStartedAt
       };
 
@@ -776,9 +784,26 @@ class GameSocketHandler {
    */
   async updatePlayerStats(game) {
     try {
-      // Don't update stats for guest games (player1 is null)
+      // For guest games, only update player2 stats (the registered user)
       if (!game.player1 || game.gameType === 'guest_challenge') {
-        console.log('[GAME] Skipping stats update for guest game');
+        console.log('[GAME] Updating stats for registered player in guest game');
+        
+        const player2Update = {
+          $inc: { 'gameStats.gamesPlayed': 1 }
+        };
+
+        // Check if player2 won (guest didn't win)
+        if (game.winner && game.winner.toString() === game.player2.toString()) {
+          player2Update.$inc['gameStats.gamesWon'] = 1;
+        }
+
+        if (game.player2Time !== null) {
+          const player2Accuracy = Math.abs(game.player2Time - game.goalTime);
+          player2Update.$min = { 'gameStats.bestTime': player2Accuracy };
+        }
+
+        await User.findByIdAndUpdate(game.player2, player2Update);
+        console.log('[GAME] Player2 stats updated for guest game');
         return;
       }
 
