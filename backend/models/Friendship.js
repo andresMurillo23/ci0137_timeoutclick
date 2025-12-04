@@ -107,4 +107,24 @@ friendshipSchema.statics.removeFriendship = async function(userId1, userId2) {
   );
 };
 
+/**
+ * Static method to reactivate deleted friendship
+ */
+friendshipSchema.statics.reactivateFriendship = async function(userId1, userId2, createdBy) {
+  return await this.findOneAndUpdate(
+    {
+      $or: [
+        { user1: userId1, user2: userId2 },
+        { user1: userId2, user2: userId1 }
+      ],
+      status: 'deleted'
+    },
+    { 
+      status: 'active',
+      createdBy: createdBy
+    },
+    { new: true }
+  );
+};
+
 module.exports = mongoose.model('Friendship', friendshipSchema);

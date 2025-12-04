@@ -192,12 +192,31 @@ const acceptFriendInvitation = async (req, res) => {
     invitation.status = 'accepted';
     await invitation.save();
 
-    const friendship = new Friendship({
-      user1: invitation.sender,
-      user2: invitation.receiver,
-      createdBy: invitation.sender
+    // Normalize user IDs (same logic as pre-save hook)
+    const userId1 = invitation.sender.toString();
+    const userId2 = invitation.receiver.toString();
+    const [user1, user2] = userId1 < userId2 ? [userId1, userId2] : [userId2, userId1];
+
+    // Check if there's an existing friendship (including deleted ones)
+    const existingFriendship = await Friendship.findOne({
+      user1: user1,
+      user2: user2
     });
-    await friendship.save();
+
+    if (existingFriendship) {
+      // Reactivate existing friendship
+      existingFriendship.status = 'active';
+      existingFriendship.createdBy = invitation.sender;
+      await existingFriendship.save();
+    } else {
+      // Create new friendship
+      const friendship = new Friendship({
+        user1: invitation.sender,
+        user2: invitation.receiver,
+        createdBy: invitation.sender
+      });
+      await friendship.save();
+    }
 
     await Invitation.cancelPendingInvitations(invitation.sender, invitation.receiver);
 
