@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       await window.api.put(`/friends/invitations/${invitationId}/${action}`);
       
       if (action === 'accept') {
-        window.PopupManager.success('¡Éxito!', 'Solicitud de amistad aceptada');
+        window.PopupManager.success('Great!', 'Friend request accepted');
       }
       
       loadInvitations();
