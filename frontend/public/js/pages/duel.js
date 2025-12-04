@@ -127,9 +127,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (avatarPath.startsWith('http')) return avatarPath;
     // Avatar paths from backend can be 'avatars/xxx' or just 'xxx'
     if (avatarPath.includes('/')) {
-      return `http://localhost:3000/uploads/${avatarPath}`;
+      return `${window.CONFIG?.UPLOADS_URL || 'http://localhost:3000/uploads'}/${avatarPath}`;
     }
-    return `http://localhost:3000/uploads/avatars/${avatarPath}`;
+    return `${window.CONFIG?.UPLOADS_URL || 'http://localhost:3000/uploads'}/avatars/${avatarPath}`;
   }
 
   /**
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     console.log('[DUEL] Connecting to Socket.IO server...');
     // Connect to Socket.IO server
-    socket = io('http://localhost:3000', {
+    socket = io(window.CONFIG?.BACKEND_URL || 'http://localhost:3000', {
       auth: { token: token },
       transports: ['websocket', 'polling'],
       reconnection: true,
@@ -965,7 +965,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           { type: 'application/json' }
         );
         navigator.sendBeacon(
-          'http://localhost:3000/api/games/' + gameState.gameId + '/force-end',
+          (window.CONFIG?.API_URL || 'http://localhost:3000/api') + '/games/' + gameState.gameId + '/force-end',
           blob
         );
       }

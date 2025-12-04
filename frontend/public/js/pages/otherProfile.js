@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // Update avatar if available
       if (avatarImg && user.avatar) {
-        const backendUrl = window.api?.baseUrl || 'http://localhost:3000';
+        const backendUrl = window.CONFIG?.BACKEND_URL || 'http://localhost:3000';
         avatarImg.src = `${backendUrl}/uploads/${user.avatar}`;
         avatarImg.alt = `${user.username}'s avatar`;
       } else if (avatarImg && user.username) {

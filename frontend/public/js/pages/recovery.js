@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
       updateBtn.textContent = 'UPDATING...';
 
       // Step 1: Request password reset token
-      const forgotResponse = await fetch('http://localhost:3000/api/auth/forgot-password', {
+      const forgotResponse = await fetch((window.CONFIG?.API_URL || 'http://localhost:3000/api') + '/auth/forgot-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       // Step 2: Reset password with the token
-      const resetResponse = await fetch('http://localhost:3000/api/auth/reset-password', {
+      const resetResponse = await fetch((window.CONFIG?.API_URL || 'http://localhost:3000/api') + '/auth/reset-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

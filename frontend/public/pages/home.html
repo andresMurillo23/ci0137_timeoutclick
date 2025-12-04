@@ -1,3 +1,4 @@
+<script src="/js/config.js"></script>
 <script src="/js/partials/head.js"></script>
 
 <!-- Page styles -->
@@ -83,7 +84,7 @@
   function connectGuestSocket(gameId) {
     const guestToken = btoa('guest_' + Date.now());
     
-    guestSocket = io('http://localhost:3000', {
+    guestSocket = io(window.CONFIG?.BACKEND_URL || 'http://localhost:3000', {
       auth: { token: guestToken },
       transports: ['websocket', 'polling']
     });
@@ -155,7 +156,7 @@
         guestChallengeBtn.textContent = 'SEARCHING...';
         
         try {
-          const response = await fetch('http://localhost:3000/api/games/guest-challenge', {
+          const response = await fetch((window.CONFIG?.API_URL || 'http://localhost:3000/api') + '/games/guest-challenge', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'

@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const token = sessionStorage.getItem('authToken');
     if (!token) return;
 
-    socket = io('http://localhost:3000', {
+    socket = io(window.CONFIG?.BACKEND_URL || 'http://localhost:3000', {
       auth: { token: token },
       reconnection: true,
       reconnectionDelay: 1000,
@@ -610,7 +610,7 @@ function showGuestChallengePopup(gameId) {
 
   // Connect to socket
   const token = sessionStorage.getItem('authToken');
-  const challengeSocket = io('http://localhost:3000', {
+  const challengeSocket = io(window.CONFIG?.BACKEND_URL || 'http://localhost:3000', {
     auth: { token: token },
     transports: ['websocket', 'polling']
   });

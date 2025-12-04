@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       console.log('[UNREGISTERED-BEST-PLAYERS] Fetching top players...');
       
-      const response = await fetch('http://localhost:3000/api/games/top-players?limit=5');
+      const response = await fetch((window.CONFIG?.API_URL || 'http://localhost:3000/api') + '/games/top-players?limit=5');
       const data = await response.json();
       
       console.log('[UNREGISTERED-BEST-PLAYERS] Top players response:', data);
