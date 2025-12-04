@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     if (!friends || friends.length === 0) {
-      friendsGrid.innerHTML = '<p style="text-align: center; padding: 20px;">No friends yet. <a href="/pages/addFriend.html">Add some friends</a>!</p>';
+      friendsGrid.innerHTML = '<p style="text-align: center; padding: 20px;">No friends yet.</p>';
       return;
     }
 

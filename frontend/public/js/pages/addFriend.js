@@ -4,10 +4,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const searchInput = document.querySelector('.search');
   const searchBtn = document.querySelector('.filter-btn');
   const friendsGrid = document.querySelector('.friends-grid');
-  const errorMessage = document.createElement('div');
-  errorMessage.className = 'error-message';
-  errorMessage.style.display = 'none';
-  document.querySelector('.panel').appendChild(errorMessage);
 
   let searchTimeout;
 
@@ -15,13 +11,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const query = searchInput.value.trim();
     
     if (query.length < 2) {
-      showError('Please enter at least 2 characters');
-      friendsGrid.innerHTML = '<p style="text-align: center; padding: 20px;">Enter a username to search</p>';
+      friendsGrid.innerHTML = '<p style="text-align: center; padding: 20px;">Enter at least 2 characters to search</p>';
       return;
     }
 
     try {
-      hideError();
       friendsGrid.innerHTML = '<p style="text-align: center; padding: 20px;">Searching...</p>';
       
       const response = await window.api.searchUsers(query);
@@ -29,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       displayUsers(users);
     } catch (error) {
-      showError('Search failed: ' + error.message);
+      window.PopupManager.error('Search Error', error.message || 'Failed to search users');
       friendsGrid.innerHTML = '<p style="text-align: center; padding: 20px;">Search failed</p>';
     }
   }
@@ -83,50 +77,59 @@ document.addEventListener('DOMContentLoaded', async () => {
     button.disabled = true;
     button.textContent = 'SENDING...';
     
+    console.log('Sending friend request to:', userId, username);
+    
     if (!userId) {
-      showError('User ID is missing');
+      console.error('No userId provided');
+      if (window.PopupManager) {
+        window.PopupManager.error('Error', 'User ID is missing');
+      } else {
+        alert('Error: User ID is missing');
+      }
       button.disabled = false;
       button.textContent = originalText;
       return;
     }
     
     try {
+      console.log('Calling API sendFriendRequest...');
       const response = await window.api.sendFriendRequest(userId);
+      console.log('Friend request sent successfully:', response);
+      
       button.textContent = 'REQUEST SENT';
       button.style.backgroundColor = '#6c757d';
-      showSuccess(`Friend request sent to ${username}`);
+      
+      if (window.PopupManager) {
+        window.PopupManager.success('Success', `Friend request sent to ${username}`);
+      } else {
+        alert(`Friend request sent to ${username}`);
+      }
     } catch (error) {
       console.error('Friend request error:', error);
-      showError('Failed to send request: ' + error.message);
+      console.error('Error message:', error.message);
+      
+      // Ensure we always reset the button
       button.disabled = false;
       button.textContent = originalText;
+      
+      // Handle different error codes
+      const errorMsg = error.message || '';
+      
+      if (!window.PopupManager) {
+        alert('Error: ' + errorMsg);
+        return;
+      }
+      
+      if (errorMsg.includes('already sent you a friend request')) {
+        window.PopupManager.success('Invitation Received', `${username} has already sent you a friend request. Check your pending invitations to accept it.`);
+      } else if (errorMsg.includes('already sent a friend request')) {
+        window.PopupManager.success('Already Sent', `You have already sent a friend request to ${username}. Wait for them to accept it.`);
+      } else if (errorMsg.includes('Already friends')) {
+        window.PopupManager.success('Already Friends', `You are already friends with ${username}.`);
+      } else {
+        window.PopupManager.error('Error', errorMsg || 'Failed to send friend request');
+      }
     }
-  }
-
-  function showError(message) {
-    errorMessage.textContent = message;
-    errorMessage.style.display = 'block';
-    errorMessage.style.color = '#ff4444';
-    errorMessage.style.padding = '10px';
-    errorMessage.style.marginTop = '10px';
-    errorMessage.style.textAlign = 'center';
-  }
-
-  function showSuccess(message) {
-    errorMessage.textContent = message;
-    errorMessage.style.display = 'block';
-    errorMessage.style.color = '#4CAF50';
-    errorMessage.style.padding = '10px';
-    errorMessage.style.marginTop = '10px';
-    errorMessage.style.textAlign = 'center';
-    
-    setTimeout(() => {
-      hideError();
-    }, 3000);
-  }
-
-  function hideError() {
-    errorMessage.style.display = 'none';
   }
 
   searchBtn.addEventListener('click', searchUsers);

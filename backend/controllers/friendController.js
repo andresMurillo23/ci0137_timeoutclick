@@ -51,13 +51,46 @@ const sendFriendInvitation = async (req, res) => {
 
     const alreadyFriends = await Friendship.areFriends(senderId, receiverId);
     if (alreadyFriends) {
-      return res.status(400).json({ error: 'Already friends with this user' });
+      return res.status(400).json({ 
+        error: 'Already friends with this user',
+        code: 'ALREADY_FRIENDS'
+      });
     }
 
-    const invitationExists = await Invitation.invitationExists(senderId, receiverId);
-    if (invitationExists) {
-      return res.status(400).json({ error: 'Friend request already sent or received' });
+    // Check for pending invitation in either direction
+    const existingInvitation = await Invitation.findOne({
+      $or: [
+        { sender: senderId, receiver: receiverId },
+        { sender: receiverId, receiver: senderId }
+      ],
+      type: 'friend',
+      status: 'pending',
+      expiresAt: { $gt: new Date() }
+    });
+
+    if (existingInvitation) {
+      if (existingInvitation.sender.toString() === senderId) {
+        return res.status(400).json({ 
+          error: 'You already sent a friend request to this user',
+          code: 'INVITATION_SENT'
+        });
+      } else {
+        return res.status(400).json({ 
+          error: 'This user has already sent you a friend request. Check your pending invitations.',
+          code: 'INVITATION_RECEIVED'
+        });
+      }
     }
+
+    // Clean up any old cancelled/declined invitations between these users
+    await Invitation.deleteMany({
+      $or: [
+        { sender: senderId, receiver: receiverId },
+        { sender: receiverId, receiver: senderId }
+      ],
+      type: 'friend',
+      status: { $in: ['cancelled', 'declined'] }
+    });
 
     const invitation = new Invitation({
       sender: senderId,
