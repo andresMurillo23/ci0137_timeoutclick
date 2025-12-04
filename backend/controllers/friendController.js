@@ -357,6 +357,53 @@ const getFriendshipStatus = async (req, res) => {
   }
 };
 
+/**
+ * Get mutual friends with another user
+ */
+const getMutualFriends = async (req, res) => {
+  try {
+    const currentUserId = req.session.userId;
+    const { userId } = req.params;
+
+    console.log('Getting mutual friends:', { currentUserId, targetUserId: userId });
+
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    // Get friends of current user
+    const currentUserFriends = await Friendship.getFriends(currentUserId);
+    console.log('Current user friends count:', currentUserFriends.length);
+    const currentUserFriendIds = currentUserFriends.map(f => f.id.toString());
+
+    // Get friends of target user
+    const targetUserFriends = await Friendship.getFriends(userId);
+    console.log('Target user friends count:', targetUserFriends.length);
+    const targetUserFriendIds = targetUserFriends.map(f => f.id.toString());
+
+    // Find intersection
+    const mutualFriendIds = currentUserFriendIds.filter(id => 
+      targetUserFriendIds.includes(id)
+    );
+    console.log('Mutual friends count:', mutualFriendIds.length);
+
+    // Get full user details for mutual friends
+    const mutualFriends = currentUserFriends.filter(friend => 
+      mutualFriendIds.includes(friend.id.toString())
+    );
+
+    res.json({
+      success: true,
+      mutualFriends: mutualFriends,
+      count: mutualFriends.length
+    });
+
+  } catch (error) {
+    console.error('Get mutual friends error:', error);
+    res.status(500).json({ error: 'Failed to get mutual friends' });
+  }
+};
+
 module.exports = {
   getFriendsList,
   sendFriendInvitation,
@@ -366,5 +413,6 @@ module.exports = {
   declineFriendInvitation,
   cancelFriendInvitation,
   removeFriend,
-  getFriendshipStatus
+  getFriendshipStatus,
+  getMutualFriends
 };

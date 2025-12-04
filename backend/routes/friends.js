@@ -10,7 +10,8 @@ const {
   declineFriendInvitation,
   cancelFriendInvitation,
   removeFriend,
-  getFriendshipStatus
+  getFriendshipStatus,
+  getMutualFriends
 } = require('../controllers/friendController');
 
 /**
@@ -68,17 +69,24 @@ router.put('/invitations/:invitationId/decline', requireAuth, declineFriendInvit
 router.delete('/invitations/:invitationId', requireAuth, cancelFriendInvitation);
 
 /**
- * @route   DELETE /api/friends/:friendId
- * @desc    Remove friend
- * @access  Private
- */
-router.delete('/:friendId', requireAuth, removeFriend);
-
-/**
  * @route   GET /api/friends/status/:targetUserId
  * @desc    Check friendship status with another user
  * @access  Private
  */
 router.get('/status/:targetUserId', requireAuth, getFriendshipStatus);
+
+/**
+ * @route   GET /api/friends/mutual/:userId
+ * @desc    Get mutual friends with another user
+ * @access  Private
+ */
+router.get('/mutual/:userId', requireAuth, getMutualFriends);
+
+/**
+ * @route   DELETE /api/friends/:friendId
+ * @desc    Remove friend
+ * @access  Private
+ */
+router.delete('/:friendId', requireAuth, removeFriend);
 
 module.exports = router;

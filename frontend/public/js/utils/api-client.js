@@ -171,8 +171,16 @@ class ApiClient {
     return this.request(`/users/search?q=${encodeURIComponent(query)}`);
   }
 
+  async getUserProfile(userId) {
+    return this.request(`/users/${userId}`);
+  }
+
   async getFriends() {
     return this.request('/friends');
+  }
+
+  async getMutualFriends(userId) {
+    return this.request(`/friends/mutual/${userId}`);
   }
 
   async sendFriendRequest(receiverId) {
