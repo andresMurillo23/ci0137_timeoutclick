@@ -44,9 +44,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       const card = document.createElement('div');
       card.className = 'invitation-card';
       
-      const statusDot = document.createElement('span');
-      statusDot.className = 'status-dot on';
-      
       const avatar = document.createElement('div');
       avatar.className = 'user-avatar';
       avatar.textContent = invitation.sender.username.charAt(0).toUpperCase();
@@ -81,7 +78,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       actions.appendChild(declineBtn);
       actions.appendChild(acceptBtn);
       
-      card.appendChild(statusDot);
       card.appendChild(avatar);
       card.appendChild(info);
       card.appendChild(actions);
@@ -101,9 +97,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     invitations.forEach(invitation => {
       const card = document.createElement('div');
       card.className = 'invitation-card';
-      
-      const statusDot = document.createElement('span');
-      statusDot.className = 'status-dot off';
       
       const avatar = document.createElement('div');
       avatar.className = 'user-avatar';
@@ -133,7 +126,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       actions.appendChild(cancelBtn);
       
-      card.appendChild(statusDot);
       card.appendChild(avatar);
       card.appendChild(info);
       card.appendChild(actions);

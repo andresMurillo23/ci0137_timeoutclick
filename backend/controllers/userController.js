@@ -359,6 +359,79 @@ const getUserStats = async (req, res) => {
   }
 };
 
+/**
+ * Get suggested users to add as friends
+ * Excludes current friends and pending invitations
+ */
+const getSuggestedUsers = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const { limit = 20 } = req.query;
+
+    // Import Friendship and Invitation models
+    const Friendship = require('../models/Friendship');
+    const Invitation = require('../models/Invitation');
+
+    // Get current friends
+    const friendships = await Friendship.find({
+      $or: [
+        { user1: userId, status: 'active' },
+        { user2: userId, status: 'active' }
+      ]
+    });
+
+    const friendIds = friendships.map(f => 
+      f.user1.toString() === userId.toString() ? f.user2.toString() : f.user1.toString()
+    );
+
+    // Get pending invitations (sent or received)
+    const invitations = await Invitation.find({
+      $or: [
+        { sender: userId, status: 'pending' },
+        { receiver: userId, status: 'pending' }
+      ]
+    });
+
+    const pendingUserIds = invitations.map(inv => 
+      inv.sender.toString() === userId.toString() ? inv.receiver.toString() : inv.sender.toString()
+    );
+
+    // Combine all IDs to exclude
+    const excludeIds = [userId, ...friendIds, ...pendingUserIds];
+
+    // Get suggested users
+    const users = await User.find({
+      _id: { $nin: excludeIds },
+      status: 'active'
+    })
+    .select('username avatar profile.firstName profile.lastName gameStats createdAt')
+    .limit(parseInt(limit))
+    .sort({ 'gameStats.totalScore': -1 });
+
+    const results = users.map(user => ({
+      id: user._id,
+      username: user.username,
+      avatar: user.avatar,
+      firstName: user.profile.firstName,
+      lastName: user.profile.lastName,
+      totalScore: user.gameStats.totalScore,
+      gamesPlayed: user.gameStats.gamesPlayed,
+      winRate: user.winRate,
+      joinDate: user.createdAt
+    }));
+
+    res.json({
+      success: true,
+      users: results,
+      total: results.length
+    });
+
+  } catch (error) {
+    console.error('Get suggested users error:', error);
+    res.status(500).json({ error: 'Failed to get suggested users' });
+  }
+};
+
 module.exports = {
   getUserProfile,
   updateProfile,
@@ -367,5 +440,6 @@ module.exports = {
   changePassword,
   deleteAccount,
   searchUsers,
-  getUserStats
+  getUserStats,
+  getSuggestedUsers
 };

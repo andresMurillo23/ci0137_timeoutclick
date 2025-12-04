@@ -171,6 +171,10 @@ class ApiClient {
     return this.request(`/users/search?q=${encodeURIComponent(query)}`);
   }
 
+  async getSuggestedUsers(limit = 20) {
+    return this.request(`/users/suggested?limit=${limit}`);
+  }
+
   async getUserProfile(userId) {
     return this.request(`/users/${userId}`);
   }

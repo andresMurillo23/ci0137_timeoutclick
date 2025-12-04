@@ -6,9 +6,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   const friendsGrid = document.querySelector('.friends-grid');
 
   let searchTimeout;
+  let allSuggestedUsers = [];
+
+  // Load suggested users on page load
+  async function loadSuggestedUsers() {
+    try {
+      friendsGrid.innerHTML = '<p style="text-align: center; padding: 20px;">Loading suggested users...</p>';
+      
+      const response = await window.api.getSuggestedUsers(20);
+      allSuggestedUsers = response.users || response;
+      
+      displayUsers(allSuggestedUsers);
+    } catch (error) {
+      console.error('Failed to load suggested users:', error);
+      friendsGrid.innerHTML = '<p style="text-align: center; padding: 20px;">No users available</p>';
+    }
+  }
 
   async function searchUsers() {
     const query = searchInput.value.trim();
+    
+    // If empty, show suggested users again
+    if (query.length === 0) {
+      displayUsers(allSuggestedUsers);
+      return;
+    }
     
     if (query.length < 2) {
       friendsGrid.innerHTML = '<p style="text-align: center; padding: 20px;">Enter at least 2 characters to search</p>';
@@ -139,9 +161,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       searchUsers();
     } else {
       clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(searchUsers, 500);
+      if (searchInput.value.trim().length === 0) {
+        // Show suggested users if input is cleared
+        displayUsers(allSuggestedUsers);
+      } else if (searchInput.value.trim().length >= 2) {
+        searchTimeout = setTimeout(searchUsers, 500);
+      }
     }
   });
 
-  friendsGrid.innerHTML = '<p style="text-align: center; padding: 20px;">Enter a username to search</p>';
+  // Load suggested users on page load
+  loadSuggestedUsers();
 });

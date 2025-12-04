@@ -16,7 +16,8 @@ const {
   changePassword,
   deleteAccount,
   searchUsers,
-  getUserStats
+  getUserStats,
+  getSuggestedUsers
 } = require('../controllers/userController');
 
 /**
@@ -30,6 +31,13 @@ const {
  * @access  Private
  */
 router.get('/search', requireAuth, validateSearch, searchUsers);
+
+/**
+ * @route   GET /api/users/suggested
+ * @desc    Get suggested users to add as friends
+ * @access  Private
+ */
+router.get('/suggested', requireAuth, getSuggestedUsers);
 
 /**
  * @route   GET /api/users/:id
