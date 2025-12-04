@@ -443,7 +443,7 @@ class ProfileEditPage {
   getAvatarUrl(avatarPath) {
     if (!avatarPath) return '/assets/images/profile.jpg';
     if (avatarPath.startsWith('http')) return avatarPath;
-    return `http://localhost:3000/uploads/${avatarPath}`;
+    return `${window.CONFIG?.UPLOADS_URL || 'http://localhost:3000/uploads'}/${avatarPath}`;
   }
 
   /**

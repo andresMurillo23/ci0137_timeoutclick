@@ -5,8 +5,8 @@
 
 class ApiClient {
   constructor() {
-    // TEMPORAL: Conectar DIRECTAMENTE al backend sin proxy para debugging
-    this.baseUrl = 'http://localhost:3000/api';
+    // Get backend URL from global config (set in config.js)
+    this.baseUrl = window.CONFIG?.API_URL || 'http://localhost:3000/api';
     this.defaultHeaders = {
       'Content-Type': 'application/json',
       'Accept': 'application/json'
