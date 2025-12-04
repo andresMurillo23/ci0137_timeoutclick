@@ -20,7 +20,23 @@ app.set('socketio', io);
 app.set('socketManager', socketManager);
 
 app.use(cors({
-  origin: `http://localhost:${process.env.FRONTEND_PORT || 5000}`,
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      `http://localhost:${process.env.FRONTEND_PORT || 5000}`,
+      'http://localhost:3000',
+      'https://ci0137-timeoutclick.vercel.app'
+    ];
+    
+    // Allow any ngrok domain for testing
+    if (origin.includes('ngrok') || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 
