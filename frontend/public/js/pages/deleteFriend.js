@@ -72,7 +72,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // Update avatar if available
       if (avatarImg && friend.avatar) {
-        avatarImg.src = friend.avatar;
+        // Avatar is stored as "avatars/filename.jpg", need to prepend backend URL
+        const backendUrl = window.api?.baseUrl || 'http://localhost:3000';
+        avatarImg.src = `${backendUrl}/uploads/${friend.avatar}`;
         avatarImg.alt = `${friend.username}'s avatar`;
       } else if (avatarImg && friend.username) {
         // Show first letter if no avatar
