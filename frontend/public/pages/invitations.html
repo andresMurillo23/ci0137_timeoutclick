@@ -1,5 +1,6 @@
 <script src="/js/partials/head.js"></script>
 <script src="/js/partials/navbar.js"></script>
+<script src="/js/utils/popup-manager.js"></script>
 
 <script>window.NAV_ACTIVE = "friends";</script>
 <script src="/js/utils/activeTab.js" defer></script>
@@ -7,6 +8,7 @@
 <!-- Page styles -->
 <link rel="stylesheet" href="/css/pages/invitations-style.css">
 <link rel="stylesheet" href="/css/pages/profile/btns.css">
+<link rel="stylesheet" href="/css/pages/duel-styles/popups-styles.css">
 
 <main class="friend-list" role="main">
   <section class="content">
@@ -90,3 +92,11 @@
 <!-- shared footer -->
 <script src="/js/partials/footer.js"></script>
 <script src="/js/partials/invitation-list-switch.js"></script>
+<script src="/js/utils/api-client.js"></script>
+<script src="/js/utils/auth-manager.js"></script>
+<script>
+  window.api = new ApiClient();
+  window.auth = new AuthManager();
+  window.auth.initialize();
+</script>
+<script src="/js/pages/invitations.js"></script>

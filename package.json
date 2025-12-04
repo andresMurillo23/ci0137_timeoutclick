@@ -1,0 +1,19 @@
+{
+  "name": "ci0137-timeoutclick",
+  "version": "1.0.0",
+  "description": "TimeoutClick multiplayer game",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm start",
+    "start": "cd backend && npm start",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "multer": "^2.0.2"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}

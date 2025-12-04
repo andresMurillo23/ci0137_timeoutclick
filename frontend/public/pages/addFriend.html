@@ -1,12 +1,14 @@
 <script src="/js/partials/head.js"></script>
 <script src="/js/partials/navbar.js"></script>
+<script src="/js/utils/popup-manager.js"></script>
 
-<script>window.NAV_ACTIVE = "friends";</script>
+<script>window.NAV_ACTIVE= "friends";</script>
 <script src="/js/utils/activeTab.js" defer></script>
 
 <!-- Page styles -->
 <link rel="stylesheet" href="/css/pages/add-friend.css">
 <link rel="stylesheet" href="/css/pages/profile/btns.css">
+<link rel="stylesheet" href="/css/pages/duel-styles/popups-styles.css">
 
 <main class="friend-list" role="main">
   <section class="content">
@@ -24,46 +26,12 @@
         </div>
       </section>
 
-      <!-- Results grid (static examples for now) -->
+      <!-- Results grid -->
       <section class="panel">
         <div class="friends-grid-container">
           <div class="friends-grid">
-
-              <!-- Card 1: clicking the card opens public profile; button stops propagation -->
-              <div class="friend-card" onclick="if (event.target.closest('a')) return; location.href='/pages/otherProfile.html'">
-                <div class="user-avatar">A</div>
-                <span class="user-name">andrescmf1</span>
-                <a class="btn--secondary">ADD FRIEND</a>
-              </div>
-
-              <!-- Card 2 -->
-              <div class="friend-card" onclick="if (event.target.closest('a')) return; location.href='/pages/otherProfile.html'">
-                <div class="user-avatar">M</div>
-                <span class="user-name">maria89</span>
-                <a class="btn--secondary">ADD FRIEND</a>
-              </div>
-
-              <!-- Card 3 -->
-              <div class="friend-card" onclick="if (event.target.closest('a')) return; location.href='/pages/otherProfile.html'">
-                <div class="user-avatar">J</div>
-                <span class="user-name">juan_g</span>
-                <a class="btn--secondary">ADD FRIEND</a>
-              </div>
-
-              <!-- Card 4 -->
-              <div class="friend-card" onclick="if (event.target.closest('a')) return; location.href='/pages/otherProfile.html'">
-                <div class="user-avatar">C</div>
-                <span class="user-name">carlos99</span>
-                <a class="btn--secondary">ADD FRIEND</a>
-              </div>
-
-              <!-- Card 5 -->
-              <div class="friend-card" onclick="if (event.target.closest('a')) return; location.href='/pages/otherProfile.html'">
-                <div class="user-avatar">L</div>
-                <span class="user-name">luisa_k</span>
-                <a class="btn--secondary">ADD FRIEND</a>
-              </div>
-              
+            <!-- Users will be loaded dynamically -->
+          </div>
         </div>
       </section>
 
@@ -76,5 +44,13 @@
   
 </main>
 
-<!-- Shared footer scripts -->
 <script src="/js/partials/footer.js"></script>
+<script src="/js/utils/api-client.js"></script>
+<script src="/js/utils/auth-manager.js"></script>
+<script>
+  window.api = new ApiClient();
+  window.auth = new AuthManager();
+  window.auth.initialize();
+</script>
+<script src="/js/pages/addFriend.js"></script>
+

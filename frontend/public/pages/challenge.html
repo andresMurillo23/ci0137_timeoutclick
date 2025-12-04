@@ -1,64 +1,44 @@
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 <script src="/js/partials/head.js"></script>
 <script src="/js/partials/navbar.js"></script>
+<script src="/js/utils/api-client.js"></script>
+<script src="/js/utils/auth-manager.js"></script>
+<script src="/js/utils/popup-manager.js"></script>
 
 <script>window.NAV_ACTIVE = "start";</script>
 <script src="/js/utils/activeTab.js" defer></script>
 
 <!-- Page styles -->
 <link rel="stylesheet" href="/css/pages/challenge-style.css">
+<link rel="stylesheet" href="/css/pages/duel-styles/popups-styles.css">
+
 
 <main class="poster">
-  <h2 class="titles">CHALLENGE PLAYER</h2>
-  <hr class="divider">
 
-  <div class="poster__scroll">
-    <!-- Player list (status controls button availability) -->
-    <section class="list">
-      <!-- Available -->
-      <div class="row available">
-        <div class="label">
-          <span class="status-dot ok" aria-hidden="true"></span>
-          <span class="username">Player123</span>
-        </div>
-        <div class="action">
-          <button type="button" class="btn btn--secondary">CHALLENGE</button>
-        </div>
-      </div>
+  <!-- DUEL NOTIFICATIONS -->
+  <section class="poster-section">
+    <h2 class="titles">DUEL NOTIFICATIONS</h2>
+    <hr class="divider" />
 
-      <!-- Busy -->
-      <div class="row busy">
-        <div class="label">
-          <span class="status-dot busy" aria-hidden="true"></span>
-          <span class="username">Player456</span>
-        </div>
-        <div class="action">
-          <button type="button" class="btn-unavailable">CHALLENGE</button>
-        </div>
-      </div>
+    <div class="poster__scroll poster__scroll--notifications">
+      <section class="list list--notifications notifications">
+        <p style="text-align: center; padding: 20px;">No pending challenges</p>
+      </section>
+    </div>
+  </section>
 
-      <!-- Unavailable -->
-      <div class="row unavailable">
-        <div class="label">
-          <span class="status-dot no" aria-hidden="true"></span>
-          <span class="username dim">Player789</span>
-        </div>
-        <div class="action">
-          <button type="button" class="btn-unavailable">CHALLENGE</button>
-        </div>
-      </div>
+  <!-- CHALLENGE PLAYER -->
+  <section class="poster-section poster-section--spaced">
+    <h2 class="titles">CHALLENGE PLAYER</h2>
+    <hr class="divider" />
 
-      <!-- Unavailable -->
-      <div class="row unavailable">
-        <div class="label">
-          <span class="status-dot no" aria-hidden="true"></span>
-          <span class="username dim">Player593</span>
-        </div>
-        <div class="action">
-          <button type="button" class="btn-unavailable">CHALLENGE</button>
-        </div>
-      </div>
-    </section>
-  </div>
+    <div class="poster__scroll">
+      <!-- Player list dynamically populated by JavaScript -->
+      <section class="list" id="playersList">
+        <p style="text-align: center; padding: 20px;">Loading players...</p>
+      </section>
+    </div>
+  </section>
 </main>
 
 <!-- Modal: confirm challenge (state 1) / waiting (state 2) -->
@@ -94,7 +74,10 @@
   </div>
 </div>
 
-<!-- Modal behavior (open/close, switch states) -->
-<script src="/js/partials/popup.js"></script>
 <!-- Shared footer -->
 <script src="/js/partials/footer.js"></script>
+
+<!-- Challenge page logic -->
+<script src="/js/pages/challenge.js"></script>
+</body>
+</html>

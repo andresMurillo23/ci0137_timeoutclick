@@ -1,5 +1,9 @@
 <script src="/js/partials/head.js"></script>
+<script src="/js/utils/api-client.js"></script>
+<script src="/js/utils/auth-manager.js"></script>
+
 <link rel="stylesheet" href="/css/pages/register-login.css">
+<link rel="stylesheet" href="/css/components/modals.css">
 
 
 <header class="topbar">
@@ -12,19 +16,19 @@
 
   <div class="poster__scroll">
     <!-- Registration form (split in two columns) -->
-    <form>
+    <form id="registerForm">
       <div class="form-columns">
         <div class="column">
           <!-- Username -->
           <div class="field">
             <label for="username">Username:</label>
-            <input id="username" type="text" placeholder="USERNAME">
+            <input id="username" type="text" placeholder="USERNAME" required>
           </div>
 
           <!-- Email -->
           <div class="field">
             <label for="email">Email:</label>
-            <input id="email" type="email" placeholder="EMAIL">
+            <input id="email" type="email" placeholder="EMAIL" required>
           </div>
         </div>
 
@@ -32,23 +36,26 @@
           <!-- Password -->
           <div class="field">
             <label for="password">Password:</label>
-            <input id="password" type="password" placeholder="PASSWORD">
+            <input id="password" type="password" placeholder="PASSWORD" required>
           </div>
 
           <!-- Confirm password -->
           <div class="field">
             <label for="confirm">Confirm Password:</label>
-            <input id="confirm" type="password" placeholder="PASSWORD">
+            <input id="confirm" type="password" placeholder="PASSWORD" required>
           </div>
         </div>
       </div>
+      
+      <!-- Error message -->
+      <div id="errorMessage" class="error-message" style="display: none;"></div>
     </form>
   </div>
 
   <!-- Page actions -->
   <div class="actions">
-    <button type="button" class="btn btn--back" onclick="history.back()">BACK</button>
-    <button type="button" class="btn btn--secondary" onclick="location.href='/pages/verifyEmail.html'">REGISTER</button>
+    <button type="button" class="btn btn--back" onclick="window.location.href='/pages/home.html'">BACK</button>
+    <button type="submit" form="registerForm" class="btn btn--secondary" id="registerBtn">REGISTER</button>
   </div>
 
   <!-- Link for existing users -->
@@ -57,3 +64,4 @@
 
 <!-- Shared footer -->
 <script src="/js/partials/footer.js"></script>
+<script src="/js/pages/register.js"></script>

@@ -10,7 +10,7 @@
   <section class="content">
     <!-- Page title + brief context -->
     <h2 class="titles--light">RANKINGS</h2>
-    <p class="subtitle">Top duelists with more wins in Timeout Click</p>
+    <p class="subtitle">Your ranking among friends in Timeout Click</p>
 
     <!-- Leaderboard -->
     <table class="table" aria-label="Leaderboard">
@@ -92,5 +92,13 @@
   </section>
 </main>
 
-<!-- Shared footer -->
 <script src="/js/partials/footer.js"></script>
+<script src="/js/utils/api-client.js"></script>
+<script src="/js/utils/auth-manager.js"></script>
+<script>
+  window.api = new ApiClient();
+  window.auth = new AuthManager();
+  window.auth.initialize();
+</script>
+<script src="/js/utils/table-sorter.js"></script>
+<script src="/js/pages/ranking.js"></script>

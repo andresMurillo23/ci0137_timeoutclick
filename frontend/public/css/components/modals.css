@@ -1,0 +1,249 @@
+/* Modal styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 400px;
+  width: 90%;
+  max-height: 80%;
+  overflow-y: auto;
+}
+
+.friend-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.btn--small {
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+/* Error message styles */
+.error-message {
+  color: #ff4444;
+  margin: 10px 0;
+  text-align: center;
+  padding: 8px;
+  border: 1px solid #ff4444;
+  border-radius: 4px;
+  background-color: #ffe6e6;
+}
+
+/* 
+  POPUP SYSTEM - Replace alert() and confirm()
+
+/* Popup Container */
+.popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup.active {
+  display: flex;
+}
+
+/* Overlay oscuro */
+.popup-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+/* Contenido del popup */
+.popup-content {
+  position: relative;
+  background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+  border: 2px solid #4a4a4a;
+  border-radius: 16px;
+  padding: 30px;
+  min-width: 320px;
+  max-width: 500px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: popupSlideIn 0.3s ease-out;
+  color: #ffffff;
+}
+
+@keyframes popupSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Título del popup */
+.popup-title {
+  margin: 0 0 16px 0;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  color: #ffffff;
+}
+
+/* Mensaje del popup */
+.popup-message {
+  margin: 0 0 24px 0;
+  font-size: 16px;
+  line-height: 1.6;
+  text-align: center;
+  color: #cccccc;
+}
+
+/* Contenedor de botones */
+.popup-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Estilos base de botones */
+.popup-btn {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 100px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.popup-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.popup-btn:active {
+  transform: translateY(0);
+}
+
+/* Botón de confirmar (azul) */
+.popup-btn-confirm {
+  background: linear-gradient(135deg, #00b8ff, #0066cc);
+  color: white;
+}
+
+.popup-btn-confirm:hover {
+  background: linear-gradient(135deg, #00d4ff, #0077ee);
+}
+
+/* Botón de peligro (rojo) */
+.popup-btn-danger {
+  background: linear-gradient(135deg, #ff4444, #cc0000);
+  color: white;
+}
+
+.popup-btn-danger:hover {
+  background: linear-gradient(135deg, #ff6666, #ee0000);
+}
+
+/* Botón de cancelar (gris) */
+.popup-btn-cancel {
+  background: linear-gradient(135deg, #666666, #444444);
+  color: white;
+}
+
+.popup-btn-cancel:hover {
+  background: linear-gradient(135deg, #777777, #555555);
+}
+
+/* Botón OK (verde) */
+.popup-btn-ok {
+  background: linear-gradient(135deg, #00cc66, #009944);
+  color: white;
+}
+
+.popup-btn-ok:hover {
+  background: linear-gradient(135deg, #00ee77, #00aa55);
+}
+
+/* Variantes de popup por tipo */
+
+/* Popup de éxito */
+.popup-success .popup-content {
+  border-color: #00cc66;
+  box-shadow: 0 20px 60px rgba(0, 204, 102, 0.3);
+}
+
+.popup-success .popup-title {
+  color: #00ff88;
+}
+
+/* Popup de error */
+.popup-error .popup-content {
+  border-color: #ff4444;
+  box-shadow: 0 20px 60px rgba(255, 68, 68, 0.3);
+}
+
+.popup-error .popup-title {
+  color: #ff6666;
+}
+
+/* Popup de confirmación */
+.popup-confirm .popup-content {
+  border-color: #00b8ff;
+  box-shadow: 0 20px 60px rgba(0, 184, 255, 0.3);
+}
+
+.popup-confirm .popup-title {
+  color: #00d4ff;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .popup-content {
+    min-width: 280px;
+    padding: 24px;
+    margin: 20px;
+  }
+
+  .popup-title {
+    font-size: 20px;
+  }
+
+  .popup-message {
+    font-size: 14px;
+  }
+
+  .popup-actions {
+    flex-direction: column;
+  }
+
+  .popup-btn {
+    width: 100%;
+  }
+}

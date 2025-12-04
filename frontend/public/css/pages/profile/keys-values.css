@@ -13,6 +13,11 @@
   row-gap: 12px
 }
 
+/* Allow grid children to shrink and avoid forcing parent width */
+.kv, .kv * {
+  min-width: 0;
+}
+
 /* Key label */
 .label {
   color: var(--line);
@@ -24,6 +29,19 @@
   color: var(--winrate-brown);
   font-weight: 800;
   font-family: var(--montfont)
+}
+
+/* Prevent long unbroken values (like long emails) from expanding the layout
+   - Single-line ellipsis for visual cleanliness
+   - Allow breaking if necessary on very long tokens */
+.value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.value.break-word {
+  white-space: normal;
+  word-break: break-word;
 }
 
 /* Divider */

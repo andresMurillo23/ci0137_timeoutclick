@@ -1,5 +1,6 @@
 <script src="/js/partials/head.js"></script>
 <script src="/js/partials/navbar.js"></script>
+<script src="/js/utils/popup-manager.js"></script>
 
 <!-- Page styles -->
 <link rel="stylesheet" href="/css/pages/profile/btns.css">
@@ -8,6 +9,7 @@
 <link rel="stylesheet" href="/css/pages/profile/panels.css">
 <link rel="stylesheet" href="/css/pages/profile/layout.css">
 <link rel="stylesheet" href="/css/pages/otherProfile-style.css">
+<link rel="stylesheet" href="/css/pages/duel-styles/popups-styles.css">
 </head>
 
 <body class="other-profile">
@@ -74,5 +76,16 @@
 
   <!-- Shared footer -->
   <script src="/js/partials/footer.js"></script>
+
+  <!-- Required utilities -->
+  <script src="/js/utils/api-client.js"></script>
+  <script src="/js/utils/auth-manager.js"></script>
+  <script>
+    window.api = new ApiClient();
+    window.auth = new AuthManager();
+    window.auth.initialize();
+  </script>
+
+  <script src="/js/pages/otherProfile.js" defer></script>
 </body>
 </html>

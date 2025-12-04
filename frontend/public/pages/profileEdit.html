@@ -22,12 +22,12 @@
 
     <!-- Read-only quick stats -->
     <section class="stats" aria-label="Quick stats (read-only)">
-      <div class="stat"><span class="k">rank</span><span class="v">Silver II</span></div>
-      <div class="stat"><span class="k">wins</span><span class="v">45</span></div>
-      <div class="stat"><span class="k">losses</span><span class="v">32</span></div>
+      <div class="stat"><span class="k">rank</span><span class="v">...</span></div>
+      <div class="stat"><span class="k">wins</span><span class="v">...</span></div>
+      <div class="stat"><span class="k">losses</span><span class="v">...</span></div>
       <div class="stat">
         <span class="k">win rate</span>
-        <div class="progress" style="--winrate:58%"><i></i></div>
+        <div class="progress" aria-label="Win rate"><i style="width:0%"></i></div>
       </div>
     </section>
 
@@ -42,45 +42,49 @@
                 <div class="form-col">
                   <div class="field">
                     <label for="username" class="label">username</label>
-                    <input id="username" name="username" type="text" class="control" placeholder="exampleUser12" required>
-                    <p class="hint">3–20 characters, letters/numbers/_</p>
+                    <input id="username" type="text" class="control" placeholder="exampleUser12" required>
+                    <p class="hint">3–20 characters, letters/numbers</p>
                   </div>
 
                   <div class="field">
                     <label for="email" class="label">email</label>
-                    <input id="email" name="email" type="email" class="control" placeholder="email@example.com" required>
+                    <input id="email" type="email" class="control" placeholder="email@example.com" required>
                   </div>
 
                   <div class="field">
                     <label for="userId" class="label">user id</label>
-                    <input id="userId" name="userId" type="text" class="control" value="#A1F3-92D" readonly>
+                    <input id="userId" type="text" class="control" value="..." readonly>
                   </div>
                 </div>
 
                 <div class="form-col">
                   <div class="field">
                     <span class="label">member since</span>
-                    <input type="text" class="control" value="12/08/2025" readonly>
+                    <input id="memberSince" type="text" class="control" value="..." readonly>
                   </div>
 
                   <div class="field">
                     <span class="label">verification</span>
-                    <input type="text" class="control" value="Email verified" readonly>
+                    <input id="verification" type="text" class="control" value="..." readonly>
                   </div>
 
                   <!-- Optional password change -->
                   <div class="field group">
-                    <div class="group-two">
+                    <div class="group-three">
+                      <div>
+                        <label for="currentPassword" class="label">current password</label>
+                        <input id="currentPassword" type="password" class="control" placeholder="••••••••">
+                      </div>
                       <div>
                         <label for="newPassword" class="label">new password</label>
-                        <input id="newPassword" name="newPassword" type="password" class="control" placeholder="••••••••">
+                        <input id="newPassword" type="password" class="control" placeholder="••••••••">
                       </div>
                       <div>
                         <label for="confirmPassword" class="label">confirm</label>
-                        <input id="confirmPassword" name="confirmPassword" type="password" class="control" placeholder="••••••••">
+                        <input id="confirmPassword" type="password" class="control" placeholder="••••••••">
                       </div>
                     </div>
-                    <p class="hint">Leave blank if you don’t want to change it.</p>
+                    <p class="hint">Leave blank if you don't want to change password.</p>
                   </div>
                 </div>
               </div>
@@ -96,12 +100,12 @@
           <div class="body">
             <div class="kv-grid kv-grid--readonly">
               <div class="kv">
-                <div class="label">wins / losses:</div><div class="value">45 / 32</div>
-                <div class="label">friends:</div><div class="value">27</div>
+                <div class="label">wins / losses:</div><div class="value" id="winsLosses">... / ...</div>
+                <div class="label">friends:</div><div class="value" id="friendsCount">...</div>
               </div>
               <div class="kv">
-                <div class="label">rank:</div><div class="value">Silver II</div>
-                <div class="label">win rate:</div><div class="value">58%</div>
+                <div class="label">rank:</div><div class="value" id="rank">...</div>
+                <div class="label">win rate:</div><div class="value" id="winRate">...</div>
               </div>
             </div>
           </div>
@@ -133,14 +137,34 @@
       <!-- Page actions -->
       <div class="bottom">
         <a class="btn-ghost left" href="/pages/profile.html">CANCEL</a>
-        <a class="btn right" id="saveBtn" href="/pages/profile.html" role="button">SAVE</a>
+        <button type="submit" form="profileEditForm" class="btn right" id="saveBtn">SAVE</button>
       </div>
     </div>
   </main>
+
 
   <!-- Helpers: live avatar preview + responsive layout sync -->
   <script src="/js/utils/avatarPreview.js" defer></script>
   <script src="/js/utils/syncPreviewHeight.js" defer></script>
   <script src="/js/partials/footer.js"></script>
+
+  <!-- Required utilities -->
+  <script src="/js/utils/api-client.js"></script>
+  <script src="/js/utils/auth-manager.js"></script>
+  <script>
+    window.api = new ApiClient();
+    window.auth = new AuthManager();
+    window.auth.initialize();
+  </script>
+
+  <!-- Profile edit page logic -->
+  <script src="/js/pages/profileEdit.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const profileEditPage = new ProfileEditPage();
+      profileEditPage.init();
+    });
+  </script>
 </body>
 </html>
+

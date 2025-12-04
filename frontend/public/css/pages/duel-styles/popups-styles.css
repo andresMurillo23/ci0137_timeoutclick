@@ -1,3 +1,137 @@
+/* 
+   POPUP SYSTEM - Compatible with popup-manager.js
+*/
+
+/* Popup container (overlay + content) */
+.popup {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Active state of popup */
+.popup.active {
+  opacity: 1;
+}
+
+/* Background overlay */
+.popup-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* Popup content */
+.popup-content {
+  position: relative;
+  z-index: 10001;
+  background: var(--panel);
+  padding: 2rem;
+  text-align: center;
+  border: 4px solid var(--black-bean);
+  border-radius: 20px;
+  box-shadow: 0 0 0 6px var(--line-strong);
+  font-family: var(--montfont);
+  max-width: 500px;
+  width: 90%;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+/* Content animation when active */
+.popup.active .popup-content {
+  transform: scale(1);
+}
+
+/* Popup title */
+.popup-title {
+  font-family: "Rye", system-ui, sans-serif;
+  text-shadow: 3px 3px 0 #e6cc99, 4px 4px 4px rgba(0, 0, 0, .3);
+  letter-spacing: 1.5px;
+  color: var(--sienna);
+  margin-bottom: 1rem;
+}
+
+/* Popup message */
+.popup-message {
+  color: var(--black-bean);
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+/* Buttons container */
+.popup-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* Popup buttons */
+.popup-btn {
+  border-radius: 1rem;
+  padding: 0.6rem 1.5rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease;
+  font-family: var(--montfont);
+  font-size: 1rem;
+}
+
+/* Confirm button */
+.popup-btn-confirm {
+  background: var(--brown);
+  color: var(--panel);
+}
+
+.popup-btn-confirm:hover {
+  background: var(--burnt-orange);
+  transform: scale(1.05);
+}
+
+/* Cancel button */
+.popup-btn-cancel {
+  background: var(--black-bean);
+  color: var(--panel);
+}
+
+.popup-btn-cancel:hover {
+  transform: scale(1.05);
+  background-color: var(--licorice);
+}
+
+/* OK button */
+.popup-btn-ok {
+  background: var(--brown);
+  color: var(--panel);
+}
+
+.popup-btn-ok:hover {
+  background: var(--burnt-orange);
+  transform: scale(1.05);
+}
+
+/* Danger button */
+.popup-btn-danger {
+  background: var(--burnt-orange);
+  color: var(--panel);
+}
+
+.popup-btn-danger:hover {
+  background: var(--flame);
+  transform: scale(1.05);
+}
+
+/* 
+  Legacy modals
+*/
+
 /* Modal overlay */
 .modal-overlay{
   display: none;
@@ -28,16 +162,29 @@
 }
 
 /* Modal titles */
-#winnerTitle, #finalTitle{
+.modal-content h2,
+#winnerTitle, 
+#finalTitle,
+#stillThereTitle,
+#rematchRequestTitle,
+#rematchDeclinedTitle {
   font-family: "Rye", system-ui, sans-serif;
   text-shadow: 3px 3px 0 #e6cc99, 4px 4px 4px rgba(0, 0, 0, .3);
   letter-spacing: 1.5px;
   color: var(--sienna);
+  margin-bottom: 1rem;
 }
 
 /* Modal details text */
-#winnerDetails, #finalDetails{
+.modal-content p,
+#winnerDetails, 
+#finalDetails,
+#stillThereDetails,
+#rematchRequestDetails,
+#rematchDeclinedDetails {
   color: var(--black-bean);
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
 }
 
 /* Action buttons container */
@@ -57,6 +204,10 @@
   border: none;
   cursor: pointer;
   transition: 0.2s ease;
+  font-family: var(--montfont);
+  font-size: 1rem;
+  text-decoration: none;
+  display: inline-block;
 }
 
 /* Confirm button */

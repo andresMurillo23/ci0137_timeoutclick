@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="/css/pages/profile/layout.css">
 <link rel="stylesheet" href="/css/pages/deleteProfile-style.css">
 <link rel="stylesheet" href="/css/pages/otherProfile-style.css">
+<link rel="stylesheet" href="/css/pages/duel-styles/popups-styles.css">
 
 <body class="other-profile">
   <main class="page">
@@ -43,11 +44,6 @@
               <div class="op-row">
                 <div class="label">username</div>
                 <div class="value" id="username">andrescmf1</div>
-              </div>
-
-              <div class="op-row">
-                <div class="label">about</div>
-                <div class="value" id="about">Competitive player. Western theme lover.</div>
               </div>
 
               <div class="op-row">
@@ -94,7 +90,16 @@
   </main>
 
   <!-- Modal behavior + shared footer -->
+  <script src="/js/utils/popup-manager.js"></script>
+  <script src="/js/utils/api-client.js"></script>
+  <script src="/js/utils/auth-manager.js"></script>
+  <script>
+    window.api = new ApiClient();
+    window.auth = new AuthManager();
+    window.auth.initialize();
+  </script>
   <script src="/js/partials/popup-deleteFriend.js"></script>
+  <script src="/js/pages/deleteFriend.js"></script>
   <script src="/js/partials/footer.js"></script>
 </body>
 </html>
