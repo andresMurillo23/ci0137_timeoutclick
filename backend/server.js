@@ -30,16 +30,11 @@ app.use((req, res, next) => {
     'https://ci0137-timeoutclick.vercel.app'
   ];
   
-  // Log CORS info for debugging
-  console.log(`[CORS] ${req.method} ${req.path} - Origin: ${origin || 'none'}`);
-  
   // Only set CORS headers if origin exists
   if (origin) {
     const isAllowed = allowedOrigins.includes(origin) || origin.includes('ngrok');
     
     if (isAllowed) {
-      console.log(`[CORS] Allowing origin: ${origin}`);
-      
       // Force override ngrok headers using writeHead hook
       const originalWriteHead = res.writeHead;
       res.writeHead = function(...args) {
@@ -47,12 +42,7 @@ app.use((req, res, next) => {
         this.setHeader('Access-Control-Allow-Credentials', 'true');
         this.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
         this.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, ngrok-skip-browser-warning');
-        this.setHeader('Access-Control-Max-Age', '86400');
-        
-        console.log(`[CORS] Headers being sent:`, {
-          'Access-Control-Allow-Origin': this.getHeader('Access-Control-Allow-Origin'),
-          'Access-Control-Allow-Credentials': this.getHeader('Access-Control-Allow-Credentials')
-        });
+        this.setHeader('Access-Control-Allow-Max-Age', '86400');
         
         return originalWriteHead.apply(this, args);
       };
@@ -62,26 +52,13 @@ app.use((req, res, next) => {
       res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
       res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, ngrok-skip-browser-warning');
       res.setHeader('Access-Control-Max-Age', '86400');
-    } else {
-      console.log(`[CORS] Blocked origin: ${origin}`);
     }
   }
   
   // Handle preflight
   if (req.method === 'OPTIONS') {
-    console.log(`[CORS] Preflight request handled`);
     return res.status(204).end();
   }
-  
-  // Hook into response finish to log final headers
-  res.on('finish', () => {
-    if (req.method !== 'OPTIONS') {
-      console.log(`[CORS] Response sent for ${req.method} ${req.path}`, {
-        'Access-Control-Allow-Origin': res.getHeader('Access-Control-Allow-Origin'),
-        'Access-Control-Allow-Credentials': res.getHeader('Access-Control-Allow-Credentials')
-      });
-    }
-  });
   
   next();
 });

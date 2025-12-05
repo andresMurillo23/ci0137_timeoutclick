@@ -31,7 +31,6 @@ class SocketManager {
         
         // Check if it's a guest user
         if (userId.startsWith('guest_')) {
-          console.log('[SOCKET] Guest user connecting:', userId);
           socket.userId = null;  // No user ID for guests
           socket.username = 'Guest';
           socket.isGuest = true;
@@ -68,9 +67,6 @@ class SocketManager {
    * Handle new socket connection
    */
   handleConnection(socket) {
-    console.log(`[SOCKET] User ${socket.username} connected with socket ${socket.id}`);
-    console.log(`[SOCKET] User ID: ${socket.userId} (type: ${typeof socket.userId})`);
-
     this.connectedUsers.set(socket.userId, {
       userId: socket.userId,
       socketId: socket.id,
@@ -79,8 +75,6 @@ class SocketManager {
       status: 'online'
     });
     
-    console.log(`[SOCKET] Total connected users: ${this.connectedUsers.size}`);
-
     socket.emit('connection_established', {
       socketId: socket.id,
       userId: socket.userId,
@@ -301,10 +295,6 @@ class SocketManager {
     try {
       const { gameId, opponentId } = data;
       
-      console.log('[SOCKET] Send challenge request:', { gameId, opponentId, sender: socket.userId });
-      console.log('[SOCKET] OpponentId type:', typeof opponentId);
-      console.log('[SOCKET] Connected users:', Array.from(this.connectedUsers.keys()));
-      
       if (!gameId || !opponentId) {
         socket.emit('challenge_error', { message: 'Missing game ID or opponent ID' });
         return;
@@ -315,15 +305,8 @@ class SocketManager {
       
       // Check if opponent is online
       const opponent = this.connectedUsers.get(opponentIdStr);
-      console.log('[SOCKET] Looking for opponent:', opponentIdStr);
-      console.log('[SOCKET] Opponent lookup result:', opponent);
       
       if (!opponent) {
-        // Try to find by checking all connected users
-        console.log('[SOCKET] Detailed connected users:');
-        this.connectedUsers.forEach((value, key) => {
-          console.log(`  - Key: "${key}" (type: ${typeof key}), User: ${value.username}`);
-        });
         socket.emit('challenge_error', { message: 'Opponent is not online' });
         return;
       }
@@ -338,7 +321,6 @@ class SocketManager {
       }
 
       // Send challenge to opponent
-      console.log(`[SOCKET] Sending challenge_received to socket ${opponent.socketId}`);
       this.io.to(opponent.socketId).emit('challenge_received', {
         gameId: game._id,
         challengerId: socket.userId,
@@ -350,10 +332,8 @@ class SocketManager {
         timestamp: new Date()
       });
 
-      console.log(`[SOCKET] Challenge sent from ${socket.username} to ${opponent.username}`);
-
     } catch (error) {
-      console.error('[SOCKET] Send challenge error:', error);
+      console.error('Send challenge error:', error);
       socket.emit('challenge_error', { message: 'Failed to send challenge' });
     }
   }
