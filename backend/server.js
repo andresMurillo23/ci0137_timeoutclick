@@ -19,26 +19,31 @@ const { io, socketManager } = initializeSocket(server);
 app.set('socketio', io);
 app.set('socketManager', socketManager);
 
-app.use(cors({
-  origin: function(origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    const allowedOrigins = [
-      `http://localhost:${process.env.FRONTEND_PORT || 5000}`,
-      'http://localhost:3000',
-      'https://ci0137-timeoutclick.vercel.app'
-    ];
-    
-    // Allow any ngrok domain for testing
-    if (origin.includes('ngrok') || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
-}));
+// Manual CORS headers to ensure proper configuration
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  
+  const allowedOrigins = [
+    `http://localhost:${process.env.FRONTEND_PORT || 5000}`,
+    'http://localhost:3000',
+    'http://localhost:5000',
+    'https://ci0137-timeoutclick.vercel.app'
+  ];
+  
+  if (!origin || allowedOrigins.includes(origin) || origin.includes('ngrok')) {
+    res.setHeader('Access-Control-Allow-Origin', origin || '*');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  }
+  
+  // Handle preflight
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  
+  next();
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

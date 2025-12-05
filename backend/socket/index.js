@@ -493,7 +493,6 @@ const initializeSocket = (server) => {
   const io = new Server(server, {
     cors: {
       origin: function(origin, callback) {
-        // Allow requests with no origin (like mobile apps)
         if (!origin) return callback(null, true);
         
         const allowedOrigins = [
@@ -503,7 +502,6 @@ const initializeSocket = (server) => {
           'https://ci0137-timeoutclick.vercel.app'
         ];
         
-        // Allow any ngrok domain for testing
         if (origin.includes('ngrok') || allowedOrigins.includes(origin)) {
           callback(null, true);
         } else {
