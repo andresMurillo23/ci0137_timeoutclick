@@ -179,7 +179,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       transports: ['websocket', 'polling'],
       reconnection: true,
       reconnectionDelay: 1000,
-      reconnectionAttempts: 5
+      reconnectionAttempts: 5,
+      extraHeaders: {
+        'ngrok-skip-browser-warning': 'true'
+      }
     });
 
     console.log('[DUEL] Socket object created:', socket ? '✓' : '✗');

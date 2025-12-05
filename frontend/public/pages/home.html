@@ -86,7 +86,10 @@
     
     guestSocket = io(window.CONFIG?.BACKEND_URL || 'http://localhost:3000', {
       auth: { token: guestToken },
-      transports: ['websocket', 'polling']
+      transports: ['websocket', 'polling'],
+      extraHeaders: {
+        'ngrok-skip-browser-warning': 'true'
+      }
     });
     
     guestSocket.on('connect', () => {

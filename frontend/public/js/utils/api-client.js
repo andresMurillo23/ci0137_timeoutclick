@@ -9,7 +9,8 @@ class ApiClient {
     this.baseUrl = window.CONFIG?.API_URL || 'http://localhost:3000/api';
     this.defaultHeaders = {
       'Content-Type': 'application/json',
-      'Accept': 'application/json'
+      'Accept': 'application/json',
+      'ngrok-skip-browser-warning': 'true'  // Skip ngrok browser warning page
     };
   }
 

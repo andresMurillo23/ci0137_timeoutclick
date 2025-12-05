@@ -47,6 +47,12 @@ app.use((req, res, next) => {
         this.setHeader('Access-Control-Allow-Credentials', 'true');
         this.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
         this.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+        
+        console.log(`[CORS] Headers being sent:`, {
+          'Access-Control-Allow-Origin': this.getHeader('Access-Control-Allow-Origin'),
+          'Access-Control-Allow-Credentials': this.getHeader('Access-Control-Allow-Credentials')
+        });
+        
         return originalWriteHead.apply(this, args);
       };
       
@@ -62,8 +68,18 @@ app.use((req, res, next) => {
   // Handle preflight
   if (req.method === 'OPTIONS') {
     console.log(`[CORS] Preflight request handled`);
-    return res.sendStatus(204);
+    return res.status(204).end();
   }
+  
+  // Hook into response finish to log final headers
+  res.on('finish', () => {
+    if (req.method !== 'OPTIONS') {
+      console.log(`[CORS] Response sent for ${req.method} ${req.path}`, {
+        'Access-Control-Allow-Origin': res.getHeader('Access-Control-Allow-Origin'),
+        'Access-Control-Allow-Credentials': res.getHeader('Access-Control-Allow-Credentials')
+      });
+    }
+  });
   
   next();
 });
