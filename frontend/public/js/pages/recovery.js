@@ -113,7 +113,8 @@ document.addEventListener('DOMContentLoaded', function() {
       const forgotResponse = await fetch((window.CONFIG?.API_URL || 'http://localhost:3000/api') + '/auth/forgot-password', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'
         },
         body: JSON.stringify({ email })
       });
@@ -128,7 +129,8 @@ document.addEventListener('DOMContentLoaded', function() {
       const resetResponse = await fetch((window.CONFIG?.API_URL || 'http://localhost:3000/api') + '/auth/reset-password', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'
         },
         body: JSON.stringify({
           token: forgotData.resetToken,
