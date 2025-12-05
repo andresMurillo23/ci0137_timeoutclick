@@ -57,44 +57,25 @@ class GameSocketHandler {
       const userId = socket.userId; // Set by authentication middleware
       const isGuest = socket.isGuest;
 
-      console.log(`\n========== JOIN GAME DEBUG ==========`);
-      console.log(`[GAME-DEBUG] Join attempt:`);
-      console.log(`  - Socket ID: ${socket.id}`);
-      console.log(`  - User ID: ${userId}`);
-      console.log(`  - Is Guest: ${isGuest}`);
-      console.log(`  - Game ID: ${gameId}`);
-
       if (!userId && !isGuest) {
-        console.error('[GAME-DEBUG] ❌ JOIN REJECTED: No userId and not a guest');
         socket.emit('game_error', { message: 'Authentication required' });
         return;
       }
 
       const game = await Game.findById(gameId).populate('player1 player2');
       if (!game) {
-        console.error(`[GAME-DEBUG] ❌ JOIN REJECTED: Game ${gameId} not found`);
         socket.emit('game_error', { message: 'Game not found' });
         return;
       }
 
-      console.log(`[GAME-DEBUG] Game found:`);
-      console.log(`  - Status: ${game.status}`);
-      console.log(`  - Type: ${game.gameType}`);
-      console.log(`  - Player1: ${game.player1 ? game.player1._id : 'NULL'}`);
-      console.log(`  - Player2: ${game.player2 ? game.player2._id : 'NULL'}`);
-      console.log(`  - Created: ${game.createdAt}`);
-
       // Check if game was cancelled
       if (game.status === 'cancelled') {
-        console.error(`[GAME-DEBUG] ❌ JOIN REJECTED: Game ${gameId} STATUS IS CANCELLED`);
-        console.error(`[GAME-DEBUG] Game was cancelled at some point. Check who/what cancelled it.`);
         socket.emit('game_error', { message: 'Game was cancelled' });
         return;
       }
 
       // Check if game is in a joinable state
       if (!['waiting', 'starting', 'active'].includes(game.status)) {
-        console.error(`[GAME] Join failed - Invalid status: ${game.status}`);
         socket.emit('game_error', { message: `Game is in ${game.status} state and cannot be joined` });
         return;
       }
@@ -572,7 +553,7 @@ class GameSocketHandler {
       if (isGuestWinner) {
         // Guest (player1) won
         game.player1Score += 1;
-        console.log(`[GAME] ✅ Player 1 (Guest) WON - score: ${game.player1Score}`);
+        console.log(`[GAME] Player 1 (Guest) WON - score: ${game.player1Score}`);
       } else if (roundWinnerId) {
         const player1Id = game.player1?._id?.toString();
         const player2Id = game.player2?._id?.toString();
@@ -581,12 +562,12 @@ class GameSocketHandler {
         
         if (player1Id && roundWinnerId.toString() === player1Id) {
           game.player1Score += 1;
-          console.log(`[GAME] ✅ Player 1 WON - score: ${game.player1Score}`);
+          console.log(`[GAME] Player 1 WON - score: ${game.player1Score}`);
         } else if (player2Id && roundWinnerId.toString() === player2Id) {
           game.player2Score += 1;
-          console.log(`[GAME] ✅ Player 2 WON - score: ${game.player2Score}`);
+          console.log(`[GAME] Player 2 WON - score: ${game.player2Score}`);
         } else {
-          console.log(`[GAME] ⚠️ WARNING: Winner ID didn't match any player!`);
+          console.log(`[GAME] WARNING: Winner ID didn't match any player!`);
         }
       } else {
         console.log(`[GAME] Round was a TIE - no score update`);
@@ -1160,7 +1141,7 @@ class GameSocketHandler {
       // Verify game exists and check its status
       const game = await Game.findById(gameId);
       if (!game) {
-        console.error(`[CHALLENGE-DEBUG] ❌ Game ${gameId} not found`);
+        console.error(`[CHALLENGE-DEBUG] Game ${gameId} not found`);
         socket.emit('game_error', { message: 'Game not found' });
         return;
       }
@@ -1171,11 +1152,11 @@ class GameSocketHandler {
       // Join a waiting room (not the actual game room yet)
       socket.join(`game_${gameId}_waiting`);
       
-      console.log(`[CHALLENGE-DEBUG] ✅ Guest joined waiting room: game_${gameId}_waiting`);
+      console.log(`[CHALLENGE-DEBUG] Guest joined waiting room: game_${gameId}_waiting`);
       console.log(`[CHALLENGE-DEBUG] Current socket rooms:`, Array.from(socket.rooms));
       console.log(`======================================\n`);
     } catch (error) {
-      console.error('[CHALLENGE-DEBUG] ❌ Error in guest waiting:', error);
+      console.error('[CHALLENGE-DEBUG] Error in guest waiting:', error);
       socket.emit('game_error', { message: error.message });
     }
   }
@@ -1194,7 +1175,7 @@ class GameSocketHandler {
       // Verify game exists and check status
       const game = await Game.findById(gameId);
       if (!game) {
-        console.error(`[CHALLENGE-DEBUG] ❌ Game not found`);
+        console.error(`[CHALLENGE-DEBUG] Game not found`);
         socket.emit('game_error', { message: 'Game not found' });
         return;
       }
@@ -1206,7 +1187,7 @@ class GameSocketHandler {
       if (game.status === 'pending') {
         game.status = 'waiting';
         await game.save();
-        console.log(`[CHALLENGE-DEBUG] ✅ Game status updated: pending → waiting`);
+        console.log(`[CHALLENGE-DEBUG] Game status updated: pending → waiting`);
       }
 
       // Notify guest in waiting room that challenge was accepted
@@ -1217,7 +1198,7 @@ class GameSocketHandler {
       console.log(`[CHALLENGE-DEBUG] Emitting challenge_response to room: game_${gameId}`);
       this.io.to(`game_${gameId}`).emit('challenge_response', { accepted: true });
 
-      console.log(`[CHALLENGE-DEBUG] ✅ Challenge acceptance notifications sent`);
+      console.log(`[CHALLENGE-DEBUG] Challenge acceptance notifications sent`);
       
       // Check if both players are connected and start game
       const gameSession = await GameSession.findOne({ gameId });
@@ -1229,7 +1210,7 @@ class GameSocketHandler {
       }
       console.log(`==============================================\n`);
     } catch (error) {
-      console.error('[CHALLENGE-DEBUG] ❌ Error accepting challenge:', error);
+      console.error('[CHALLENGE-DEBUG] Error accepting challenge:', error);
     }
   }
 

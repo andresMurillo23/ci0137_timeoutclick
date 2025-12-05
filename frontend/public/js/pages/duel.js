@@ -52,6 +52,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('[DUEL] Guest user, skipping authentication...');
   }
 
+  // Timer sound
+  const timerSound = new Audio('/assets/images/timer_sound.mp3');
+  timerSound.loop = false; // Don't loop, play once per round
+  timerSound.volume = 0.5; // Set volume to 50%
+
   // Socket.IO connection
   let socket = null;
   let gameState = {
@@ -68,7 +73,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     clickStartTime: null,
     hasClicked: false,
     gameEnded: false,
-    inactivityTimer: null
+    inactivityTimer: null,
+    timerSoundPlaying: false
   };
 
   // DOM elements
@@ -87,12 +93,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const surrenderBtn = document.getElementById('surrenderBtn');
 
   console.log('[DUEL] DOM elements check:');
-  console.log('  - pressButton:', pressButton ? '✓' : '✗');
-  console.log('  - roundNumber:', roundNumber ? '✓' : '✗');
-  console.log('  - goalValue:', goalValue ? '✓' : '✗');
-  console.log('  - player1Name:', player1Name ? '✓' : '✗');
-  console.log('  - player2Name:', player2Name ? '✓' : '✗');
-  console.log('  - turnStatus:', turnStatus ? '✓' : '✗');
+  console.log('  - pressButton:', pressButton ? 'S' : 'N');
+  console.log('  - roundNumber:', roundNumber ? 'S' : 'N');
+  console.log('  - goalValue:', goalValue ? 'S' : 'N');
+  console.log('  - player1Name:', player1Name ? 'S' : 'N');
+  console.log('  - player2Name:', player2Name ? 'S' : 'N');
+  console.log('  - turnStatus:', turnStatus ? 'S' : 'N');
 
   // Modals
   const winnerPopup = document.getElementById('winnerPopup');
@@ -122,14 +128,77 @@ document.addEventListener('DOMContentLoaded', async () => {
   /**
    * Get full avatar URL from relative path
    */
-  function getAvatarUrl(avatarPath) {
+  async function getAvatarUrl(avatarPath) {
     if (!avatarPath) return '/assets/images/profile.jpg';
     if (avatarPath.startsWith('http')) return avatarPath;
     // Avatar paths from backend can be 'avatars/xxx' or just 'xxx'
+    const baseUrl = window.CONFIG?.UPLOADS_URL || 'http://localhost:3000/uploads';
+    let url;
     if (avatarPath.includes('/')) {
-      return `${window.CONFIG?.UPLOADS_URL || 'http://localhost:3000/uploads'}/${avatarPath}`;
+      url = `${baseUrl}/${avatarPath}`;
+    } else {
+      url = `${baseUrl}/avatars/${avatarPath}`;
     }
-    return `${window.CONFIG?.UPLOADS_URL || 'http://localhost:3000/uploads'}/avatars/${avatarPath}`;
+    
+    // For ngrok URLs, fetch with header to bypass warning page
+    if (baseUrl.includes('ngrok')) {
+      try {
+        const response = await fetch(url, {
+          headers: { 'ngrok-skip-browser-warning': 'true' }
+        });
+        if (response.ok) {
+          const blob = await response.blob();
+          return URL.createObjectURL(blob);
+        }
+      } catch (error) {
+        console.error('[DUEL] Error fetching avatar:', error);
+        return '/assets/images/profile.jpg';
+      }
+    }
+    return url;
+  }
+
+  /**
+   * Play timer sound at the start of each round
+   */
+  function playTimerSound() {
+    try {
+      // Reset audio to start
+      timerSound.currentTime = 0;
+      
+      // Play the sound
+      const playPromise = timerSound.play();
+      
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            console.log('[DUEL] Timer sound playing');
+            gameState.timerSoundPlaying = true;
+          })
+          .catch(error => {
+            console.warn('[DUEL] Timer sound autoplay blocked:', error);
+            // User interaction might be required for autoplay
+          });
+      }
+    } catch (error) {
+      console.error('[DUEL] Error playing timer sound:', error);
+    }
+  }
+
+  /**
+   * Stop timer sound when round finishes
+   */
+  function stopTimerSound() {
+    try {
+      if (gameState.timerSoundPlaying) {
+        timerSound.pause();
+        timerSound.currentTime = 0;
+        gameState.timerSoundPlaying = false;
+        console.log('[DUEL] Timer sound stopped');
+      }
+    } catch (error) {
+      console.error('[DUEL] Error stopping timer sound:', error);
+    }
   }
 
   /**
@@ -179,21 +248,24 @@ document.addEventListener('DOMContentLoaded', async () => {
       transports: ['websocket', 'polling'],
       reconnection: true,
       reconnectionDelay: 1000,
-      reconnectionAttempts: 5
+      reconnectionAttempts: 5,
+      extraHeaders: {
+        'ngrok-skip-browser-warning': 'true'
+      }
     });
 
-    console.log('[DUEL] Socket object created:', socket ? '✓' : '✗');
+    console.log('[DUEL] Socket object created:', socket ? 'S' : 'N');
 
     // Connection events
     socket.on('connect', () => {
-      console.log('[DUEL] ✓✓✓ CONNECTED to game server! ✓✓✓');
+      console.log('[DUEL] CONNECTED to game server!');
       console.log('[DUEL] Socket ID:', socket.id);
       console.log('[DUEL] Emitting join_game with gameId:', gameId);
       socket.emit('join_game', { gameId: gameId });
     });
 
     socket.on('connect_error', (error) => {
-      console.error('[DUEL] ✗✗✗ CONNECTION ERROR ✗✗✗');
+      console.error('[DUEL] CONNECTION ERROR');
       console.error('[DUEL] Error details:', error);
       window.PopupManager.error('Connection Error', 'Could not connect to game server: ' + error.message);
     });
@@ -224,7 +296,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   /**
    * Handle game joined event
    */
-  function handleGameJoined(data) {
+  async function handleGameJoined(data) {
     console.log('[DUEL] ======= Game joined event received =======');
     console.log('[DUEL] Full data:', JSON.stringify(data, null, 2));
     console.log('[DUEL] Player role:', data.playerRole);
@@ -257,7 +329,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Update opponent avatar
     const opponentAvatar = document.getElementById('opponentAvatar');
     if (opponentAvatar && opponent.avatar) {
-      const avatarUrl = getAvatarUrl(opponent.avatar);
+      const avatarUrl = await getAvatarUrl(opponent.avatar);
       opponentAvatar.src = avatarUrl;
       console.log('[DUEL] Setting opponent avatar:', avatarUrl);
     }
@@ -354,6 +426,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('[DUEL] Goal time:', data.goalTime);
     console.log('[DUEL] Game start time:', data.gameStartTime);
     console.log('[DUEL] Current round:', gameState.currentRound);
+    
+    // Play timer sound
+    playTimerSound();
     
     // Game started! Enable button and reset click flag
     gameState.hasClicked = false;
@@ -463,6 +538,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('[DUEL] ======= Round finished! =======');
     console.log('[DUEL] Round data:', data);
     
+    // Stop timer sound
+    stopTimerSound();
+    
     // Clear inactivity timer
     clearInactivityTimer();
     
@@ -545,6 +623,10 @@ document.addEventListener('DOMContentLoaded', async () => {
    */
   function handleGameFinished(data) {
     console.log('[DUEL] Game finished:', data);
+    
+    // Stop timer sound
+    stopTimerSound();
+    
     gameState.gameEnded = true;
     pressButton.disabled = true;
     pressButton.classList.remove('active');
@@ -560,6 +642,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function handleGameEndedForfeit(data) {
     console.log('[DUEL] Game ended by forfeit:', data);
+    
+    // Stop timer sound
+    stopTimerSound();
+    
     gameState.gameEnded = true;
     pressButton.disabled = true;
     window.PopupManager.success('Victory!', 'You won! Your opponent forfeited.', 2000);
@@ -701,6 +787,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     );
     
     if (confirmed) {
+      // Stop timer sound
+      stopTimerSound();
+      
       gameState.gameEnded = true;
       await cancelCurrentGame();
       socket.emit('leave_game', { gameId: gameState.gameId });
@@ -1015,7 +1104,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('[DUEL] ======= initSocket() completed =======');
     console.log('[DUEL] ======= DUEL PAGE FULLY INITIALIZED =======');
   }).catch(function(error) {
-    console.error('[DUEL] ✗✗✗ ERROR in initSocket() ✗✗✗');
+    console.error('[DUEL] ERROR in initSocket()');
     console.error('[DUEL] Error:', error);
     if (window.PopupManager) {
       window.PopupManager.error('Error', 'Could not initialize game: ' + error.message);

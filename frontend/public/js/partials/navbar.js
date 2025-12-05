@@ -6,8 +6,7 @@ var navbar = `
     <span>TIMEOUT CLICK</span>
   </a>
   <div class="context" id="page-context" aria-live="polite"></div>
-  <button class="btn logout" type="button" aria-label="Cerrar sesión"
-    onclick="window.location.href='/pages/home.html'">Log out</button>
+  <button class="btn logout" type="button" aria-label="Cerrar sesión" id="logoutBtn">Log out</button>
 </header>
 
 <!-- Pestañas comunes -->
@@ -22,4 +21,42 @@ var navbar = `
 document.addEventListener('DOMContentLoaded', () => {
   const app = document.querySelector('.app') || document.body;
   app.insertAdjacentHTML('afterbegin', navbar);
+  
+  // Add logout functionality after navbar is inserted
+  setTimeout(() => {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        console.log('[LOGOUT] Button clicked');
+        
+        try {
+          // Clear session storage first
+          sessionStorage.clear();
+          console.log('[LOGOUT] Session storage cleared');
+          
+          // Call logout API
+          if (window.auth) {
+            await window.auth.logout();
+            console.log('[LOGOUT] Auth logout called');
+          } else if (window.api) {
+            await window.api.logout();
+            console.log('[LOGOUT] API logout called');
+          }
+        } catch (error) {
+          console.error('[LOGOUT] Error:', error);
+        } finally {
+          // Always redirect and clear session
+          sessionStorage.clear();
+          localStorage.clear();
+          console.log('[LOGOUT] Redirecting to home');
+          window.location.href = '/pages/home.html';
+        }
+      });
+      console.log('[LOGOUT] Event listener attached');
+    } else {
+      console.error('[LOGOUT] Button not found');
+    }
+  }, 100);
 });
+

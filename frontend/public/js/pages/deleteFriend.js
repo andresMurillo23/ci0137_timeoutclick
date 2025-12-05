@@ -74,7 +74,26 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (avatarImg && friend.avatar) {
         // Avatar is stored as "avatars/filename.jpg", need to prepend backend URL
         const backendUrl = window.CONFIG?.BACKEND_URL || 'http://localhost:3000';
-        avatarImg.src = `${backendUrl}/uploads/${friend.avatar}`;
+        const avatarUrl = `${backendUrl}/uploads/${friend.avatar}`;
+        
+        if (backendUrl.includes('ngrok')) {
+          try {
+            const response = await fetch(avatarUrl, {
+              headers: { 'ngrok-skip-browser-warning': 'true' }
+            });
+            if (response.ok) {
+              const blob = await response.blob();
+              avatarImg.src = URL.createObjectURL(blob);
+            } else {
+              avatarImg.src = '/assets/images/profile.jpg';
+            }
+          } catch (error) {
+            console.error('Error fetching avatar:', error);
+            avatarImg.src = '/assets/images/profile.jpg';
+          }
+        } else {
+          avatarImg.src = avatarUrl;
+        }
         avatarImg.alt = `${friend.username}'s avatar`;
       } else if (avatarImg && friend.username) {
         // Show first letter if no avatar

@@ -105,7 +105,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       auth: { token: token },
       reconnection: true,
       reconnectionDelay: 1000,
-      reconnectionAttempts: 10
+      reconnectionAttempts: 10,
+      extraHeaders: {
+        'ngrok-skip-browser-warning': 'true'
+      }
     });
 
     socket.on('connect', () => {
@@ -612,7 +615,10 @@ function showGuestChallengePopup(gameId) {
   const token = sessionStorage.getItem('authToken');
   const challengeSocket = io(window.CONFIG?.BACKEND_URL || 'http://localhost:3000', {
     auth: { token: token },
-    transports: ['websocket', 'polling']
+    transports: ['websocket', 'polling'],
+    extraHeaders: {
+      'ngrok-skip-browser-warning': 'true'
+    }
   });
 
   challengeSocket.on('connect', () => {

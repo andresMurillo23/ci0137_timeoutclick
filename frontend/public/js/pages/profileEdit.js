@@ -87,7 +87,7 @@ class ProfileEditPage {
   /**
    * Populate form with current user data
    */
-  populateForm() {
+  async populateForm() {
     // Account fields
     document.getElementById('username').value = this.currentUser.username || '';
     document.getElementById('email').value = this.currentUser.email || '';
@@ -127,8 +127,8 @@ class ProfileEditPage {
 
     // Update avatar preview
     const avatarImg = document.getElementById('avatarPreview');
-    if (avatarImg) {
-      avatarImg.src = this.getAvatarUrl(this.currentUser.avatar);
+    if (avatarImg && this.currentUser.avatar) {
+      avatarImg.src = await this.getAvatarUrl(this.currentUser.avatar);
     }
   }
 
@@ -440,10 +440,30 @@ class ProfileEditPage {
   /**
    * Get full avatar URL from relative path
    */
-  getAvatarUrl(avatarPath) {
+  async getAvatarUrl(avatarPath) {
     if (!avatarPath) return '/assets/images/profile.jpg';
     if (avatarPath.startsWith('http')) return avatarPath;
-    return `${window.CONFIG?.UPLOADS_URL || 'http://localhost:3000/uploads'}/${avatarPath}`;
+    
+    const baseUrl = window.CONFIG?.UPLOADS_URL || 'http://localhost:3000/uploads';
+    const url = `${baseUrl}/${avatarPath}`;
+    
+    // If using ngrok, fetch as blob to include header
+    if (baseUrl.includes('ngrok')) {
+      try {
+        const response = await fetch(url, {
+          headers: {
+            'ngrok-skip-browser-warning': 'true'
+          }
+        });
+        const blob = await response.blob();
+        return URL.createObjectURL(blob);
+      } catch (error) {
+        console.error('[AVATAR] Failed to load avatar:', error);
+        return '/assets/images/profile.jpg';
+      }
+    }
+    
+    return url;
   }
 
   /**

@@ -91,7 +91,27 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Update avatar if available
       if (avatarImg && user.avatar) {
         const backendUrl = window.CONFIG?.BACKEND_URL || 'http://localhost:3000';
-        avatarImg.src = `${backendUrl}/uploads/${user.avatar}`;
+        const avatarUrl = `${backendUrl}/uploads/${user.avatar}`;
+        
+        // For ngrok URLs, fetch with header to bypass warning page
+        if (backendUrl.includes('ngrok')) {
+          try {
+            const response = await fetch(avatarUrl, {
+              headers: { 'ngrok-skip-browser-warning': 'true' }
+            });
+            if (response.ok) {
+              const blob = await response.blob();
+              avatarImg.src = URL.createObjectURL(blob);
+            } else {
+              avatarImg.src = '/assets/images/profile.jpg';
+            }
+          } catch (error) {
+            console.error('Error fetching avatar:', error);
+            avatarImg.src = '/assets/images/profile.jpg';
+          }
+        } else {
+          avatarImg.src = avatarUrl;
+        }
         avatarImg.alt = `${user.username}'s avatar`;
       } else if (avatarImg && user.username) {
         // Show first letter if no avatar
