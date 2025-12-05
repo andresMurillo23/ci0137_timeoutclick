@@ -39,6 +39,17 @@ app.use((req, res, next) => {
     
     if (isAllowed) {
       console.log(`[CORS] Allowing origin: ${origin}`);
+      
+      // Force override ngrok headers using writeHead hook
+      const originalWriteHead = res.writeHead;
+      res.writeHead = function(...args) {
+        this.setHeader('Access-Control-Allow-Origin', origin);
+        this.setHeader('Access-Control-Allow-Credentials', 'true');
+        this.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+        this.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+        return originalWriteHead.apply(this, args);
+      };
+      
       res.setHeader('Access-Control-Allow-Origin', origin);
       res.setHeader('Access-Control-Allow-Credentials', 'true');
       res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
