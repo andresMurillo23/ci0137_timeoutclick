@@ -445,7 +445,9 @@ class ProfileEditPage {
     if (avatarPath.startsWith('http')) return avatarPath;
     const baseUrl = window.CONFIG?.UPLOADS_URL || 'http://localhost:3000/uploads';
     const url = `${baseUrl}/${avatarPath}`;
-    return baseUrl.includes('ngrok') ? `${url}?ngrok-skip-browser-warning=true` : url;
+    const finalUrl = baseUrl.includes('ngrok') ? `${url}?ngrok-skip-browser-warning=true` : url;
+    console.log('[AVATAR] Generated URL:', finalUrl, 'from path:', avatarPath);
+    return finalUrl;
   }
 
   /**
