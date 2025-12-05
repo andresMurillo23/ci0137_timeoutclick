@@ -34,6 +34,8 @@ class ApiClient {
     // Only add default Content-Type if NOT FormData
     if (!isFormData) {
       Object.assign(headers, this.defaultHeaders);
+    } else {
+      headers['ngrok-skip-browser-warning'] = 'true';
     }
     
     // Always add auth token if available
