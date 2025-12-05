@@ -30,15 +30,27 @@ app.use((req, res, next) => {
     'https://ci0137-timeoutclick.vercel.app'
   ];
   
-  if (!origin || allowedOrigins.includes(origin) || origin.includes('ngrok')) {
-    res.setHeader('Access-Control-Allow-Origin', origin || '*');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  // Log CORS info for debugging
+  console.log(`[CORS] ${req.method} ${req.path} - Origin: ${origin || 'none'}`);
+  
+  // Only set CORS headers if origin exists
+  if (origin) {
+    const isAllowed = allowedOrigins.includes(origin) || origin.includes('ngrok');
+    
+    if (isAllowed) {
+      console.log(`[CORS] Allowing origin: ${origin}`);
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+      res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    } else {
+      console.log(`[CORS] Blocked origin: ${origin}`);
+    }
   }
   
   // Handle preflight
   if (req.method === 'OPTIONS') {
+    console.log(`[CORS] Preflight request handled`);
     return res.sendStatus(204);
   }
   
