@@ -63,11 +63,55 @@
   </div>
 </div>
 
+<!-- No Players Available Popup -->
+<div class="modal-overlay" id="noPlayersPopup" style="display: none;">
+  <div class="modal-content confirm-box" role="dialog" aria-modal="true">
+    <h2 class="confirm-title">NO PLAYERS AVAILABLE</h2>
+    <p class="confirm-message" id="noPlayersMessage">No players available at the moment. Please try again later.</p>
+    <div class="popup-actions">
+      <button class="btn btn--secondary" id="closeNoPlayersBtn">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- Challenge Error Popup -->
+<div class="modal-overlay" id="challengeErrorPopup" style="display: none;">
+  <div class="modal-content confirm-box" role="dialog" aria-modal="true">
+    <h2 class="confirm-title">ERROR</h2>
+    <p class="confirm-message" id="challengeErrorMessage">An error occurred.</p>
+    <div class="popup-actions">
+      <button class="btn btn--secondary" id="closeChallengeErrorBtn">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- Challenge Declined Popup -->
+<div class="modal-overlay" id="challengeDeclinedPopup" style="display: none;">
+  <div class="modal-content confirm-box" role="dialog" aria-modal="true">
+    <h2 class="confirm-title">CHALLENGE DECLINED</h2>
+    <p class="confirm-message">The player declined your challenge.</p>
+    <div class="popup-actions">
+      <button class="btn btn--secondary" id="closeDeclinedBtn">OK</button>
+    </div>
+  </div>
+</div>
+
 <!-- Guest challenge functionality -->
 <script>
 (function() {
   let guestSocket = null;
   let currentGameId = null;
+
+  // Helper functions to show/hide popups
+  function showPopup(popupId) {
+    const popup = document.getElementById(popupId);
+    if (popup) popup.style.display = 'flex';
+  }
+
+  function hidePopup(popupId) {
+    const popup = document.getElementById(popupId);
+    if (popup) popup.style.display = 'none';
+  }
 
   function showGuestWaitingPopup(opponentName, gameId) {
     currentGameId = gameId;
@@ -108,8 +152,8 @@
         window.location.href = `/pages/duel.html?gameId=${gameId}&guest=true`;
       } else {
         // Challenge declined
-        alert('The player declined your challenge.');
-        document.getElementById('guestWaitingPopupHome').style.display = 'none';
+        hidePopup('guestWaitingPopupHome');
+        showPopup('challengeDeclinedPopup');
         document.getElementById('guestChallengeBtn').disabled = false;
         document.getElementById('guestChallengeBtn').textContent = 'CHALLENGE RANDOM PLAYER';
         if (guestSocket) {
@@ -125,8 +169,9 @@
     
     guestSocket.on('game_error', (data) => {
       console.error('[GUEST-DEBUG] Game error received:', JSON.stringify(data));
-      alert('Error: ' + data.message);
-      document.getElementById('guestWaitingPopupHome').style.display = 'none';
+      hidePopup('guestWaitingPopupHome');
+      document.getElementById('challengeErrorMessage').textContent = data.message;
+      showPopup('challengeErrorPopup');
       if (guestSocket) {
         guestSocket.disconnect();
         guestSocket = null;
@@ -137,6 +182,19 @@
   document.addEventListener('DOMContentLoaded', () => {
     const guestChallengeBtn = document.getElementById('guestChallengeBtn');
     const cancelBtn = document.getElementById('cancelGuestChallengeBtn');
+    
+    // Close popup buttons
+    document.getElementById('closeNoPlayersBtn').addEventListener('click', () => {
+      hidePopup('noPlayersPopup');
+    });
+    
+    document.getElementById('closeChallengeErrorBtn').addEventListener('click', () => {
+      hidePopup('challengeErrorPopup');
+    });
+    
+    document.getElementById('closeDeclinedBtn').addEventListener('click', () => {
+      hidePopup('challengeDeclinedPopup');
+    });
     
     if (cancelBtn) {
       cancelBtn.addEventListener('click', () => {
@@ -176,13 +234,15 @@
             // Show waiting popup on home page (don't redirect yet)
             showGuestWaitingPopup(data.opponent, data.gameId);
           } else {
-            alert(data.message || 'No players available at the moment. Please try again later.');
+            document.getElementById('noPlayersMessage').textContent = data.message || 'No players available at the moment. Please try again later.';
+            showPopup('noPlayersPopup');
             guestChallengeBtn.disabled = false;
             guestChallengeBtn.textContent = 'CHALLENGE RANDOM PLAYER';
           }
         } catch (error) {
           console.error('Guest challenge error:', error);
-          alert('Failed to send challenge. Please try again.');
+          document.getElementById('challengeErrorMessage').textContent = 'Failed to send challenge. Please try again.';
+          showPopup('challengeErrorPopup');
           guestChallengeBtn.disabled = false;
           guestChallengeBtn.textContent = 'CHALLENGE RANDOM PLAYER';
         }
