@@ -52,6 +52,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('[DUEL] Guest user, skipping authentication...');
   }
 
+  // Timer sound
+  const timerSound = new Audio('/assets/images/timer_sound.mp3');
+  timerSound.loop = false; // Don't loop, play once per round
+  timerSound.volume = 0.5; // Set volume to 50%
+
   // Socket.IO connection
   let socket = null;
   let gameState = {
@@ -68,7 +73,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     clickStartTime: null,
     hasClicked: false,
     gameEnded: false,
-    inactivityTimer: null
+    inactivityTimer: null,
+    timerSoundPlaying: false
   };
 
   // DOM elements
@@ -87,12 +93,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const surrenderBtn = document.getElementById('surrenderBtn');
 
   console.log('[DUEL] DOM elements check:');
-  console.log('  - pressButton:', pressButton ? '✓' : '✗');
-  console.log('  - roundNumber:', roundNumber ? '✓' : '✗');
-  console.log('  - goalValue:', goalValue ? '✓' : '✗');
-  console.log('  - player1Name:', player1Name ? '✓' : '✗');
-  console.log('  - player2Name:', player2Name ? '✓' : '✗');
-  console.log('  - turnStatus:', turnStatus ? '✓' : '✗');
+  console.log('  - pressButton:', pressButton ? 'S' : 'N');
+  console.log('  - roundNumber:', roundNumber ? 'S' : 'N');
+  console.log('  - goalValue:', goalValue ? 'S' : 'N');
+  console.log('  - player1Name:', player1Name ? 'S' : 'N');
+  console.log('  - player2Name:', player2Name ? 'S' : 'N');
+  console.log('  - turnStatus:', turnStatus ? 'S' : 'N');
 
   // Modals
   const winnerPopup = document.getElementById('winnerPopup');
@@ -153,6 +159,49 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   /**
+   * Play timer sound at the start of each round
+   */
+  function playTimerSound() {
+    try {
+      // Reset audio to start
+      timerSound.currentTime = 0;
+      
+      // Play the sound
+      const playPromise = timerSound.play();
+      
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            console.log('[DUEL] Timer sound playing');
+            gameState.timerSoundPlaying = true;
+          })
+          .catch(error => {
+            console.warn('[DUEL] Timer sound autoplay blocked:', error);
+            // User interaction might be required for autoplay
+          });
+      }
+    } catch (error) {
+      console.error('[DUEL] Error playing timer sound:', error);
+    }
+  }
+
+  /**
+   * Stop timer sound when round finishes
+   */
+  function stopTimerSound() {
+    try {
+      if (gameState.timerSoundPlaying) {
+        timerSound.pause();
+        timerSound.currentTime = 0;
+        gameState.timerSoundPlaying = false;
+        console.log('[DUEL] Timer sound stopped');
+      }
+    } catch (error) {
+      console.error('[DUEL] Error stopping timer sound:', error);
+    }
+  }
+
+  /**
    * Initialize Socket.IO connection
    */
   async function initSocket() {
@@ -205,18 +254,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
 
-    console.log('[DUEL] Socket object created:', socket ? '✓' : '✗');
+    console.log('[DUEL] Socket object created:', socket ? 'S' : 'N');
 
     // Connection events
     socket.on('connect', () => {
-      console.log('[DUEL] ✓✓✓ CONNECTED to game server! ✓✓✓');
+      console.log('[DUEL] CONNECTED to game server!');
       console.log('[DUEL] Socket ID:', socket.id);
       console.log('[DUEL] Emitting join_game with gameId:', gameId);
       socket.emit('join_game', { gameId: gameId });
     });
 
     socket.on('connect_error', (error) => {
-      console.error('[DUEL] ✗✗✗ CONNECTION ERROR ✗✗✗');
+      console.error('[DUEL] CONNECTION ERROR');
       console.error('[DUEL] Error details:', error);
       window.PopupManager.error('Connection Error', 'Could not connect to game server: ' + error.message);
     });
@@ -378,6 +427,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('[DUEL] Game start time:', data.gameStartTime);
     console.log('[DUEL] Current round:', gameState.currentRound);
     
+    // Play timer sound
+    playTimerSound();
+    
     // Game started! Enable button and reset click flag
     gameState.hasClicked = false;
     const goalSeconds = (data.goalTime / 1000).toFixed(1);
@@ -486,6 +538,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('[DUEL] ======= Round finished! =======');
     console.log('[DUEL] Round data:', data);
     
+    // Stop timer sound
+    stopTimerSound();
+    
     // Clear inactivity timer
     clearInactivityTimer();
     
@@ -568,6 +623,10 @@ document.addEventListener('DOMContentLoaded', async () => {
    */
   function handleGameFinished(data) {
     console.log('[DUEL] Game finished:', data);
+    
+    // Stop timer sound
+    stopTimerSound();
+    
     gameState.gameEnded = true;
     pressButton.disabled = true;
     pressButton.classList.remove('active');
@@ -583,6 +642,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function handleGameEndedForfeit(data) {
     console.log('[DUEL] Game ended by forfeit:', data);
+    
+    // Stop timer sound
+    stopTimerSound();
+    
     gameState.gameEnded = true;
     pressButton.disabled = true;
     window.PopupManager.success('Victory!', 'You won! Your opponent forfeited.', 2000);
@@ -724,6 +787,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     );
     
     if (confirmed) {
+      // Stop timer sound
+      stopTimerSound();
+      
       gameState.gameEnded = true;
       await cancelCurrentGame();
       socket.emit('leave_game', { gameId: gameState.gameId });
@@ -1038,7 +1104,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('[DUEL] ======= initSocket() completed =======');
     console.log('[DUEL] ======= DUEL PAGE FULLY INITIALIZED =======');
   }).catch(function(error) {
-    console.error('[DUEL] ✗✗✗ ERROR in initSocket() ✗✗✗');
+    console.error('[DUEL] ERROR in initSocket()');
     console.error('[DUEL] Error:', error);
     if (window.PopupManager) {
       window.PopupManager.error('Error', 'Could not initialize game: ' + error.message);
