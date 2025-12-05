@@ -78,19 +78,61 @@ cd ci0137_timeoutclick
 npm run install:all
 ```
 
-## Running the Application 
+## Running the Application
 
-### Option 1: Batch Script (Windows)
+### Quick Start (Recommended) - Complete Setup from Scratch
+
+For a fresh installation that sets up everything automatically:
+
+**Windows (PowerShell):**
+```powershell
+.\setup-and-run.ps1
+```
+
+**Windows (Command Prompt):**
+```bash
+setup-and-run.bat
+```
+
+This script will:
+1. Check and start MongoDB service
+2. Install all dependencies (root, backend, frontend)
+3. Create `.env` file with default configuration
+4. Initialize database with sample users
+5. Start both backend and frontend servers
+
+### Option 1: Start Servers Only (After Setup)
+
+If dependencies are already installed:
+
 ```bash
 start-servers.bat
 ```
 
-Local access the application:
+### Option 2: Development Mode
+```bash
+npm run dev
+```
+
+### Option 3: Manual Start
+
+Backend:
+```bash
+cd backend
+npm start
+```
+
+Frontend (separate terminal):
+```bash
+cd frontend
+npm start
+```
+
+Access the application:
 - Frontend: http://localhost:5000
 - Backend API: http://localhost:3000
 
-
-Public access the application:
+Public deployment:
 - Frontend: https://ci0137-timeoutclick.vercel.app/pages/home.html
 
 ## Core Functionality
