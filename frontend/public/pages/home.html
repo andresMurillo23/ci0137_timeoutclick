@@ -133,17 +133,11 @@
     });
     
     guestSocket.on('connect', () => {
-      console.log('[GUEST] Connected to server, waiting for response...');
-      // DON'T join game yet - just listen for challenge_response
-      // We'll join the room through a special event
       guestSocket.emit('guest_waiting', { gameId: gameId });
     });
     
     guestSocket.on('challenge_response', (data) => {
-      console.log('[GUEST-DEBUG] Step 8: Received challenge_response:', JSON.stringify(data));
-      
       if (data.accepted) {
-        console.log('[GUEST-DEBUG] Step 9: Challenge ACCEPTED, redirecting to duel');
         // Challenge accepted - redirect to duel
         window.location.href = `/pages/duel.html?gameId=${gameId}&guest=true`;
       } else {
@@ -160,11 +154,10 @@
     });
     
     guestSocket.on('connect_error', (error) => {
-      console.error('[GUEST-DEBUG] Connection error:', error);
+      console.error('Connection error:', error);
     });
     
     guestSocket.on('game_error', (data) => {
-      console.error('[GUEST-DEBUG] Game error received:', JSON.stringify(data));
       hidePopup('guestWaitingPopupHome');
       document.getElementById('challengeErrorMessage').textContent = data.message;
       showPopup('challengeErrorPopup');
@@ -223,10 +216,6 @@
           const data = await response.json();
           
           if (data.success) {
-            if (data.emailPreview) {
-              console.log('Email preview:', data.emailPreview);
-            }
-            
             // Show waiting popup on home page (don't redirect yet)
             showGuestWaitingPopup(data.opponent, data.gameId);
           } else {

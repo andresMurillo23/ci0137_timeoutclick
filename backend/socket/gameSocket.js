@@ -57,44 +57,25 @@ class GameSocketHandler {
       const userId = socket.userId; // Set by authentication middleware
       const isGuest = socket.isGuest;
 
-      console.log(`\n========== GAME DEBUG ==========`);
-      console.log(`[GAME-DEBUG] Join attempt:`);
-      console.log(`  - Socket ID: ${socket.id}`);
-      console.log(`  - User ID: ${userId}`);
-      console.log(`  - Is Guest: ${isGuest}`);
-      console.log(`  - Game ID: ${gameId}`);
-
       if (!userId && !isGuest) {
-        console.error('[GAME-DEBUG] JOIN REJECTED: No userId and not a guest');
         socket.emit('game_error', { message: 'Authentication required' });
         return;
       }
 
       const game = await Game.findById(gameId).populate('player1 player2');
       if (!game) {
-        console.error(`[GAME-DEBUG] JOIN REJECTED: Game ${gameId} not found`);
         socket.emit('game_error', { message: 'Game not found' });
         return;
       }
 
-      console.log(`[GAME-DEBUG] Game found:`);
-      console.log(`  - Status: ${game.status}`);
-      console.log(`  - Type: ${game.gameType}`);
-      console.log(`  - Player1: ${game.player1 ? game.player1._id : 'NULL'}`);
-      console.log(`  - Player2: ${game.player2 ? game.player2._id : 'NULL'}`);
-      console.log(`  - Created: ${game.createdAt}`);
-
       // Check if game was cancelled
       if (game.status === 'cancelled') {
-        console.error(`[GAME-DEBUG] JOIN REJECTED: Game ${gameId} STATUS IS CANCELLED`);
-        console.error(`[GAME-DEBUG] Game was cancelled at some point. Check who/what cancelled it.`);
         socket.emit('game_error', { message: 'Game was cancelled' });
         return;
       }
 
       // Check if game is in a joinable state
       if (!['waiting', 'starting', 'active'].includes(game.status)) {
-        console.error(`[GAME] Join failed - Invalid status: ${game.status}`);
         socket.emit('game_error', { message: `Game is in ${game.status} state and cannot be joined` });
         return;
       }
