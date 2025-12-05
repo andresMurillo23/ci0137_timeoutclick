@@ -74,7 +74,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (avatarImg && friend.avatar) {
         // Avatar is stored as "avatars/filename.jpg", need to prepend backend URL
         const backendUrl = window.CONFIG?.BACKEND_URL || 'http://localhost:3000';
-        avatarImg.src = `${backendUrl}/uploads/${friend.avatar}`;
+        const avatarUrl = `${backendUrl}/uploads/${friend.avatar}`;
+        avatarImg.src = backendUrl.includes('ngrok') ? `${avatarUrl}?ngrok-skip-browser-warning=true` : avatarUrl;
         avatarImg.alt = `${friend.username}'s avatar`;
       } else if (avatarImg && friend.username) {
         // Show first letter if no avatar

@@ -443,7 +443,9 @@ class ProfileEditPage {
   getAvatarUrl(avatarPath) {
     if (!avatarPath) return '/assets/images/profile.jpg';
     if (avatarPath.startsWith('http')) return avatarPath;
-    return `${window.CONFIG?.UPLOADS_URL || 'http://localhost:3000/uploads'}/${avatarPath}`;
+    const baseUrl = window.CONFIG?.UPLOADS_URL || 'http://localhost:3000/uploads';
+    const url = `${baseUrl}/${avatarPath}`;
+    return baseUrl.includes('ngrok') ? `${url}?ngrok-skip-browser-warning=true` : url;
   }
 
   /**

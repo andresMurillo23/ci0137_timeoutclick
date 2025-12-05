@@ -126,10 +126,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!avatarPath) return '/assets/images/profile.jpg';
     if (avatarPath.startsWith('http')) return avatarPath;
     // Avatar paths from backend can be 'avatars/xxx' or just 'xxx'
+    const baseUrl = window.CONFIG?.UPLOADS_URL || 'http://localhost:3000/uploads';
+    let url;
     if (avatarPath.includes('/')) {
-      return `${window.CONFIG?.UPLOADS_URL || 'http://localhost:3000/uploads'}/${avatarPath}`;
+      url = `${baseUrl}/${avatarPath}`;
+    } else {
+      url = `${baseUrl}/avatars/${avatarPath}`;
     }
-    return `${window.CONFIG?.UPLOADS_URL || 'http://localhost:3000/uploads'}/avatars/${avatarPath}`;
+    // Add ngrok parameter to bypass warning page
+    return baseUrl.includes('ngrok') ? `${url}?ngrok-skip-browser-warning=true` : url;
   }
 
   /**

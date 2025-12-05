@@ -91,7 +91,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Update avatar if available
       if (avatarImg && user.avatar) {
         const backendUrl = window.CONFIG?.BACKEND_URL || 'http://localhost:3000';
-        avatarImg.src = `${backendUrl}/uploads/${user.avatar}`;
+        const avatarUrl = `${backendUrl}/uploads/${user.avatar}`;
+        avatarImg.src = backendUrl.includes('ngrok') ? `${avatarUrl}?ngrok-skip-browser-warning=true` : avatarUrl;
         avatarImg.alt = `${user.username}'s avatar`;
       } else if (avatarImg && user.username) {
         // Show first letter if no avatar

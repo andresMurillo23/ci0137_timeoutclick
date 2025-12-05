@@ -47,6 +47,7 @@ app.use((req, res, next) => {
         this.setHeader('Access-Control-Allow-Credentials', 'true');
         this.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
         this.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, ngrok-skip-browser-warning');
+        this.setHeader('Access-Control-Max-Age', '86400');
         
         console.log(`[CORS] Headers being sent:`, {
           'Access-Control-Allow-Origin': this.getHeader('Access-Control-Allow-Origin'),
@@ -60,6 +61,7 @@ app.use((req, res, next) => {
       res.setHeader('Access-Control-Allow-Credentials', 'true');
       res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
       res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, ngrok-skip-browser-warning');
+      res.setHeader('Access-Control-Max-Age', '86400');
     } else {
       console.log(`[CORS] Blocked origin: ${origin}`);
     }
