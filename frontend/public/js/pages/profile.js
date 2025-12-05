@@ -118,7 +118,7 @@ class ProfilePage {
   /**
    * Render user profile information
    */
-  renderProfile() {
+  async renderProfile() {
     console.log('Rendering profile with user:', this.currentUser);
     
     // Update account section (first panel)
@@ -150,8 +150,8 @@ class ProfilePage {
 
     // Update avatar (right side panel)
     const avatarImg = document.querySelector('.preview img');
-    if (avatarImg) {
-      avatarImg.src = this.getAvatarUrl(this.currentUser.avatar);
+    if (avatarImg && this.currentUser.avatar) {
+      avatarImg.src = await this.getAvatarUrl(this.currentUser.avatar);
       avatarImg.alt = `${this.currentUser.username}'s avatar`;
     }
 
@@ -275,13 +275,30 @@ class ProfilePage {
   /**
    * Get full avatar URL from relative path
    */
-  getAvatarUrl(avatarPath) {
+  async getAvatarUrl(avatarPath) {
     if (!avatarPath) return '/assets/images/profile.jpg';
     if (avatarPath.startsWith('http')) return avatarPath;
     // Avatar paths from backend are like 'avatars/avatar_xxx.png'
     const baseUrl = window.CONFIG?.UPLOADS_URL || 'http://localhost:3000/uploads';
     const url = `${baseUrl}/${avatarPath}`;
-    return baseUrl.includes('ngrok') ? `${url}?ngrok-skip-browser-warning=true` : url;
+    
+    // If using ngrok, fetch as blob to include header
+    if (baseUrl.includes('ngrok')) {
+      try {
+        const response = await fetch(url, {
+          headers: {
+            'ngrok-skip-browser-warning': 'true'
+          }
+        });
+        const blob = await response.blob();
+        return URL.createObjectURL(blob);
+      } catch (error) {
+        console.error('[AVATAR] Failed to load avatar:', error);
+        return '/assets/images/profile.jpg';
+      }
+    }
+    
+    return url;
   }
 
   /**

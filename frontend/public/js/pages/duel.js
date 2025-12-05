@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   /**
    * Get full avatar URL from relative path
    */
-  function getAvatarUrl(avatarPath) {
+  async function getAvatarUrl(avatarPath) {
     if (!avatarPath) return '/assets/images/profile.jpg';
     if (avatarPath.startsWith('http')) return avatarPath;
     // Avatar paths from backend can be 'avatars/xxx' or just 'xxx'
@@ -133,8 +133,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else {
       url = `${baseUrl}/avatars/${avatarPath}`;
     }
-    // Add ngrok parameter to bypass warning page
-    return baseUrl.includes('ngrok') ? `${url}?ngrok-skip-browser-warning=true` : url;
+    
+    // For ngrok URLs, fetch with header to bypass warning page
+    if (baseUrl.includes('ngrok')) {
+      try {
+        const response = await fetch(url, {
+          headers: { 'ngrok-skip-browser-warning': 'true' }
+        });
+        if (response.ok) {
+          const blob = await response.blob();
+          return URL.createObjectURL(blob);
+        }
+      } catch (error) {
+        console.error('[DUEL] Error fetching avatar:', error);
+        return '/assets/images/profile.jpg';
+      }
+    }
+    return url;
   }
 
   /**
@@ -232,7 +247,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   /**
    * Handle game joined event
    */
-  function handleGameJoined(data) {
+  async function handleGameJoined(data) {
     console.log('[DUEL] ======= Game joined event received =======');
     console.log('[DUEL] Full data:', JSON.stringify(data, null, 2));
     console.log('[DUEL] Player role:', data.playerRole);
@@ -265,7 +280,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Update opponent avatar
     const opponentAvatar = document.getElementById('opponentAvatar');
     if (opponentAvatar && opponent.avatar) {
-      const avatarUrl = getAvatarUrl(opponent.avatar);
+      const avatarUrl = await getAvatarUrl(opponent.avatar);
       opponentAvatar.src = avatarUrl;
       console.log('[DUEL] Setting opponent avatar:', avatarUrl);
     }
